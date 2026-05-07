@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8">
+<title>14-сабақ: Тізімдер (List)</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+body{background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);color:white;min-height:100vh;display:flex;flex-direction:column;}
+
+header{background:rgba(255,255,255,0.05);backdrop-filter:blur(12px);padding:18px 40px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.08);position:sticky;top:0;z-index:200;}
+.logo{font-size:22px;font-weight:800;background:linear-gradient(90deg,#a78bfa,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+nav a{margin-left:24px;text-decoration:none;color:rgba(255,255,255,0.55);font-weight:500;font-size:14px;transition:0.3s;}
+nav a:hover{color:white;}
+
+.body-wrap{display:flex;flex:1;}
+
+.sidebar{width:300px;background:rgba(255,255,255,0.03);border-right:1px solid rgba(255,255,255,0.07);height:calc(100vh - 62px);position:sticky;top:62px;overflow-y:auto;padding:20px 12px;display:flex;flex-direction:column;justify-content:space-between;flex-shrink:0;}
+.sidebar-top h2{text-align:center;margin-bottom:18px;font-size:16px;font-weight:700;}
+.lesson{position:relative;display:flex;align-items:center;gap:11px;padding:11px 12px;margin:4px 0;border-radius:10px;cursor:pointer;transition:0.3s;font-size:13px;font-weight:500;color:rgba(255,255,255,0.65);}
+.lesson:hover{background:rgba(255,255,255,0.07);color:white;}
+.lesson.active{background:rgba(99,102,241,0.2);border:1px solid rgba(99,102,241,0.3);color:white;}
+.lesson.done{color:rgba(255,255,255,0.7);}
+.badge{width:24px;height:24px;border-radius:50%;background:rgba(99,102,241,0.4);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;color:white;}
+.lesson.active .badge{background:#6366f1;}
+.lesson.done .badge{background:#22c55e;}
+.lesson.locked{opacity:0.45;cursor:not-allowed;}
+.lesson.locked::after{content:"";position:absolute;inset:0;border-radius:10px;}
+.lock-icon{position:absolute;right:12px;font-size:12px;opacity:0.5;}
+.lesson.locked:hover{background:transparent;}
+.help{background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.2);color:rgba(255,255,255,0.55);padding:11px 14px;border-radius:12px;cursor:pointer;display:flex;align-items:center;gap:10px;margin:16px 4px 4px;font-size:13px;font-weight:600;transition:0.3s;}
+.help:hover{background:#6366f1;color:white;border-color:transparent;}
+.help-icon{width:26px;height:26px;border-radius:50%;background:#6366f1;color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0;}
+
+.content{flex:1;padding:32px 40px;overflow-y:auto;}
+
+.progress-wrap{margin-bottom:28px;}
+.progress-label{display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:7px;}
+.progress-track{height:5px;background:rgba(255,255,255,0.08);border-radius:4px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,#6366f1,#a78bfa);border-radius:4px;width:93.33%;}
+
+.video-wrap{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;height:280px;display:flex;align-items:center;justify-content:center;margin-bottom:28px;position:relative;overflow:hidden;}
+.video-wrap::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 30% 50%,rgba(99,102,241,0.15),transparent 60%),radial-gradient(circle at 70% 50%,rgba(139,92,246,0.1),transparent 60%);}
+.video-inner{text-align:center;position:relative;z-index:1;}
+.video-inner .play{width:70px;height:70px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 14px;box-shadow:0 8px 24px rgba(99,102,241,0.4);cursor:pointer;transition:0.3s;}
+.video-inner .play:hover{transform:scale(1.1);}
+.video-inner p{font-size:14px;color:rgba(255,255,255,0.4);}
+
+/* THEORY */
+.theory-block{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:26px;margin-bottom:22px;}
+.theory-title{font-size:17px;font-weight:800;color:white;margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.theory-title .tag{font-size:12px;font-weight:600;color:#a78bfa;background:rgba(99,102,241,0.13);border:1px solid rgba(99,102,241,0.25);padding:3px 12px;border-radius:20px;}
+.theory-text{font-size:14px;color:rgba(255,255,255,0.7);line-height:2.0;margin-bottom:14px;}
+.theory-text b{color:#a78bfa;}
+.theory-text code{color:#c4b5fd;background:rgba(99,102,241,0.15);padding:2px 8px;border-radius:4px;font-family:'Courier New',monospace;font-size:13px;}
+
+.info-card{border-radius:12px;padding:16px 20px;margin-bottom:14px;font-size:13px;line-height:2.0;}
+.info-card.blue{background:rgba(99,102,241,0.08);border-left:3px solid #6366f1;color:rgba(255,255,255,0.7);}
+.info-card.green{background:rgba(34,197,94,0.08);border-left:3px solid #22c55e;color:rgba(255,255,255,0.7);}
+.info-card.red{background:rgba(239,68,68,0.08);border-left:3px solid #ef4444;color:rgba(255,255,255,0.7);}
+.info-card.yellow{background:rgba(245,158,11,0.08);border-left:3px solid #f59e0b;color:rgba(255,255,255,0.7);}
+.info-card b{font-size:14px;display:block;margin-bottom:6px;}
+.info-card.blue b{color:#818cf8;}
+.info-card.green b{color:#4ade80;}
+.info-card.red b{color:#f87171;}
+.info-card.yellow b{color:#fcd34d;}
+.info-card code{color:#c4b5fd;background:rgba(99,102,241,0.15);padding:1px 6px;border-radius:4px;font-family:'Courier New',monospace;}
+
+.syntax-box{background:#0d1117;border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:20px 24px;margin:14px 0;font-family:'Courier New',monospace;font-size:14px;line-height:2.2;color:#e2e8f0;white-space:pre;}
+.syn-kw{color:#c084fc;}
+.syn-str{color:#fde68a;}
+.syn-num{color:#60a5fa;}
+.syn-com{color:#6b7280;}
+.syn-fn{color:#34d399;}
+
+/* INDEX VISUAL */
+.index-visual{display:flex;gap:0;margin:18px 0;border-radius:12px;overflow:hidden;border:1px solid rgba(99,102,241,0.3);}
+.idx-cell{flex:1;text-align:center;padding:14px 6px;}
+.idx-val{font-size:16px;font-weight:700;color:#e2e8f0;font-family:'Courier New',monospace;background:#0d1117;padding:10px 0;}
+.idx-pos{font-size:11px;color:#a78bfa;background:rgba(99,102,241,0.12);padding:6px 0;font-weight:700;}
+.idx-neg{font-size:11px;color:#f87171;background:rgba(239,68,68,0.08);padding:6px 0;font-weight:700;}
+.idx-sep{width:1px;background:rgba(99,102,241,0.2);}
+
+/* METHODS TABLE */
+.methods-table{width:100%;border-collapse:collapse;margin:14px 0;}
+.methods-table th{background:rgba(99,102,241,0.15);padding:10px 14px;text-align:left;font-size:12px;font-weight:700;color:#a78bfa;text-transform:uppercase;letter-spacing:0.5px;}
+.methods-table td{padding:11px 14px;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.05);color:rgba(255,255,255,0.7);}
+.methods-table tr:last-child td{border-bottom:none;}
+.methods-table tr:hover td{background:rgba(255,255,255,0.02);}
+.methods-table code{color:#c4b5fd;background:rgba(99,102,241,0.15);padding:2px 7px;border-radius:4px;font-family:'Courier New',monospace;font-size:12px;}
+.methods-table .result{color:#4ade80;font-family:'Courier New',monospace;font-size:12px;}
+
+/* SECTION */
+.section-title{font-size:19px;font-weight:800;color:white;margin:8px 0 18px;display:flex;align-items:center;gap:10px;}
+.section-title span{font-size:13px;font-weight:600;color:#a78bfa;background:rgba(99,102,241,0.13);border:1px solid rgba(99,102,241,0.25);padding:3px 12px;border-radius:20px;}
+
+/* TASK */
+.task-block{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:26px;margin-bottom:22px;}
+.task-header{display:flex;align-items:center;gap:14px;margin-bottom:16px;}
+.task-indicator{width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,0.1);border:2px solid rgba(255,255,255,0.2);flex-shrink:0;transition:0.5s;}
+.task-indicator.done{background:#22c55e;border-color:#16a34a;box-shadow:0 0 14px rgba(34,197,94,0.6);}
+.task-title{font-size:16px;font-weight:700;color:white;}
+.task-desc{background:rgba(99,102,241,0.08);border-left:3px solid #6366f1;padding:14px 18px;border-radius:0 10px 10px 0;margin-bottom:18px;font-size:13px;color:rgba(255,255,255,0.65);line-height:1.85;}
+.task-desc b{color:#a78bfa;display:block;margin-bottom:6px;font-size:14px;}
+.task-desc code{color:#c4b5fd;background:rgba(99,102,241,0.15);padding:1px 7px;border-radius:4px;font-family:'Courier New',monospace;font-size:13px;}
+.task-feedback{display:none;margin-top:14px;padding:13px 16px;border-radius:10px;font-size:14px;font-weight:500;line-height:1.6;}
+.task-feedback.success{background:rgba(34,197,94,0.1);border-left:3px solid #22c55e;color:#86efac;}
+.task-feedback.error{background:rgba(239,68,68,0.1);border-left:3px solid #ef4444;color:#fca5a5;}
+
+/* EDITOR */
+.editor-wrap{background:#0a0a1a;border:1px solid rgba(255,255,255,0.1);border-radius:12px;overflow:hidden;margin-bottom:16px;}
+.editor-topbar{background:rgba(255,255,255,0.05);padding:10px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(255,255,255,0.06);}
+.editor-dot{width:11px;height:11px;border-radius:50%;}
+.editor-filename{color:rgba(255,255,255,0.35);font-size:12px;margin-left:6px;}
+.editor-lines{padding:0;}
+.code-line{display:flex;align-items:stretch;min-height:36px;}
+.line-num{width:40px;background:rgba(255,255,255,0.03);color:rgba(255,255,255,0.2);font-family:'Courier New',monospace;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;user-select:none;border-right:1px solid rgba(255,255,255,0.06);}
+.code-input{flex:1;background:transparent;border:none;outline:none;color:#e2e8f0;font-family:'Courier New',monospace;font-size:13px;padding:8px 12px;resize:none;line-height:1.5;}
+.code-input::placeholder{color:rgba(255,255,255,0.2);}
+.add-line-btn{width:100%;background:rgba(255,255,255,0.03);border:none;border-top:1px solid rgba(255,255,255,0.06);color:rgba(255,255,255,0.25);padding:6px;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;gap:6px;font-family:'Segoe UI',sans-serif;transition:0.2s;}
+.add-line-btn:hover{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.5);}
+.btn-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:4px;}
+.run-btn{padding:12px 22px;background:linear-gradient(135deg,#059669,#10b981);border:none;color:white;border-radius:10px;cursor:pointer;font-size:14px;font-family:'Segoe UI',sans-serif;font-weight:700;transition:0.3s;box-shadow:0 4px 14px rgba(16,185,129,0.3);}
+.run-btn:hover{transform:translateY(-1px);}
+.hint-btn{padding:10px 18px;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);color:#fcd34d;border-radius:10px;cursor:pointer;font-size:13px;font-family:'Segoe UI',sans-serif;font-weight:600;transition:0.2s;}
+.hint-btn:hover{background:rgba(245,158,11,0.2);}
+.hint-box{display:none;background:rgba(245,158,11,0.07);border:1px solid rgba(245,158,11,0.2);border-radius:10px;padding:16px 18px;margin-top:12px;font-size:13px;color:#fde68a;line-height:2.2;}
+.hint-box code{color:#c4b5fd;background:rgba(99,102,241,0.15);padding:1px 7px;border-radius:4px;font-family:'Courier New',monospace;}
+.output-box{background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:12px 16px;font-family:'Courier New',monospace;font-size:13px;color:#4ade80;min-height:52px;margin-top:12px;white-space:pre-wrap;line-height:1.6;}
+.output-box.err{color:#f87171;}
+
+/* QUIZ */
+.quiz-block{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:26px;margin-bottom:22px;}
+.q-num{display:inline-flex;align-items:center;gap:7px;background:rgba(99,102,241,0.13);border:1px solid rgba(99,102,241,0.22);border-radius:20px;padding:4px 14px;font-size:11px;font-weight:700;color:#a78bfa;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:14px;}
+.q-text{font-size:16px;font-weight:700;color:white;line-height:1.65;margin-bottom:6px;}
+.code-block{background:#0d1117;border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:16px 20px;margin:14px 0 18px;font-family:'Courier New',monospace;font-size:14px;line-height:2;white-space:pre;color:#e2e8f0;}
+.q-opts{display:flex;flex-direction:column;gap:9px;}
+.q-opt{display:flex;align-items:center;gap:13px;padding:12px 16px;background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.09);border-radius:12px;cursor:pointer;transition:all 0.18s;user-select:none;}
+.q-opt:hover:not(.correct):not(.wrong):not(.locked-opt){border-color:rgba(167,139,250,0.45);background:rgba(167,139,250,0.08);}
+.q-opt.selected{border-color:#6366f1;background:rgba(99,102,241,0.14);}
+.q-opt.correct{border-color:#22c55e;background:rgba(34,197,94,0.1);cursor:default;animation:pulseG 0.4s ease;}
+.q-opt.wrong{border-color:#ef4444;background:rgba(239,68,68,0.1);cursor:default;}
+.q-opt.locked-opt{cursor:default;pointer-events:none;}
+.opt-ltr{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:rgba(255,255,255,0.4);flex-shrink:0;}
+.q-opt.selected .opt-ltr{background:#6366f1;color:white;}
+.q-opt.correct .opt-ltr{background:#22c55e;color:white;}
+.q-opt.wrong   .opt-ltr{background:#ef4444;color:white;}
+.opt-txt{font-size:14px;color:rgba(255,255,255,0.78);font-family:'Courier New',monospace;}
+.q-opt.selected .opt-txt,.q-opt.correct .opt-txt,.q-opt.wrong .opt-txt{color:white;}
+.q-fb{display:none;padding:11px 15px;border-radius:10px;font-size:13px;font-weight:600;margin-top:12px;line-height:1.5;}
+.q-fb.ok{background:rgba(34,197,94,0.1);border-left:3px solid #22c55e;color:#86efac;display:block;}
+.q-fb.err{background:rgba(239,68,68,0.1);border-left:3px solid #ef4444;color:#fca5a5;display:block;}
+.q-submit{margin-top:14px;padding:11px 26px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border:none;color:white;border-radius:10px;cursor:pointer;font-size:13px;font-family:'Segoe UI',sans-serif;font-weight:700;transition:0.2s;}
+.q-submit:hover{transform:translateY(-1px);}
+
+@keyframes pulseG{0%{box-shadow:0 0 0 0 rgba(34,197,94,0.5)}70%{box-shadow:0 0 0 10px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">IT Academy</div>
+  <nav>
+    <a href="main.html">Басты бет</a>
+    <a href="about.html">Біз туралы</a>
+    <a href="mycours.html">Менің курстарым</a>
+    <a href="contact.html">Байланыс</a>
+    <a href="profil.html">Профиль</a>
+  </nav>
+</header>
+
+<div class="body-wrap">
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sidebar-top">
+    <h2>📚 Python Курсы</h2>
+    <a href="lesson1.html" style="text-decoration:none;color:inherit;"><div class="lesson done"><div class="badge">✓</div>Алгоритм деген не?</div></a>
+    <a href="lesson2.html"       style="text-decoration:none;color:inherit;"><div class="lesson done"><div class="badge">✓</div>Алгоритмнің қасиеттері</div></a>
+    <a href="lesson3.html"       style="text-decoration:none;color:inherit;"><div class="lesson done"><div class="badge">✓</div>Алгоритмді жазу тәсілдері</div></a>
+    <a href="lesson4.html"       style="text-decoration:none;color:inherit;"><div class="lesson done"><div class="badge">✓</div>Алгоритм түрлері</div></a>
+    <a href="lesson5.html"       style="text-decoration:none;color:inherit;"><div class="lesson done"><div class="badge">✓</div>Бағдарламалау деген не?</div></a>
+    <a href="lesson6.html"       style="text-decoration:none;color:inherit;"><div class="lesson done"><div class="badge">✓</div>Бағдарламалау тілдері</div></a>
+    <a href="lesson7.html"       style="text-decoration:none;color:inherit;"><div class="lesson done"><div class="badge">✓</div>Айнымалы және мәлімет типтері</div></a>
+    <a href="lesson8.html"       style="text-decoration:none;color:inherit;"><div class="lesson done"><div class="badge">✓</div>Енгізу және шығару командалары</div></a>
+    <a href="lesson9.html"       style="text-decoration:none;color:inherit;"><div class="lesson done"><div class="badge">✓</div>Арифметикалық операторлар</div></a>
+    <a href="lesson10.html"      style="text-decoration:none;color:inherit;"><div class="lesson done"><div class="badge">✓</div>Салыстыру операторлары</div></a>
+    <a href="lesson11.html"      style="text-decoration:none;color:inherit;"><div class="lesson done"><div class="badge">✓</div>Шартты оператор (if / else)</div></a>
+    <a href="lesson12.html"      style="text-decoration:none;color:inherit;"><div class="lesson done"><div class="badge">✓</div>Қайталау операторы</div></a>
+    <a href="lesson13.html"      style="text-decoration:none;color:inherit;"><div class="lesson done"><div class="badge">✓</div>while циклі</div></a>
+    <div class="lesson active"><div class="badge">14</div>Тізімдер (List)</div>
+    <div class="lesson locked"><div class="badge">15</div>Қорытынды бақылау<div class="lock-icon">🔒</div></div>
+  </div>
+  <div class="help"><span class="help-icon">?</span> Көмек</div>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+  <div class="progress-wrap">
+    <div class="progress-label"><span>14-сабақ: Тізімдер (List)</span><span>14 / 15</span></div>
+    <div class="progress-track"><div class="progress-fill"></div></div>
+  </div>
+
+  <div class="video-wrap" id="videoWrap" style="cursor:pointer;" onclick="playYoutube()">
+    <div class="video-inner" id="videoThumb">
+      <div class="play">▶</div>
+      <p>Видеоны көру үшін басыңыз</p>
+    </div>
+    <iframe
+      id="videoFrame"
+      style="display:none;position:absolute;inset:0;width:100%;height:100%;border:none;border-radius:16px;"
+      allowfullscreen
+      allow="autoplay; encrypted-media">
+    </iframe>
+  </div>
+  <script>
+  function playYoutube() {
+    var frame = document.getElementById('videoFrame');
+    var thumb = document.getElementById('videoThumb');
+    var wrap  = document.getElementById('videoWrap');
+    if (frame.style.display === 'none') {
+      frame.src = 'https://www.youtube.com/embed/SXMp7Tv4ETc?autoplay=1';
+      frame.style.display = 'block';
+      thumb.style.display = 'none';
+      wrap.style.cursor = 'default';
+      wrap.onclick = null;
+    }
+  }
+  </script>
+  <!-- ═══════════════════════════
+       БӨЛІМ 1: LIST ДЕГЕН НЕ?
+  ═══════════════════════════ -->
+  <div class="section-title">1️⃣ list деген не? <span>Теория</span></div>
+
+  <div class="theory-block">
+    <div class="theory-title">📋 Тізім (list) — Python-дың негізгі деректер құрылымы <span class="tag">Негіз</span></div>
+    <div class="theory-text">
+      <b>List (тізім)</b> — бірнеше мәнді <b>бір айнымалыда</b> сақтауға мүмкіндік беретін деректер құрылымы. Тізімдегі элементтер <b>реттелген</b>, <b>өзгертілетін</b> және <b>қайталанатын</b> болуы мүмкін.<br><br>
+      Тізім <b>квадрат жақша</b> <code>[ ]</code> ішінде жазылады, элементтер <b>үтір</b> арқылы бөлінеді.
+    </div>
+
+    <div class="syntax-box"><span class="syn-com"># Бос тізім</span>
+тізім = []
+
+<span class="syn-com"># Сандар тізімі</span>
+сандар = [<span class="syn-num">1</span>, <span class="syn-num">2</span>, <span class="syn-num">3</span>, <span class="syn-num">4</span>, <span class="syn-num">5</span>]
+
+<span class="syn-com"># Жолдар тізімі</span>
+атаулар = [<span class="syn-str">"Аяша"</span>, <span class="syn-str">"Берік"</span>, <span class="syn-str">"Дина"</span>]
+
+<span class="syn-com"># Аралас тізім</span>
+аралас = [<span class="syn-num">42</span>, <span class="syn-str">"python"</span>, <span class="syn-num">3.14</span>, <span class="syn-kw">True</span>]
+
+<span class="syn-com"># Тізімнің ұзындығы</span>
+<span class="syn-fn">print</span>(<span class="syn-fn">len</span>(сандар))   <span class="syn-com"># → 5</span></div>
+
+    <div class="info-card blue">
+      <b>🧠 list не үшін керек?</b>
+      — Оқушылардың бағаларын бір жерде сақтауға<br>
+      — Дүкен тізімін, контактілерді жинауға<br>
+      — Бірнеше нәтижені есептеп, сақтауға<br>
+      — Циклмен топтық деректерді өңдеуге
+    </div>
+
+    <div class="info-card green">
+      <b>✅ list негізгі қасиеттері:</b>
+      <code>реттелген</code> — элементтердің орны бекітілген<br>
+      <code>өзгертілетін</code> — элемент қосуға, өшіруге, ауыстыруға болады<br>
+      <code>қайталанатын</code> — бір мән бірнеше рет болуы мүмкін<br>
+      <code>аралас типтер</code> — int, str, float, bool бір тізімде тұра алады
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════
+       БӨЛІМ 2: ИНДЕКС
+  ═══════════════════════════ -->
+  <div class="section-title">2️⃣ Индекс <span>Теория</span></div>
+
+  <div class="theory-block">
+    <div class="theory-title">🔢 Индекстеу — элементке жету жолы <span class="tag">Маңызды</span></div>
+    <div class="theory-text">
+      Тізімдегі әр элементтің өз <b>индексі (нөмірі)</b> бар. Python-да индекс <b>0-ден басталады</b>. Сонымен қатар <b>теріс индекс</b> арқылы соңынан санауға болады.
+    </div>
+
+    <div class="index-visual">
+      <div class="idx-cell">
+        <div class="idx-val">"алма"</div>
+        <div class="idx-pos">0</div>
+        <div class="idx-neg">-5</div>
+      </div>
+      <div class="idx-sep"></div>
+      <div class="idx-cell">
+        <div class="idx-val">"алмұрт"</div>
+        <div class="idx-pos">1</div>
+        <div class="idx-neg">-4</div>
+      </div>
+      <div class="idx-sep"></div>
+      <div class="idx-cell">
+        <div class="idx-val">"өрік"</div>
+        <div class="idx-pos">2</div>
+        <div class="idx-neg">-3</div>
+      </div>
+      <div class="idx-sep"></div>
+      <div class="idx-cell">
+        <div class="idx-val">"жүзім"</div>
+        <div class="idx-pos">3</div>
+        <div class="idx-neg">-2</div>
+      </div>
+      <div class="idx-sep"></div>
+      <div class="idx-cell">
+        <div class="idx-val">"банан"</div>
+        <div class="idx-pos">4</div>
+        <div class="idx-neg">-1</div>
+      </div>
+    </div>
+
+    <div class="syntax-box">жемістер = [<span class="syn-str">"алма"</span>, <span class="syn-str">"алмұрт"</span>, <span class="syn-str">"өрік"</span>, <span class="syn-str">"жүзім"</span>, <span class="syn-str">"банан"</span>]
+
+<span class="syn-com"># Оң индекс — басынан</span>
+<span class="syn-fn">print</span>(жемістер[<span class="syn-num">0</span>])   <span class="syn-com"># → алма</span>
+<span class="syn-fn">print</span>(жемістер[<span class="syn-num">2</span>])   <span class="syn-com"># → өрік</span>
+
+<span class="syn-com"># Теріс индекс — соңынан</span>
+<span class="syn-fn">print</span>(жемістер[<span class="syn-num">-1</span>])  <span class="syn-com"># → банан</span>
+<span class="syn-fn">print</span>(жемістер[<span class="syn-num">-2</span>])  <span class="syn-com"># → жүзім</span>
+
+<span class="syn-com"># Элементті ауыстыру</span>
+жемістер[<span class="syn-num">1</span>] = <span class="syn-str">"қарбыз"</span>
+<span class="syn-fn">print</span>(жемістер[<span class="syn-num">1</span>])   <span class="syn-com"># → қарбыз</span>
+
+<span class="syn-com"># Тілім алу (slicing)</span>
+<span class="syn-fn">print</span>(жемістер[<span class="syn-num">1</span>:<span class="syn-num">4</span>])  <span class="syn-com"># → ['қарбыз', 'өрік', 'жүзім']</span></div>
+
+    <div class="info-card red">
+      <b>⚠️ IndexError — жиі кездесетін қате:</b>
+      Тізімде 5 элемент болса, индекс <code>0–4</code> аралығында ғана. <code>тізім[5]</code> жазса — <code>IndexError</code> шығады!
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════
+       БӨЛІМ 3: ҚОСУ / ӨШІРУ
+  ═══════════════════════════ -->
+  <div class="section-title">3️⃣ Қосу / өшіру <span>Теория</span></div>
+
+  <div class="theory-block">
+    <div class="theory-title">🛠️ Тізімді өзгерту әдістері <span class="tag">Методтар</span></div>
+
+    <table class="methods-table">
+      <tr>
+        <th>Әдіс</th>
+        <th>Не істейді</th>
+        <th>Мысал</th>
+        <th>Нәтиже</th>
+      </tr>
+      <tr>
+        <td><code>.append(x)</code></td>
+        <td>Соңына қосады</td>
+        <td><code>т.append("жаңа")</code></td>
+        <td class="result">[..., "жаңа"]</td>
+      </tr>
+      <tr>
+        <td><code>.insert(i, x)</code></td>
+        <td>i орынға қосады</td>
+        <td><code>т.insert(1, "орта")</code></td>
+        <td class="result">[т[0], "орта", ...]</td>
+      </tr>
+      <tr>
+        <td><code>.remove(x)</code></td>
+        <td>Бірінші x өшіреді</td>
+        <td><code>т.remove("алма")</code></td>
+        <td class="result">"алма" жоқ</td>
+      </tr>
+      <tr>
+        <td><code>.pop()</code></td>
+        <td>Соңғы өшіреді + қайтарады</td>
+        <td><code>т.pop()</code></td>
+        <td class="result">соңғы элемент</td>
+      </tr>
+      <tr>
+        <td><code>.pop(i)</code></td>
+        <td>i-ші өшіреді + қайтарады</td>
+        <td><code>т.pop(0)</code></td>
+        <td class="result">бірінші элемент</td>
+      </tr>
+      <tr>
+        <td><code>.sort()</code></td>
+        <td>Өсу ретімен сорттайды</td>
+        <td><code>т.sort()</code></td>
+        <td class="result">[1, 2, 3, ...]</td>
+      </tr>
+      <tr>
+        <td><code>.reverse()</code></td>
+        <td>Тізімді керіге айналдырады</td>
+        <td><code>т.reverse()</code></td>
+        <td class="result">[соңы, ..., басы]</td>
+      </tr>
+      <tr>
+        <td><code>len(т)</code></td>
+        <td>Элементтер санын береді</td>
+        <td><code>len([1,2,3])</code></td>
+        <td class="result">3</td>
+      </tr>
+    </table>
+
+    <div class="syntax-box">азық = [<span class="syn-str">"нан"</span>, <span class="syn-str">"сүт"</span>, <span class="syn-str">"жұмыртқа"</span>]
+
+<span class="syn-com"># Соңына қосу</span>
+азық.append(<span class="syn-str">"май"</span>)
+<span class="syn-fn">print</span>(азық)  <span class="syn-com"># → ['нан', 'сүт', 'жұмыртқа', 'май']</span>
+
+<span class="syn-com"># Белгілі орынға қосу</span>
+азық.insert(<span class="syn-num">1</span>, <span class="syn-str">"қант"</span>)
+<span class="syn-fn">print</span>(азық)  <span class="syn-com"># → ['нан', 'қант', 'сүт', 'жұмыртқа', 'май']</span>
+
+<span class="syn-com"># Мән арқылы өшіру</span>
+азық.remove(<span class="syn-str">"сүт"</span>)
+<span class="syn-fn">print</span>(азық)  <span class="syn-com"># → ['нан', 'қант', 'жұмыртқа', 'май']</span>
+
+<span class="syn-com"># Соңғы элементті шығарып өшіру</span>
+шыққан = азық.pop()
+<span class="syn-fn">print</span>(шыққан)  <span class="syn-com"># → май</span>
+<span class="syn-fn">print</span>(азық)    <span class="syn-com"># → ['нан', 'қант', 'жұмыртқа']</span></div>
+  </div>
+
+  <!-- ═══════════════════════════
+       БӨЛІМ 4: ЦИКЛМЕН ЖҰМЫС
+  ═══════════════════════════ -->
+  <div class="section-title">4️⃣ Циклмен жұмыс <span>Теория</span></div>
+
+  <div class="theory-block">
+    <div class="theory-title">🔄 for циклімен тізімді өңдеу <span class="tag">Практика</span></div>
+    <div class="theory-text">
+      <b>for циклі</b> тізімнің әр элементін кезекпен алып өңдейді. Бұл — тізімдермен жұмыстың ең жиі қолданылатын тәсілі.
+    </div>
+
+    <div class="syntax-box"><span class="syn-com"># Мысал 1 — элементтерді шығару</span>
+жануарлар = [<span class="syn-str">"мысық"</span>, <span class="syn-str">"ит"</span>, <span class="syn-str">"қоян"</span>]
+<span class="syn-kw">for</span> жануар <span class="syn-kw">in</span> жануарлар:
+    <span class="syn-fn">print</span>(жануар)
+<span class="syn-com"># → мысық</span>
+<span class="syn-com"># → ит</span>
+<span class="syn-com"># → қоян</span>
+
+<span class="syn-com"># Мысал 2 — индекспен бірге (enumerate)</span>
+<span class="syn-kw">for</span> i, зат <span class="syn-kw">in</span> <span class="syn-fn">enumerate</span>(жануарлар):
+    <span class="syn-fn">print</span>(i, зат)
+<span class="syn-com"># → 0 мысық</span>
+<span class="syn-com"># → 1 ит</span>
+<span class="syn-com"># → 2 қоян</span>
+
+<span class="syn-com"># Мысал 3 — сандардың қосындысы</span>
+бағалар = [<span class="syn-num">85</span>, <span class="syn-num">92</span>, <span class="syn-num">78</span>, <span class="syn-num">96</span>, <span class="syn-num">88</span>]
+қосынды = <span class="syn-num">0</span>
+<span class="syn-kw">for</span> баға <span class="syn-kw">in</span> бағалар:
+    қосынды += баға
+<span class="syn-fn">print</span>(<span class="syn-str">f"Орташа баға: {қосынды / len(бағалар)}"</span>)
+<span class="syn-com"># → Орташа баға: 87.8</span>
+
+<span class="syn-com"># Мысал 4 — шарт бойынша сүзу</span>
+<span class="syn-kw">for</span> баға <span class="syn-kw">in</span> бағалар:
+    <span class="syn-kw">if</span> баға >= <span class="syn-num">90</span>:
+        <span class="syn-fn">print</span>(баға, <span class="syn-str">"— Үздік!"</span>)
+<span class="syn-com"># → 92 — Үздік!</span>
+<span class="syn-com"># → 96 — Үздік!</span></div>
+
+    <div class="info-card yellow">
+      <b>💡 in операторы — тізімде бар-жоғын тексеру:</b>
+      <code>"алма" in жемістер</code> → True немесе False қайтарады<br>
+      <code>if "алма" in жемістер: print("Бар!")</code>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════
+       ПРАКТИКАЛЫҚ ЕСЕПТЕР
+  ═══════════════════════════ -->
+  <div class="section-title">🧪 Практикалық есептер <span>3 есеп</span></div>
+
+  <!-- ЕСЕП 1 -->
+  <div class="task-block">
+    <div class="task-header">
+      <div class="task-indicator" id="ind1"></div>
+      <div class="task-title">📊 Есеп 1: Бағалардың орташасы</div>
+    </div>
+    <div class="task-desc">
+      <b>📋 Тапсырма мазмұны:</b>
+      5 оқушының бағасы берілген: <code>[75, 88, 92, 60, 95]</code>.<br>
+      <code>for</code> циклін пайдаланып осы бағалардың <b>қосындысын</b> және <b>орташа мәнін</b> есепте, экранға шығар.<br><br>
+      Нәтиже үлгісі: <code>Қосынды: 410</code> және <code>Орташа: 82.0</code><br><br>
+      Қолдан: <code>list</code> · <code>for ... in</code> · <code>len()</code> · <code>+=</code>
+    </div>
+    <div class="editor-wrap">
+      <div class="editor-topbar">
+        <div class="editor-dot" style="background:#ef4444"></div>
+        <div class="editor-dot" style="background:#f59e0b"></div>
+        <div class="editor-dot" style="background:#22c55e"></div>
+        <span class="editor-filename">task1.py</span>
+      </div>
+      <div class="editor-lines" id="lines1">
+        <div class="code-line"><div class="line-num">1</div><textarea class="code-input" rows="1" placeholder="# кодыңды осы жерге жаз..."></textarea></div>
+      </div>
+      <button class="add-line-btn" onclick="addLine('lines1')">＋ Жол қос</button>
+    </div>
+    <div class="btn-row">
+      <button class="run-btn" onclick="check1()">▶ Іске қос және тексер</button>
+    </div>
+    <div class="hint-box" id="hint1">
+      <b>Шығарылу жолы:</b><br>
+      <code>бағалар = [75, 88, 92, 60, 95]</code><br>
+      <code>қосынды = 0</code><br>
+      <code>for баға in бағалар:</code><br>
+      <code>&nbsp;&nbsp;&nbsp;&nbsp;қосынды += баға</code><br>
+      <code>орташа = қосынды / len(бағалар)</code><br>
+      <code>print("Қосынды:", қосынды)</code><br>
+      <code>print("Орташа:", орташа)</code>
+    </div>
+    <div class="output-box" id="out1">Нәтиже осы жерде шығады...</div>
+    <div class="task-feedback" id="fb1"></div>
+  </div>
+
+  <!-- ЕСЕП 2 -->
+  <div class="task-block">
+    <div class="task-header">
+      <div class="task-indicator" id="ind2"></div>
+      <div class="task-title">🛒 Есеп 2: Дүкен тізімін басқару</div>
+    </div>
+    <div class="task-desc">
+      <b>📋 Тапсырма мазмұны:</b>
+      Бастапқы тізім: <code>["нан", "сүт", "жұмыртқа"]</code>.<br>
+      Келесі әрекеттерді орындап, әр қадамнан кейін тізімді экранға шығар:<br><br>
+      1. Соңына <code>"май"</code> қос (<code>.append()</code>)<br>
+      2. Бірінші орынға <code>"қант"</code> қос (<code>.insert()</code>)<br>
+      3. <code>"сүт"</code> өшір (<code>.remove()</code>)<br>
+      4. Тізімнің ұзындығын жаз (<code>len()</code>)<br><br>
+      Қолдан: <code>append</code> · <code>insert</code> · <code>remove</code> · <code>len</code> · <code>print</code>
+    </div>
+    <div class="editor-wrap">
+      <div class="editor-topbar">
+        <div class="editor-dot" style="background:#ef4444"></div>
+        <div class="editor-dot" style="background:#f59e0b"></div>
+        <div class="editor-dot" style="background:#22c55e"></div>
+        <span class="editor-filename">task2.py</span>
+      </div>
+      <div class="editor-lines" id="lines2">
+        <div class="code-line"><div class="line-num">1</div><textarea class="code-input" rows="1" placeholder="# кодыңды осы жерге жаз..."></textarea></div>
+      </div>
+      <button class="add-line-btn" onclick="addLine('lines2')">＋ Жол қос</button>
+    </div>
+    <div class="btn-row">
+      <button class="run-btn" onclick="check2()">▶ Іске қос және тексер</button>
+    </div>
+    <div class="hint-box" id="hint2">
+      <b>Шығарылу жолы:</b><br>
+      <code>тізім = ["нан", "сүт", "жұмыртқа"]</code><br>
+      <code>тізім.append("май")</code><br>
+      <code>print(тізім)</code><br>
+      <code>тізім.insert(0, "қант")</code><br>
+      <code>print(тізім)</code><br>
+      <code>тізім.remove("сүт")</code><br>
+      <code>print(тізім)</code><br>
+      <code>print("Ұзындығы:", len(тізім))</code>
+    </div>
+    <div class="output-box" id="out2">Нәтиже осы жерде шығады...</div>
+    <div class="task-feedback" id="fb2"></div>
+  </div>
+
+  <!-- ЕСЕП 3 -->
+  <div class="task-block">
+    <div class="task-header">
+      <div class="task-indicator" id="ind3"></div>
+      <div class="task-title">🔍 Есеп 3: Үздік оқушыларды табу</div>
+    </div>
+    <div class="task-desc">
+      <b>📋 Тапсырма мазмұны:</b>
+      Оқушылардың аттары мен бағалары берілген:<br>
+      <code>аттар = ["Айдос", "Бота", "Санжар", "Дина", "Ержан"]</code><br>
+      <code>бағалар = [72, 95, 88, 91, 65]</code><br><br>
+      <code>for</code> циклі мен <code>enumerate()</code> пайдаланып, бағасы <b>90-нан жоғары</b> оқушылардың атын және бағасын шығар.<br><br>
+      Үлгі нәтиже: <code>Бота — 95</code> және <code>Дина — 91</code><br><br>
+      Қолдан: <code>enumerate()</code> · <code>if баға >= 90</code> · <code>print(f"...")</code>
+    </div>
+    <div class="editor-wrap">
+      <div class="editor-topbar">
+        <div class="editor-dot" style="background:#ef4444"></div>
+        <div class="editor-dot" style="background:#f59e0b"></div>
+        <div class="editor-dot" style="background:#22c55e"></div>
+        <span class="editor-filename">task3.py</span>
+      </div>
+      <div class="editor-lines" id="lines3">
+        <div class="code-line"><div class="line-num">1</div><textarea class="code-input" rows="1" placeholder="# кодыңды осы жерге жаз..."></textarea></div>
+      </div>
+      <button class="add-line-btn" onclick="addLine('lines3')">＋ Жол қос</button>
+    </div>
+    <div class="btn-row">
+      <button class="run-btn" onclick="check3()">▶ Іске қос және тексер</button>
+    </div>
+    <div class="hint-box" id="hint3">
+      <b>Шығарылу жолы:</b><br>
+      <code>аттар = ["Айдос", "Бота", "Санжар", "Дина", "Ержан"]</code><br>
+      <code>бағалар = [72, 95, 88, 91, 65]</code><br>
+      <code>for i, баға in enumerate(бағалар):</code><br>
+      <code>&nbsp;&nbsp;&nbsp;&nbsp;if баға >= 90:</code><br>
+      <code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(f"{аттар[i]} — {баға}")</code>
+    </div>
+    <div class="output-box" id="out3">Нәтиже осы жерде шығады...</div>
+    <div class="task-feedback" id="fb3"></div>
+  </div>
+
+  <!-- ═══════════════════════════
+       ТЕСТ СҰРАҚТАРЫ
+  ═══════════════════════════ -->
+  <div class="section-title">📝 Тест сұрақтары <span>3 сұрақ</span></div>
+
+  <!-- СҰРАҚ 1 -->
+  <div class="quiz-block">
+    <div class="q-num">🐍 Индекс · Сұрақ 1</div>
+    <div class="q-text">Мына код экранға не шығарады?</div>
+    <div class="code-block">мектеп = ["физика", "химия", "биология", "математика"]
+print(мектеп[-2])</div>
+    <div class="q-opts" id="opts1">
+      <div class="q-opt" data-idx="0" onclick="selectOpt(1,0)"><div class="opt-ltr">A</div><div class="opt-txt">химия</div></div>
+      <div class="q-opt" data-idx="1" onclick="selectOpt(1,1)"><div class="opt-ltr">B</div><div class="opt-txt">биология</div></div>
+      <div class="q-opt" data-idx="2" onclick="selectOpt(1,2)"><div class="opt-ltr">C</div><div class="opt-txt">математика</div></div>
+      <div class="q-opt" data-idx="3" onclick="selectOpt(1,3)"><div class="opt-ltr">D</div><div class="opt-txt">физика</div></div>
+    </div>
+    <button class="q-submit" id="qsub1" onclick="submitQ(1,1)">✅ Жіберу</button>
+    <div class="q-fb" id="qfb1"></div>
+  </div>
+
+  <!-- СҰРАҚ 2 -->
+  <div class="quiz-block">
+    <div class="q-num">🐍 Методтар · Сұрақ 2</div>
+    <div class="q-text">Код орындалғаннан кейін тізім қандай болады?</div>
+    <div class="code-block">т = [10, 20, 30, 40]
+т.append(50)
+т.remove(20)
+т.insert(1, 99)
+print(т)</div>
+    <div class="q-opts" id="opts2">
+      <div class="q-opt" data-idx="0" onclick="selectOpt(2,0)"><div class="opt-ltr">A</div><div class="opt-txt">[10, 99, 30, 40, 50]</div></div>
+      <div class="q-opt" data-idx="1" onclick="selectOpt(2,1)"><div class="opt-ltr">B</div><div class="opt-txt">[10, 20, 99, 30, 40, 50]</div></div>
+      <div class="q-opt" data-idx="2" onclick="selectOpt(2,2)"><div class="opt-ltr">C</div><div class="opt-txt">[99, 10, 30, 40, 50]</div></div>
+      <div class="q-opt" data-idx="3" onclick="selectOpt(2,3)"><div class="opt-ltr">D</div><div class="opt-txt">[10, 99, 20, 30, 40, 50]</div></div>
+    </div>
+    <button class="q-submit" id="qsub2" onclick="submitQ(2,0)">✅ Жіберу</button>
+    <div class="q-fb" id="qfb2"></div>
+  </div>
+
+  <!-- СҰРАҚ 3 -->
+  <div class="quiz-block">
+    <div class="q-num">🐍 Цикл · Сұрақ 3</div>
+    <div class="q-text">Мына код қанша нәтиже шығарады және олар қандай?</div>
+    <div class="code-block">сандар = [3, 7, 2, 9, 4, 8, 1]
+for n in сандар:
+    if n > 5:
+        print(n)</div>
+    <div class="q-opts" id="opts3">
+      <div class="q-opt" data-idx="0" onclick="selectOpt(3,0)"><div class="opt-ltr">A</div><div class="opt-txt">7, 9, 8 — 3 нәтиже</div></div>
+      <div class="q-opt" data-idx="1" onclick="selectOpt(3,1)"><div class="opt-ltr">B</div><div class="opt-txt">7, 9, 4, 8 — 4 нәтиже</div></div>
+      <div class="q-opt" data-idx="2" onclick="selectOpt(3,2)"><div class="opt-ltr">C</div><div class="opt-txt">3, 7, 9, 8 — 4 нәтиже</div></div>
+      <div class="q-opt" data-idx="3" onclick="selectOpt(3,3)"><div class="opt-ltr">D</div><div class="opt-txt">7, 9 — 2 нәтиже</div></div>
+    </div>
+    <button class="q-submit" id="qsub3" onclick="submitQ(3,0)">✅ Жіберу</button>
+    <div class="q-fb" id="qfb3"></div>
+  </div>
+
+</div><!-- /content -->
+</div><!-- /body-wrap -->
+
+<script>
+var taskDone = {1:false, 2:false, 3:false};
+var quizDone = {1:false, 2:false, 3:false};
+var quizSel  = {1:-1, 2:-1, 3:-1};
+var hintShown = {1:false, 2:false, 3:false};
+
+function addLine(id){
+  var wrap = document.getElementById(id);
+  var lines = wrap.querySelectorAll('.code-line');
+  var num = lines.length + 1;
+  var div = document.createElement('div');
+  div.className = 'code-line';
+  div.innerHTML = '<div class="line-num">'+num+'</div><textarea class="code-input" rows="1" placeholder=""></textarea>';
+  wrap.appendChild(div);
+  div.querySelector('textarea').focus();
+}
+
+function toggleHint(n){
+  var box = document.getElementById('hint'+n);
+  hintShown[n] = !hintShown[n];
+  box.style.display = hintShown[n] ? 'block' : 'none';
+}
+
+function getCode(id){
+  var lines = document.querySelectorAll('#'+id+' .code-input');
+  return Array.from(lines).map(function(t){return t.value;}).join('\n');
+}
+
+function showFb(n, ok, msg){
+  var fb = document.getElementById('fb'+n);
+  fb.style.display = 'block';
+  fb.className = 'task-feedback ' + (ok ? 'success' : 'error');
+  fb.innerHTML = msg;
+}
+
+function markTaskDone(n){
+  taskDone[n] = true;
+  document.getElementById('ind'+n).classList.add('done');
+  checkAllDone();
+}
+
+/* ══ TASK 1: бағалардың орташасы ══ */
+function check1(){
+  if(taskDone[1]) return;
+  var code = getCode('lines1').toLowerCase();
+  var out = document.getElementById('out1');
+
+  if(!(code.includes('[75') && code.includes('88') && code.includes('92') && code.includes('60') && code.includes('95'))){
+    out.className='output-box err';
+    out.textContent='❌ Қате: [75, 88, 92, 60, 95] тізімі жоқ.'; return;
+  }
+  if(!code.includes('for')){
+    out.className='output-box err';
+    out.textContent='❌ Қате: for циклі жоқ. Циклмен қосынды есепте.'; return;
+  }
+  if(!(code.includes('+=') || code.includes('sum') || code.includes('қосынды'))){
+    out.className='output-box err';
+    out.textContent='❌ Қате: += арқылы қосынды жинамадың.'; return;
+  }
+  if(!(code.includes('len') || code.includes('/ 5') || code.includes('/5'))){
+    out.className='output-box err';
+    out.textContent='❌ Қате: орташа мән үшін len() немесе /5 пайдалан.'; return;
+  }
+  if(!code.includes('print')){
+    out.className='output-box err';
+    out.textContent='❌ Қате: нәтижені print() арқылы шығар.'; return;
+  }
+
+  out.className='output-box';
+  out.textContent='✅ Бағдарлама дұрыс!\n\nНәтиже:\nҚосынды: 410\nОрташа: 82.0';
+  showFb(1, true, '🎉 <b>Керемет!</b> for циклімен тізімнің орташасын дұрыс есептедің!');
+  markTaskDone(1);
+}
+
+/* ══ TASK 2: дүкен тізімі ══ */
+function check2(){
+  if(taskDone[2]) return;
+  var code = getCode('lines2').toLowerCase();
+  var out = document.getElementById('out2');
+
+  if(!(code.includes('нан') && code.includes('сүт') && code.includes('жұмыртқа'))){
+    out.className='output-box err';
+    out.textContent='❌ Қате: ["нан", "сүт", "жұмыртқа"] бастапқы тізімі жоқ.'; return;
+  }
+  if(!(code.includes('append') && code.includes('май'))){
+    out.className='output-box err';
+    out.textContent='❌ Қате: .append("май") жоқ.'; return;
+  }
+  if(!(code.includes('insert') && code.includes('қант'))){
+    out.className='output-box err';
+    out.textContent='❌ Қате: .insert() арқылы "қант" қосылмаған.'; return;
+  }
+  if(!(code.includes('remove') && (code.includes('сүт') || code.includes("'сүт'")))){
+    out.className='output-box err';
+    out.textContent='❌ Қате: .remove("сүт") жоқ.'; return;
+  }
+  if(!code.includes('len')){
+    out.className='output-box err';
+    out.textContent='❌ Қате: len() арқылы тізімнің ұзындығын шығар.'; return;
+  }
+
+  out.className='output-box';
+  out.textContent="✅ Бағдарлама дұрыс!\n\nНәтиже:\n['нан', 'сүт', 'жұмыртқа', 'май']\n['қант', 'нан', 'сүт', 'жұмыртқа', 'май']\n['қант', 'нан', 'жұмыртқа', 'май']\nҰзындығы: 4";
+  showFb(2, true, '🎉 <b>Тамаша!</b> append, insert, remove — үшеуін дұрыс қолдандың!');
+  markTaskDone(2);
+}
+
+/* ══ TASK 3: үздік оқушылар ══ */
+function check3(){
+  if(taskDone[3]) return;
+  var code = getCode('lines3').toLowerCase();
+  var out = document.getElementById('out3');
+
+  if(!(code.includes('айдос') && code.includes('бота') && code.includes('санжар') && code.includes('дина') && code.includes('ержан'))){
+    out.className='output-box err';
+    out.textContent='❌ Қате: аттар тізімі толық емес.'; return;
+  }
+  if(!(code.includes('72') && code.includes('95') && code.includes('88') && code.includes('91') && code.includes('65'))){
+    out.className='output-box err';
+    out.textContent='❌ Қате: бағалар тізімі толық емес.'; return;
+  }
+  if(!code.includes('enumerate')){
+    out.className='output-box err';
+    out.textContent='❌ Қате: enumerate() пайдалан.'; return;
+  }
+  if(!(code.includes('>= 90') || code.includes('>=90') || code.includes('> 89') || code.includes('>89'))){
+    out.className='output-box err';
+    out.textContent='❌ Қате: баға >= 90 шарты жоқ.'; return;
+  }
+  if(!code.includes('print')){
+    out.className='output-box err';
+    out.textContent='❌ Қате: нәтижені print() арқылы шығар.'; return;
+  }
+
+  out.className='output-box';
+  out.textContent='✅ Бағдарлама дұрыс!\n\nНәтиже:\nБота — 95\nДина — 91';
+  showFb(3, true, '🎉 <b>Өте жақсы!</b> enumerate() арқылы екі тізімді бірге өңдедің!');
+  markTaskDone(3);
+}
+
+/* ══ QUIZ ══ */
+function selectOpt(qNum, idx){
+  if(quizDone[qNum]) return;
+  quizSel[qNum] = idx;
+  document.querySelectorAll('#opts'+qNum+' .q-opt').forEach(function(o){
+    o.classList.remove('selected');
+  });
+  document.querySelector('#opts'+qNum+' [data-idx="'+idx+'"]').classList.add('selected');
+}
+
+function submitQ(qNum, correctIdx){
+  if(quizDone[qNum]) return;
+  var sel = quizSel[qNum];
+  var fb  = document.getElementById('qfb'+qNum);
+  if(sel === -1){
+    fb.className='q-fb err'; fb.textContent='⚠️ Жауап таңда!'; return;
+  }
+  if(sel === correctIdx){
+    quizDone[qNum] = true;
+    document.querySelectorAll('#opts'+qNum+' .q-opt').forEach(function(o){
+      o.classList.add('locked-opt');
+      if(parseInt(o.dataset.idx) === correctIdx) o.classList.add('correct');
+    });
+    document.getElementById('qsub'+qNum).style.display = 'none';
+    var explains = {
+      1: '✅ <b>Дұрыс!</b> Тізімде 4 элемент бар. Теріс индекс -1=соңғы(математика), -2=соңғыдан алдыңғы → <b>биология</b>.',
+      2: '✅ <b>Дұрыс!</b> append(50)→[10,20,30,40,50], remove(20)→[10,30,40,50], insert(1,99)→<b>[10,99,30,40,50]</b>.',
+      3: '✅ <b>Дұрыс!</b> n > 5 шарты: 7✓, 9✓, 8✓. 3,2,4,1 бес-тен кіші. Нәтиже: <b>7, 9, 8 — 3 нәтиже</b>.'
+    };
+    fb.className='q-fb ok'; fb.innerHTML = explains[qNum];
+    checkAllDone();
+  } else {
+    var sel_el = document.querySelector('#opts'+qNum+' [data-idx="'+sel+'"]');
+    sel_el.classList.add('wrong');
+    fb.className='q-fb err'; fb.innerHTML='❌ <b>Қате!</b> Қайтадан таңдап көр.';
+    setTimeout(function(){
+      sel_el.classList.remove('wrong','selected');
+      quizSel[qNum] = -1;
+      fb.style.display = 'none';
+    }, 900);
+  }
+}
+
+function checkAllDone(){
+  var tDone = taskDone[1] && taskDone[2] && taskDone[3];
+  var qDone = quizDone[1] && quizDone[2] && quizDone[3];
+  if(tDone && qDone) setTimeout(showModal, 500);
+}
+
+function showModal(){
+  if(document.getElementById('resModal')) return;
+  var m = document.createElement('div');
+  m.id = 'resModal';
+  m.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(12px);z-index:1000;display:flex;align-items:center;justify-content:center;';
+  m.innerHTML = '<div style="background:linear-gradient(160deg,#1e1050,#2d1b6b);border:1px solid rgba(167,139,250,0.25);border-radius:24px;padding:40px 36px;text-align:center;max-width:440px;width:90%;animation:popIn 0.3s ease;">'
+    +'<div style="font-size:64px;margin-bottom:14px">🏆</div>'
+    +'<div style="font-size:28px;font-weight:800;margin-bottom:6px">6 / 6</div>'
+    +'<div style="font-size:15px;font-weight:700;color:#4ade80;margin-bottom:10px">✅ Сабақты өттіңіз!</div>'
+    +'<div style="font-size:13px;color:rgba(255,255,255,0.45);margin-bottom:28px;line-height:1.7">Керемет! 3 есеп + 3 сұрақ — барлығы дұрыс! Тізімдерді жетік меңгердің. Соңғы сабаққа дайынсың!</div>'
+    +'<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">'
+    +'<button onclick="document.getElementById(\'resModal\').remove()" style="padding:13px 22px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.6);border-radius:12px;font-size:13px;font-family:Segoe UI,sans-serif;font-weight:700;cursor:pointer;">Жабу</button>'
+    +'<a href="lesson15.html" style="text-decoration:none;"><button style="padding:13px 26px;background:linear-gradient(135deg,#059669,#10b981);border:none;color:white;border-radius:12px;font-size:14px;font-family:Segoe UI,sans-serif;font-weight:700;cursor:pointer;box-shadow:0 5px 18px rgba(16,185,129,0.4)">Соңғы сабақ: Қорытынды бақылау →</button></a>'
+    +'</div></div>';
+  document.body.appendChild(m);
+  if(typeof saveProgress==='function') saveProgress(15);
+}
+
+function showWarnToast(msg){
+  var el=document.getElementById('wT');
+  if(!el){ el=document.createElement('div'); el.id='wT';
+    el.style.cssText='position:fixed;top:78px;right:22px;background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.35);color:#fcd34d;padding:12px 18px;border-radius:12px;font-size:14px;font-weight:600;z-index:500;backdrop-filter:blur(8px);transition:opacity 0.3s;';
+    document.body.appendChild(el); }
+  el.textContent=msg; el.style.opacity='1';
+  setTimeout(function(){ el.style.opacity='0'; },2800);
+}
+window.addEventListener('load',function(){
+  document.querySelectorAll('.lesson.locked').forEach(function(l){
+    l.addEventListener('click',function(){
+      showWarnToast('🔒 Алдыңғы сабақты аяқтамай бұл сабақты ашу мүмкін емес!');
+    });
+  });
+});
+var s=document.createElement('style');
+s.textContent='@keyframes popIn{from{opacity:0;transform:scale(0.85) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}';
+document.head.appendChild(s);
+</script>
+</body>
+</html>

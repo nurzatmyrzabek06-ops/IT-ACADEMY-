@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Біз туралы — IT Academy</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+body{background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);color:white;min-height:100vh;display:flex;flex-direction:column;}
+
+header{background:rgba(255,255,255,0.05);backdrop-filter:blur(12px);padding:18px 40px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.08);position:sticky;top:0;z-index:200;}
+.logo{font-size:22px;font-weight:800;background:linear-gradient(90deg,#a78bfa,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;cursor:pointer;}
+nav{display:flex;align-items:center;}
+nav a{margin-left:22px;text-decoration:none;color:rgba(255,255,255,0.55);font-weight:500;font-size:14px;transition:0.3s;}
+nav a:hover{color:white;}
+nav a.active{color:#a78bfa;font-weight:700;}
+
+.page-wrap{flex:1;max-width:980px;margin:0 auto;width:100%;padding:40px 28px 60px;}
+
+/* ── HERO ── */
+.hero{position:relative;background:linear-gradient(135deg,rgba(99,102,241,0.18),rgba(139,92,246,0.1));border:1px solid rgba(99,102,241,0.25);border-radius:24px;padding:52px 44px;margin-bottom:36px;overflow:hidden;text-align:center;}
+.hero::before{content:'';position:absolute;top:-60px;right:-60px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(167,139,250,0.18),transparent 70%);}
+.hero::after{content:'';position:absolute;bottom:-40px;left:-40px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(96,165,250,0.12),transparent 70%);}
+.hero-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.3);border-radius:20px;padding:5px 16px;font-size:12px;font-weight:700;color:#a78bfa;margin-bottom:18px;}
+.hero h1{font-size:36px;font-weight:800;color:white;line-height:1.25;margin-bottom:14px;}
+.hero h1 span{background:linear-gradient(90deg,#a78bfa,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hero p{font-size:15px;color:rgba(255,255,255,0.52);line-height:1.9;max-width:560px;margin:0 auto 24px;}
+.hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+.btn-primary{padding:13px 28px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border:none;color:white;border-radius:12px;font-size:14px;font-family:'Segoe UI',sans-serif;font-weight:700;cursor:pointer;text-decoration:none;transition:0.3s;box-shadow:0 5px 18px rgba(99,102,241,0.35);}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(99,102,241,0.5);}
+.btn-outline{padding:13px 28px;background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.75);border-radius:12px;font-size:14px;font-family:'Segoe UI',sans-serif;font-weight:700;cursor:pointer;text-decoration:none;transition:0.3s;}
+.btn-outline:hover{background:rgba(255,255,255,0.1);color:white;border-color:rgba(255,255,255,0.28);}
+
+/* ── SECTION TITLE ── */
+.sec-title{font-size:20px;font-weight:800;color:white;margin-bottom:20px;display:flex;align-items:center;gap:10px;}
+.sec-title .tag{font-size:12px;font-weight:600;color:#a78bfa;background:rgba(99,102,241,0.13);border:1px solid rgba(99,102,241,0.25);padding:3px 12px;border-radius:20px;}
+.section{margin-bottom:40px;}
+
+/* ── STATS ── */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:40px;}
+.stat-card{background:rgba(255,255,255,0.05);border:1.5px solid rgba(255,255,255,0.08);border-radius:18px;padding:24px 16px;text-align:center;transition:0.3s;position:relative;overflow:hidden;}
+.stat-card::before{content:'';position:absolute;top:-20px;right:-20px;width:70px;height:70px;border-radius:50%;background:rgba(167,139,250,0.08);}
+.stat-card:hover{transform:translateY(-4px);border-color:rgba(99,102,241,0.35);background:rgba(99,102,241,0.08);box-shadow:0 10px 28px rgba(0,0,0,0.25);}
+.stat-icon{font-size:28px;margin-bottom:10px;display:block;}
+.stat-num{font-size:32px;font-weight:800;color:white;line-height:1;margin-bottom:5px;}
+.stat-num span{font-size:18px;color:#a78bfa;}
+.stat-label{font-size:12px;color:rgba(255,255,255,0.42);font-weight:600;}
+
+/* ── MISSION ── */
+.mission-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.mission-card{background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.08);border-radius:16px;padding:24px;transition:0.3s;}
+.mission-card:hover{border-color:rgba(99,102,241,0.3);background:rgba(99,102,241,0.06);}
+.mc-icon{font-size:32px;margin-bottom:12px;}
+.mc-title{font-size:15px;font-weight:800;color:white;margin-bottom:8px;}
+.mc-text{font-size:13px;color:rgba(255,255,255,0.5);line-height:1.9;}
+
+/* ── WHY US ── */
+.why-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
+.why-card{display:flex;align-items:flex-start;gap:16px;background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.07);border-radius:16px;padding:20px;transition:0.3s;}
+.why-card:hover{border-color:rgba(99,102,241,0.3);background:rgba(99,102,241,0.06);transform:translateY(-2px);}
+.why-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.why-icon.purple{background:rgba(99,102,241,0.2);}
+.why-icon.green{background:rgba(34,197,94,0.15);}
+.why-icon.blue{background:rgba(96,165,250,0.15);}
+.why-icon.orange{background:rgba(245,158,11,0.15);}
+.why-icon.pink{background:rgba(236,72,153,0.15);}
+.why-icon.teal{background:rgba(20,184,166,0.15);}
+.why-text h4{font-size:14px;font-weight:700;color:white;margin-bottom:5px;}
+.why-text p{font-size:12px;color:rgba(255,255,255,0.45);line-height:1.8;}
+
+/* ── TEAM ── */
+.team-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.team-card{background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.08);border-radius:18px;padding:28px 20px;text-align:center;transition:0.3s;}
+.team-card:hover{border-color:rgba(99,102,241,0.35);background:rgba(99,102,241,0.07);transform:translateY(-4px);box-shadow:0 12px 28px rgba(0,0,0,0.25);}
+.team-avatar{width:72px;height:72px;border-radius:50%;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-size:32px;border:2px solid rgba(167,139,250,0.25);}
+.av-purple{background:linear-gradient(135deg,#6366f1,#8b5cf6);}
+.av-green{background:linear-gradient(135deg,#059669,#10b981);}
+.av-blue{background:linear-gradient(135deg,#2563eb,#60a5fa);}
+.av-pink{background:linear-gradient(135deg,#db2777,#ec4899);}
+.av-orange{background:linear-gradient(135deg,#d97706,#f59e0b);}
+.av-teal{background:linear-gradient(135deg,#0d9488,#14b8a6);}
+.team-name{font-size:15px;font-weight:800;color:white;margin-bottom:4px;}
+.team-role{font-size:12px;color:#a78bfa;font-weight:600;margin-bottom:8px;}
+.team-bio{font-size:12px;color:rgba(255,255,255,0.4);line-height:1.7;}
+.team-tags{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:12px;}
+.t-tag{font-size:10px;font-weight:600;padding:3px 9px;border-radius:20px;background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.25);color:rgba(255,255,255,0.55);}
+
+/* ── REVIEWS ── */
+.reviews-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
+.review-card{background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.07);border-radius:16px;padding:22px;transition:0.3s;position:relative;}
+.review-card:hover{border-color:rgba(99,102,241,0.3);background:rgba(99,102,241,0.05);}
+.review-card::before{content:'"';position:absolute;top:14px;right:18px;font-size:48px;color:rgba(167,139,250,0.12);font-family:Georgia,serif;line-height:1;}
+.r-stars{color:#fcd34d;font-size:14px;margin-bottom:10px;letter-spacing:2px;}
+.r-text{font-size:13px;color:rgba(255,255,255,0.65);line-height:1.9;margin-bottom:14px;}
+.r-author{display:flex;align-items:center;gap:10px;}
+.r-avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.r-name{font-size:13px;font-weight:700;color:white;}
+.r-course{font-size:11px;color:rgba(255,255,255,0.35);}
+
+/* ── ROADMAP ── */
+.roadmap{display:flex;flex-direction:column;gap:0;}
+.rm-item{display:flex;gap:20px;position:relative;}
+.rm-item:not(:last-child)::before{content:'';position:absolute;left:19px;top:44px;width:2px;height:calc(100% + 0px);background:rgba(255,255,255,0.06);}
+.rm-dot{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;margin-top:2px;border:2px solid transparent;}
+.rm-dot.done{background:rgba(34,197,94,0.2);border-color:rgba(34,197,94,0.4);}
+.rm-dot.active{background:rgba(99,102,241,0.2);border-color:rgba(99,102,241,0.5);box-shadow:0 0 14px rgba(99,102,241,0.3);}
+.rm-dot.soon{background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.1);}
+.rm-body{flex:1;background:rgba(255,255,255,0.03);border:1.5px solid rgba(255,255,255,0.07);border-radius:14px;padding:16px 20px;margin-bottom:12px;}
+.rm-dot.done ~ .rm-body{border-color:rgba(34,197,94,0.2);}
+.rm-dot.active ~ .rm-body{border-color:rgba(99,102,241,0.3);background:rgba(99,102,241,0.05);}
+.rm-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+.rm-title{font-size:14px;font-weight:700;color:white;}
+.rm-badge{font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;}
+.rm-badge.done{background:rgba(34,197,94,0.15);color:#4ade80;border:1px solid rgba(34,197,94,0.25);}
+.rm-badge.active{background:rgba(99,102,241,0.15);color:#a78bfa;border:1px solid rgba(99,102,241,0.25);}
+.rm-badge.soon{background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.35);border:1px solid rgba(255,255,255,0.1);}
+.rm-desc{font-size:12px;color:rgba(255,255,255,0.42);line-height:1.8;}
+
+footer{text-align:center;padding:14px;font-size:12px;color:rgba(255,255,255,0.17);border-top:1px solid rgba(255,255,255,0.04);}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+.anim{animation:fadeUp 0.5s ease both;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo" onclick="location.href='Басты бет.html'">IT Academy</div>
+  <nav>
+    <a href="main.html">Басты бет</a>
+    <a href="about.html" class="active">Біз туралы</a>
+    <a href="mycours.html">Менің курстарым</a>
+    <a href="contact.html">Байланыс</a>
+    <a href="help.html">Көмек</a>
+  </nav>
+</header>
+
+<div class="page-wrap">
+
+  <!-- ═══ HERO ═══ -->
+  <div class="hero anim">
+    <div class="hero-badge">🇰🇿 Қазақстандық IT білім платформасы</div>
+    <h1>Біз — <span>IT Academy</span></h1>
+    <p>Қазақ тілінде сапалы бағдарламалау білімін беретін онлайн платформа. Бастаушыдан кәсіпқойға дейін — барлығы үшін!</p>
+    <div class="hero-btns">
+      <a href="Басты бет.html" class="btn-primary">🚀 Курстарды көру</a>
+      <a href="contact.html" class="btn-outline">💬 Байланысу</a>
+    </div>
+  </div>
+
+  <!-- ═══ СТАТИСТИКА ═══ -->
+  <div class="stats-grid anim">
+    <div class="stat-card">
+      <span class="stat-icon">👩‍💻</span>
+      <div class="stat-num">500<span>+</span></div>
+      <div class="stat-label">Белсенді оқушы</div>
+    </div>
+    <div class="stat-card">
+      <span class="stat-icon">📚</span>
+      <div class="stat-num">9<span>+</span></div>
+      <div class="stat-label">Курс</div>
+    </div>
+    <div class="stat-card">
+      <span class="stat-icon">✅</span>
+      <div class="stat-num">87<span>%</span></div>
+      <div class="stat-label">Аяқтаған оқушылар</div>
+    </div>
+    <div class="stat-card">
+      <span class="stat-icon">⭐</span>
+      <div class="stat-num">4.8<span>/5</span></div>
+      <div class="stat-label">Орташа баға</div>
+    </div>
+  </div>
+
+  <!-- ═══ МИССИЯ МЕН МАҚСАТ ═══ -->
+  <div class="section">
+    <div class="sec-title">🎯 Миссия мен мақсат <span>Кім біз?</span></div>
+    <div class="mission-grid">
+      <div class="mission-card">
+        <div class="mc-icon">🌟</div>
+        <div class="mc-title">Біздің миссия</div>
+        <div class="mc-text">Қазақстандағы әрбір жастың сапалы IT білімге қол жеткізуін қамтамасыз ету. Тіл кедергісінсіз, қазақ тілінде, практикалық тәсілмен оқыту.</div>
+      </div>
+      <div class="mission-card">
+        <div class="mc-icon">🚀</div>
+        <div class="mc-title">Біздің мақсат</div>
+        <div class="mc-text">2026 жылға дейін 2000+ оқушыға IT мамандығын игертіп, олардың жұмыс табуына немесе өз жобаларын жасауына көмектесу.</div>
+      </div>
+      <div class="mission-card">
+        <div class="mc-icon">📅</div>
+        <div class="mc-title">Тарих</div>
+        <div class="mc-text">IT Academy 2024 жылы бір топ энтузиаст-бағдарламашылар тарапынан құрылды. Бастапқыда тек Python курсы болды — қазір 9 бағыт бар.</div>
+      </div>
+      <div class="mission-card">
+        <div class="mc-icon">💡</div>
+        <div class="mc-title">Біздің тәсіл</div>
+        <div class="mc-text">Теория + практика қатар жүреді. Әр сабақта нақты код жазасың. Жасанды интеллект жоқ — тек нақты практикалық дағдылар.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ НЕГЕ БІЗДІ ТАҢДАЙДЫ ═══ -->
+  <div class="section">
+    <div class="sec-title">💎 Неге бізді таңдайды? <span>6 себеп</span></div>
+    <div class="why-grid">
+      <div class="why-card">
+        <div class="why-icon purple">🇰🇿</div>
+        <div class="why-text">
+          <h4>Қазақ тілінде</h4>
+          <p>Барлық сабақтар, тапсырмалар және қолдау — толықтай қазақ тілінде. Тіл кедергісі жоқ.</p>
+        </div>
+      </div>
+      <div class="why-card">
+        <div class="why-icon green">🆓</div>
+        <div class="why-text">
+          <h4>Тегін бастауыш курстар</h4>
+          <p>Python, алгоритм, Web Design бастауыш курстары толықтай тегін. Ешқандай жасырын төлем жоқ.</p>
+        </div>
+      </div>
+      <div class="why-card">
+        <div class="why-icon blue">💻</div>
+        <div class="why-text">
+          <h4>Браузерде код жазасың</h4>
+          <p>Ешнәрсе орнатудың қажеті жоқ. Сабақ ішінде тікелей браузерде код жазып тексересің.</p>
+        </div>
+      </div>
+      <div class="why-card">
+        <div class="why-icon orange">📈</div>
+        <div class="why-text">
+          <h4>Кезекпен оқыту жүйесі</h4>
+          <p>Сабақтар кезекпен ашылады. Бір тақырыпты толық игермей, келесіге өту мүмкін емес.</p>
+        </div>
+      </div>
+      <div class="why-card">
+        <div class="why-icon pink">🏆</div>
+        <div class="why-text">
+          <h4>Сертификат</h4>
+          <p>Курсты аяқтаған оқушыларға электронды сертификат беріледі. LinkedIn-ге қосуға болады.</p>
+        </div>
+      </div>
+      <div class="why-card">
+        <div class="why-icon teal">👥</div>
+        <div class="why-text">
+          <h4>Қауымдастық</h4>
+          <p>Telegram топта басқа оқушылармен сұрақ қойып, тәжірибе алмасуға болады.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ КОМАНДА ═══ -->
+  <div class="section">
+    <div class="sec-title">👥 Біздің команда <span>6 адам</span></div>
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="team-avatar av-purple">👨‍💻</div>
+        <div class="team-name">Арман Сейткали</div>
+        <div class="team-role">Негізші оқытушы · Python</div>
+        <div class="team-bio">5 жыл Python тәжірибесі. Бұрын Google және Kolesa Group-та жұмыс жасады.</div>
+        <div class="team-tags"><span class="t-tag">Python</span><span class="t-tag">ML</span><span class="t-tag">Django</span></div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar av-green">👩‍🎨</div>
+        <div class="team-name">Дина Қасымова</div>
+        <div class="team-role">UI/UX Дизайнер</div>
+        <div class="team-bio">Платформаның барлық дизайнын жасаған. Figma мен CSS-тің маманы.</div>
+        <div class="team-tags"><span class="t-tag">Figma</span><span class="t-tag">CSS</span><span class="t-tag">UX</span></div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar av-blue">👨‍🏫</div>
+        <div class="team-name">Берік Жұмабеков</div>
+        <div class="team-role">Web оқытушысы · Frontend</div>
+        <div class="team-bio">React, HTML/CSS бойынша 50+ оқушыға сабақ берген тәжірибелі ментор.</div>
+        <div class="team-tags"><span class="t-tag">React</span><span class="t-tag">HTML</span><span class="t-tag">JS</span></div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar av-pink">👩‍💻</div>
+        <div class="team-name">Айгүл Нұрланова</div>
+        <div class="team-role">Backend оқытушысы · Node.js</div>
+        <div class="team-bio">Node.js, MongoDB бойынша маман. Жұмыс барысында 3 стартапты нөлден бастаған.</div>
+        <div class="team-tags"><span class="t-tag">Node.js</span><span class="t-tag">MongoDB</span><span class="t-tag">API</span></div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar av-orange">👨‍🔬</div>
+        <div class="team-name">Санжар Тілеуов</div>
+        <div class="team-role">Data Science оқытушысы</div>
+        <div class="team-bio">pandas, sklearn, нейрондық желілер бойынша PhD дәрежесі бар зерттеуші.</div>
+        <div class="team-tags"><span class="t-tag">pandas</span><span class="t-tag">sklearn</span><span class="t-tag">AI</span></div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar av-teal">👩‍💼</div>
+        <div class="team-name">Зарина Әбенова</div>
+        <div class="team-role">Операциялық директор</div>
+        <div class="team-bio">Платформаның жұмысын үйлестіреді. Оқушылар қолдауы мен серіктестік мәселелері.</div>
+        <div class="team-tags"><span class="t-tag">Менеджмент</span><span class="t-tag">HR</span><span class="t-tag">Қолдау</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ ОҚУШЫЛАР ПІКІРІ ═══ -->
+  <div class="section">
+    <div class="sec-title">💬 Оқушылардың пікірлері <span>4 пікір</span></div>
+    <div class="reviews-grid">
+      <div class="review-card">
+        <div class="r-stars">★★★★★</div>
+        <div class="r-text">Бұрын бағдарламалаудан мүлде хабарым жоқ еді. IT Academy-дің Python курсын аяқтаған соң өзім кішкентай жобалар жасай алдым. Қазақ тілінде болғандықтан барлығы өте түсінікті!</div>
+        <div class="r-author">
+          <div class="r-avatar" style="background:linear-gradient(135deg,#6366f1,#8b5cf6);">👦</div>
+          <div><div class="r-name">Нұрсұлтан Әлиев</div><div class="r-course">Python курсы · Алматы</div></div>
+        </div>
+      </div>
+      <div class="review-card">
+        <div class="r-stars">★★★★★</div>
+        <div class="r-text">Сабақтардың дизайны өте ыңғайлы. Тапсырмаларды браузерде тікелей орындауға болады — бұл өте қолайлы! 15 сабақты 3 аптада аяқтадым.</div>
+        <div class="r-author">
+          <div class="r-avatar" style="background:linear-gradient(135deg,#059669,#10b981);">👧</div>
+          <div><div class="r-name">Мадина Серікова</div><div class="r-course">Python курсы · Нұр-Сұлтан</div></div>
+        </div>
+      </div>
+      <div class="review-card">
+        <div class="r-stars">★★★★☆</div>
+        <div class="r-text">Теория мен практика тамаша үйлесімде берілген. Әр сабақтың соңындағы тест сұрақтары нені үйренгенімді нақты тексеріп береді. Жаңа курстарды күтемін!</div>
+        <div class="r-author">
+          <div class="r-avatar" style="background:linear-gradient(135deg,#2563eb,#60a5fa);">👨</div>
+          <div><div class="r-name">Дәурен Қожахметов</div><div class="r-course">Python курсы · Шымкент</div></div>
+        </div>
+      </div>
+      <div class="review-card">
+        <div class="r-stars">★★★★★</div>
+        <div class="r-text">Мектепте оқитын қызым осы платформада Python үйренді. Ата-ана ретінде өте риза болдым — контент қауіпсіз, деңгейге сай, қазақша. Рахмет IT Academy!</div>
+        <div class="r-author">
+          <div class="r-avatar" style="background:linear-gradient(135deg,#db2777,#ec4899);">👩</div>
+          <div><div class="r-name">Гүлнар Бекова</div><div class="r-course">Ата-ана · Қарағанды</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ ЖОЛ КАРТАСЫ ═══ -->
+  <div class="section">
+    <div class="sec-title">🗺️ Жол картасы (Roadmap) <span>2024–2026</span></div>
+    <div class="roadmap">
+
+      <div class="rm-item">
+        <div class="rm-dot done">✅</div>
+        <div class="rm-body">
+          <div class="rm-head">
+            <div class="rm-title">Платформаны іске қосу</div>
+            <div class="rm-badge done">Аяқталды</div>
+          </div>
+          <div class="rm-desc">IT Academy сайты іске қосылды. Python бастауыш курсы жарияланды. Тіркелу жүйесі, прогресс бақылау — барлығы дайын.</div>
+        </div>
+      </div>
+
+      <div class="rm-item">
+        <div class="rm-dot done">✅</div>
+        <div class="rm-body">
+          <div class="rm-head">
+            <div class="rm-title">9 курс қосылды</div>
+            <div class="rm-badge done">Аяқталды</div>
+          </div>
+          <div class="rm-desc">Python, React, Node.js, SQL, Data Science, Machine Learning, Web Design, Linux — барлығы платформада бар.</div>
+        </div>
+      </div>
+
+      <div class="rm-item">
+        <div class="rm-dot active">🔥</div>
+        <div class="rm-body">
+          <div class="rm-head">
+            <div class="rm-title">Сертификат жүйесі</div>
+            <div class="rm-badge active">Жасалуда</div>
+          </div>
+          <div class="rm-desc">Курсты аяқтаған оқушыларға автоматты электронды сертификат беру жүйесі әзірленуде. LinkedIn-ге тікелей қосу мүмкіндігі болады.</div>
+        </div>
+      </div>
+
+      <div class="rm-item">
+        <div class="rm-dot soon">📱</div>
+        <div class="rm-body">
+          <div class="rm-head">
+            <div class="rm-title">Мобильді қолданба (iOS & Android)</div>
+            <div class="rm-badge soon">Жақында</div>
+          </div>
+          <div class="rm-desc">IT Academy қолданбасы телефоннан сабақ оқуды, тапсырма орындауды және прогресті бақылауды мүмкін етеді.</div>
+        </div>
+      </div>
+
+      <div class="rm-item">
+        <div class="rm-dot soon">🤖</div>
+        <div class="rm-body">
+          <div class="rm-head">
+            <div class="rm-title">AI Ментор</div>
+            <div class="rm-badge soon">2026</div>
+          </div>
+          <div class="rm-desc">Жасанды интеллект негізіндегі жеке ментор — кодыңыздағы қателерді түсіндіреді, жеке оқу жоспарын жасайды.</div>
+        </div>
+      </div>
+
+      <div class="rm-item">
+        <div class="rm-dot soon">🏢</div>
+        <div class="rm-body">
+          <div class="rm-head">
+            <div class="rm-title">Компаниялармен серіктестік</div>
+            <div class="rm-badge soon">2026</div>
+          </div>
+          <div class="rm-desc">Оқушыларды IT компанияларға тікелей жұмысқа орналастыру бағдарламасы. Тәжірибе (стажировка) мүмкіндіктері.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- /page-wrap -->
+
+<footer>© 2026 IT Academy. Барлық құқықтар қорғалған.</footer>
+
+</body>
+</html>

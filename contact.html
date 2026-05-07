@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Байланыс — IT Academy</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+body{background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);color:white;min-height:100vh;display:flex;flex-direction:column;}
+
+header{background:rgba(255,255,255,0.05);backdrop-filter:blur(12px);padding:18px 40px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.08);position:sticky;top:0;z-index:200;}
+.logo{font-size:22px;font-weight:800;background:linear-gradient(90deg,#a78bfa,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;cursor:pointer;}
+nav{display:flex;align-items:center;}
+nav a{margin-left:22px;text-decoration:none;color:rgba(255,255,255,0.55);font-weight:500;font-size:14px;transition:0.3s;}
+nav a:hover{color:white;}
+nav a.active{color:#a78bfa;font-weight:700;}
+.nav-login-btn{margin-left:22px;padding:7px 18px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border:none;color:white;border-radius:20px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Segoe UI',sans-serif;transition:0.3s;text-decoration:none;}
+.nav-login-btn:hover{box-shadow:0 4px 14px rgba(99,102,241,0.5);}
+
+.page-wrap{flex:1;padding:40px 32px;max-width:900px;margin:0 auto;width:100%;}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,rgba(99,102,241,0.15),rgba(139,92,246,0.08));border:1px solid rgba(99,102,241,0.22);border-radius:20px;padding:32px 36px;margin-bottom:32px;display:flex;align-items:center;gap:24px;}
+.hero-icon{font-size:60px;flex-shrink:0;}
+.hero-text h1{font-size:24px;font-weight:800;color:white;margin-bottom:8px;}
+.hero-text p{font-size:14px;color:rgba(255,255,255,0.5);line-height:1.85;}
+.hero-pills{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
+.h-pill{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;color:rgba(255,255,255,0.55);}
+
+/* SECTION TITLE */
+.sec-title{font-size:17px;font-weight:800;color:white;margin-bottom:16px;display:flex;align-items:center;gap:9px;}
+.sec-title span{font-size:12px;font-weight:600;color:#a78bfa;background:rgba(99,102,241,0.13);border:1px solid rgba(99,102,241,0.25);padding:3px 11px;border-radius:20px;}
+
+/* CONTACT CARDS */
+.cards-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:32px;}
+.c-card{background:rgba(255,255,255,0.05);border:1.5px solid rgba(255,255,255,0.08);border-radius:18px;padding:28px 20px;text-align:center;transition:0.3s;cursor:default;}
+.c-card:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(0,0,0,0.3);}
+.c-card.purple:hover{border-color:rgba(99,102,241,0.45);background:rgba(99,102,241,0.1);}
+.c-card.green:hover{border-color:rgba(16,185,129,0.45);background:rgba(16,185,129,0.07);}
+.c-card.orange:hover{border-color:rgba(245,158,11,0.45);background:rgba(245,158,11,0.07);}
+.c-icon{font-size:38px;margin-bottom:14px;display:block;}
+.c-title{font-size:15px;font-weight:800;color:white;margin-bottom:7px;}
+.c-sub{font-size:12px;color:rgba(255,255,255,0.42);line-height:1.8;margin-bottom:18px;min-height:40px;}
+.c-btn{display:inline-block;width:100%;padding:12px 10px;border:none;color:white;border-radius:11px;font-size:13px;font-family:'Segoe UI',sans-serif;font-weight:700;cursor:pointer;text-decoration:none;transition:0.3s;}
+.c-btn.purple{background:linear-gradient(135deg,#6366f1,#8b5cf6);box-shadow:0 4px 14px rgba(99,102,241,0.3);}
+.c-btn.purple:hover{box-shadow:0 6px 20px rgba(99,102,241,0.5);transform:translateY(-1px);}
+.c-btn.green{background:linear-gradient(135deg,#059669,#10b981);box-shadow:0 4px 14px rgba(16,185,129,0.25);}
+.c-btn.green:hover{box-shadow:0 6px 20px rgba(16,185,129,0.45);transform:translateY(-1px);}
+.c-btn.orange{background:linear-gradient(135deg,#d97706,#f59e0b);box-shadow:0 4px 14px rgba(245,158,11,0.25);}
+.c-btn.orange:hover{box-shadow:0 6px 20px rgba(245,158,11,0.45);transform:translateY(-1px);}
+
+/* FORM */
+.form-card{background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.08);border-radius:20px;padding:32px 36px;margin-bottom:32px;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+.form-group{display:flex;flex-direction:column;gap:7px;margin-bottom:16px;}
+.form-label{font-size:12px;font-weight:700;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.5px;}
+.form-input{background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.1);border-radius:11px;padding:13px 16px;color:white;font-size:14px;font-family:'Segoe UI',sans-serif;outline:none;transition:0.3s;}
+.form-input::placeholder{color:rgba(255,255,255,0.22);}
+.form-input:focus{border-color:rgba(99,102,241,0.5);background:rgba(99,102,241,0.07);}
+textarea.form-input{resize:vertical;min-height:120px;line-height:1.7;}
+.topic-grid{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;}
+.topic-btn{padding:8px 16px;background:rgba(255,255,255,0.05);border:1.5px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.55);border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;transition:0.2s;font-family:'Segoe UI',sans-serif;}
+.topic-btn:hover{border-color:rgba(99,102,241,0.4);color:white;background:rgba(99,102,241,0.1);}
+.topic-btn.active{background:rgba(99,102,241,0.2);border-color:rgba(99,102,241,0.5);color:white;}
+.send-btn{width:100%;padding:15px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border:none;color:white;border-radius:12px;font-size:15px;font-family:'Segoe UI',sans-serif;font-weight:700;cursor:pointer;transition:0.3s;box-shadow:0 5px 18px rgba(99,102,241,0.35);}
+.send-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(99,102,241,0.5);}
+.send-btn:active{transform:translateY(0);}
+
+/* SUCCESS */
+.success-msg{display:none;background:rgba(34,197,94,0.1);border:1.5px solid rgba(34,197,94,0.3);border-radius:14px;padding:20px 24px;margin-top:16px;text-align:center;}
+.success-msg .s-icon{font-size:36px;margin-bottom:8px;}
+.success-msg p{font-size:14px;color:#86efac;font-weight:600;line-height:1.7;}
+
+/* FAQ MINI */
+.faq-mini{margin-bottom:32px;}
+.faq-item{background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.07);border-radius:13px;margin-bottom:9px;overflow:hidden;transition:border-color 0.2s;}
+.faq-item:hover{border-color:rgba(99,102,241,0.3);}
+.faq-item.open{border-color:rgba(99,102,241,0.4);background:rgba(99,102,241,0.05);}
+.faq-q{display:flex;align-items:center;justify-content:space-between;padding:15px 18px;cursor:pointer;user-select:none;gap:12px;}
+.faq-q-text{font-size:14px;font-weight:600;color:rgba(255,255,255,0.82);flex:1;}
+.faq-item.open .faq-q-text{color:white;}
+.faq-arrow{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px;color:rgba(255,255,255,0.35);transition:transform 0.3s,background 0.2s;}
+.faq-item.open .faq-arrow{transform:rotate(180deg);background:rgba(99,102,241,0.25);border-color:rgba(99,102,241,0.4);color:#a78bfa;}
+.faq-a{display:none;padding:0 18px 16px;font-size:13px;color:rgba(255,255,255,0.58);line-height:2.0;border-top:1px solid rgba(255,255,255,0.05);}
+.faq-a.show{display:block;}
+
+footer{text-align:center;padding:14px;font-size:12px;color:rgba(255,255,255,0.17);border-top:1px solid rgba(255,255,255,0.04);}
+
+@keyframes mIn{from{opacity:0;transform:scale(0.9) translateY(12px);}to{opacity:1;transform:scale(1) translateY(0);}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo" onclick="location.href='Басты бет.html'">IT Academy</div>
+  <nav>
+    <a href="main.html">Басты бет</a>
+    <a href="about.html">Біз туралы</a>
+    <a href="mycours.html">Менің курстарым</a>
+    <a href="contact.html" class="active">Байланыс</a>
+    <a href="help.html">Көмек</a>
+  </nav>
+</header>
+
+<div class="page-wrap">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-icon">📬</div>
+    <div class="hero-text">
+      <h1>Бізбен байланысыңыз</h1>
+      <p>Сұрақтарыңызға жауап бере аламыз, ұсыныстарыңызды тыңдаймыз. Тез жауап беруге тырысамыз!</p>
+      <div class="hero-pills">
+        <div class="h-pill">⚡ 24 сағат ішінде жауап</div>
+        <div class="h-pill">🇰🇿 Қазақ тілінде</div>
+        <div class="h-pill">💬 Telegram, Email</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- БАЙЛАНЫС АРНАЛАРЫ -->
+  <div class="sec-title">📡 Байланыс арналары <span>3 арна</span></div>
+  <div class="cards-grid">
+
+    <div class="c-card purple">
+      <span class="c-icon">📧</span>
+      <div class="c-title">Email арқылы</div>
+      <div class="c-sub">Жалпы сұрақтар мен техникалық мәселелер үшін</div>
+      <a href="mailto:support@itacademy.kz" class="c-btn purple">support@itacademy.kz</a>
+    </div>
+
+    <div class="c-card green">
+      <span class="c-icon">💬</span>
+      <div class="c-title">Telegram арқылы</div>
+      <div class="c-sub">Тез жауап алу үшін Telegram-да жазыңыз</div>
+      <a href="https://t.me/itacademy_kz" target="_blank" class="c-btn green">@itacademy_kz</a>
+    </div>
+
+    <div class="c-card orange">
+      <span class="c-icon">🤝</span>
+      <div class="c-title">Серіктестік</div>
+      <div class="c-sub">Курс қосу немесе ынтымақтастық үшін</div>
+      <a href="mailto:partner@itacademy.kz" class="c-btn orange">partner@itacademy.kz</a>
+    </div>
+
+  </div>
+
+  <!-- ХАБАРЛАМА ЖІБЕРУ ФОРМАСЫ -->
+  <div class="sec-title">✉️ Хабарлама жіберу <span>Тікелей форма</span></div>
+  <div class="form-card">
+
+    <div class="form-row">
+      <div class="form-group" style="margin-bottom:0;">
+        <div class="form-label">Атыңыз</div>
+        <input class="form-input" id="inp-name" type="text" placeholder="Айдос Бекенов">
+      </div>
+      <div class="form-group" style="margin-bottom:0;">
+        <div class="form-label">Email</div>
+        <input class="form-input" id="inp-email" type="email" placeholder="email@mail.com">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="form-label">Тақырып</div>
+      <div class="topic-grid" id="topicGrid">
+        <button class="topic-btn active" onclick="selTopic(this)">🐛 Техникалық мәселе</button>
+        <button class="topic-btn" onclick="selTopic(this)">❓ Жалпы сұрақ</button>
+        <button class="topic-btn" onclick="selTopic(this)">📚 Курс туралы</button>
+        <button class="topic-btn" onclick="selTopic(this)">🤝 Серіктестік</button>
+        <button class="topic-btn" onclick="selTopic(this)">💡 Ұсыныс</button>
+        <button class="topic-btn" onclick="selTopic(this)">🔐 Аккаунт мәселесі</button>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="form-label">Хабарламаңыз</div>
+      <textarea class="form-input" id="inp-msg" placeholder="Сұрағыңызды немесе мәселеңізді жазыңыз..."></textarea>
+    </div>
+
+    <button class="send-btn" onclick="sendForm()">📤 Жіберу</button>
+
+    <div class="success-msg" id="successMsg">
+      <div class="s-icon">✅</div>
+      <p>Хабарламаңыз жіберілді!<br>Жақын арада жауап береміз. Рахмет!</p>
+    </div>
+
+  </div>
+
+  <!-- ЖИІ ҚОЙЫЛАТЫН СҰРАҚТАР (мини) -->
+  <div class="sec-title">💡 Жиі қойылатын сұрақтар <span>Жылдам жауап</span></div>
+  <div class="faq-mini">
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="tog(this)">
+        <div class="faq-q-text">Қанша уақытта жауап аласыз?</div>
+        <div class="faq-arrow">▼</div>
+      </div>
+      <div class="faq-a">Email хабарламаларына <b>24 сағат ішінде</b>, Telegram хабарламаларына <b>бірнеше сағат ішінде</b> жауап береміз. Демалыс күндері сәл кешірек болуы мүмкін.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="tog(this)">
+        <div class="faq-q-text">Өз курсымды платформаға қосқым келеді, кімге жазамын?</div>
+        <div class="faq-arrow">▼</div>
+      </div>
+      <div class="faq-a"><b>partner@itacademy.kz</b> мекенжайына курс тақырыбы мен тәжірибеңіз туралы қысқаша ақпарат жіберіңіз. 3 жұмыс күні ішінде жауап береміз!</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="tog(this)">
+        <div class="faq-q-text">Техникалық мәселені қалай хабарлаймын?</div>
+        <div class="faq-arrow">▼</div>
+      </div>
+      <div class="faq-a">Жоғарыдағы форманы толтырып, <b>«🐛 Техникалық мәселе»</b> тақырыбын таңдаңыз. Хабарламаңызда қай сабақта, қай тапсырмада мәселе болғанын нақты жазыңыз — тезірек шешеміз.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="tog(this)">
+        <div class="faq-q-text">Мектеп немесе топ үшін байланысу керек болса?</div>
+        <div class="faq-arrow">▼</div>
+      </div>
+      <div class="faq-a">Мектептер мен ұйымдар үшін арнайы топтық тарифтер бар. <b>edu@itacademy.kz</b> мекенжайына мектеп атауы мен оқушылар санын жазып жіберіңіз.</div>
+    </div>
+
+  </div>
+
+</div><!-- /page-wrap -->
+
+<footer>© 2026 IT Academy. Барлық құқықтар қорғалған.</footer>
+
+<script>
+/* TOPIC SELECT */
+function selTopic(btn){
+  document.querySelectorAll('.topic-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+}
+
+/* SEND FORM */
+function sendForm(){
+  var name  = document.getElementById('inp-name').value.trim();
+  var email = document.getElementById('inp-email').value.trim();
+  var msg   = document.getElementById('inp-msg').value.trim();
+
+  if(!name){
+    shake('inp-name'); return;
+  }
+  if(!email || !email.includes('@')){
+    shake('inp-email'); return;
+  }
+  if(!msg){
+    shake('inp-msg'); return;
+  }
+
+  // Show success
+  document.getElementById('successMsg').style.display = 'block';
+  document.getElementById('successMsg').style.animation = 'mIn 0.3s ease';
+
+  // Clear fields
+  document.getElementById('inp-name').value  = '';
+  document.getElementById('inp-email').value = '';
+  document.getElementById('inp-msg').value   = '';
+  document.querySelectorAll('.topic-btn').forEach(function(b,i){ b.classList.toggle('active', i===0); });
+
+  // Hide after 5s
+  setTimeout(function(){
+    document.getElementById('successMsg').style.display = 'none';
+  }, 5000);
+}
+
+/* SHAKE ANIMATION on empty field */
+function shake(id){
+  var el = document.getElementById(id);
+  el.style.borderColor = 'rgba(239,68,68,0.6)';
+  el.style.background  = 'rgba(239,68,68,0.07)';
+  el.focus();
+  setTimeout(function(){ el.style.borderColor=''; el.style.background=''; }, 1500);
+}
+
+/* FAQ TOGGLE */
+function tog(qEl){
+  var item = qEl.parentElement;
+  var ans  = item.querySelector('.faq-a');
+  var open = item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(function(o){
+    o.classList.remove('open');
+    o.querySelector('.faq-a').classList.remove('show');
+  });
+  if(!open){
+    item.classList.add('open');
+    ans.classList.add('show');
+  }
+}
+
+/* NAV USER */
+var u = null;
+try{ u = JSON.parse(localStorage.getItem('ita_user')); }catch(e){}
+</script>
+</body>
+</html>

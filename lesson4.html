@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8">
+<title>4-сабақ: Алгоритм түрлері</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+body{background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);color:white;min-height:100vh;display:flex;flex-direction:column;}
+
+/* HEADER */
+header{background:rgba(255,255,255,0.05);backdrop-filter:blur(12px);padding:18px 40px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.08);position:sticky;top:0;z-index:200;}
+.logo{font-size:22px;font-weight:800;background:linear-gradient(90deg,#a78bfa,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+nav a{margin-left:24px;text-decoration:none;color:rgba(255,255,255,0.55);font-weight:500;font-size:14px;transition:0.3s;}
+nav a:hover{color:white;}
+
+.body-wrap{display:flex;flex:1;}
+
+/* SIDEBAR */
+.sidebar{width:300px;background:rgba(255,255,255,0.03);border-right:1px solid rgba(255,255,255,0.07);height:calc(100vh - 62px);position:sticky;top:62px;overflow-y:auto;padding:20px 12px;display:flex;flex-direction:column;justify-content:space-between;flex-shrink:0;}
+.sidebar-top h2{text-align:center;margin-bottom:18px;font-size:16px;font-weight:700;color:white;}
+.lesson{position:relative;display:flex;align-items:center;gap:11px;padding:11px 12px;margin:4px 0;border-radius:10px;cursor:pointer;transition:0.3s;font-size:13px;font-weight:500;color:rgba(255,255,255,0.65);}
+.lesson:hover{background:rgba(255,255,255,0.07);color:white;}
+.lesson.active{background:rgba(99,102,241,0.2);border:1px solid rgba(99,102,241,0.3);color:white;}
+.lesson.done{color:rgba(255,255,255,0.7);}
+.badge{width:24px;height:24px;border-radius:50%;background:rgba(99,102,241,0.4);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;color:white;}
+.lesson.active .badge{background:#6366f1;}
+.lesson.done .badge{background:#22c55e;}
+.lesson.locked{opacity:0.45;cursor:not-allowed;}
+.lesson.locked::after{content:"";position:absolute;inset:0;border-radius:10px;}
+.lock-icon{position:absolute;right:12px;font-size:12px;opacity:0.5;}
+.lesson.locked:hover{background:transparent;color:rgba(255,255,255,0.45);}
+.help{background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.2);color:rgba(255,255,255,0.55);padding:11px 14px;border-radius:12px;cursor:pointer;display:flex;align-items:center;gap:10px;margin:16px 4px 4px;font-size:13px;font-weight:600;transition:0.3s;}
+.help:hover{background:#6366f1;color:white;border-color:transparent;}
+.help-icon{width:26px;height:26px;border-radius:50%;background:#6366f1;color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0;}
+
+/* CONTENT */
+.content{flex:1;padding:36px 40px;overflow-y:auto;}
+
+/* PROGRESS */
+.progress-wrap{margin-bottom:28px;}
+.progress-label{display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:7px;}
+.progress-track{height:5px;background:rgba(255,255,255,0.08);border-radius:4px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,#6366f1,#a78bfa);border-radius:4px;width:26.67%;transition:0.5s;}
+
+/* VIDEO */
+.video-wrap{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;height:280px;display:flex;align-items:center;justify-content:center;margin-bottom:28px;position:relative;overflow:hidden;}
+.video-wrap::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 30% 50%,rgba(99,102,241,0.15),transparent 60%),radial-gradient(circle at 70% 50%,rgba(139,92,246,0.1),transparent 60%);}
+.video-inner{text-align:center;position:relative;z-index:1;}
+.video-inner .play{width:70px;height:70px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 14px;box-shadow:0 8px 24px rgba(99,102,241,0.4);cursor:pointer;transition:0.3s;}
+.video-inner .play:hover{transform:scale(1.1);}
+.video-inner p{font-size:14px;color:rgba(255,255,255,0.4);}
+
+/* TASK BLOCK */
+.task-block{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:26px;margin-bottom:22px;}
+.task-header{display:flex;align-items:center;gap:14px;margin-bottom:16px;}
+.task-indicator{width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,0.1);border:2px solid rgba(255,255,255,0.2);flex-shrink:0;transition:0.5s;}
+.task-indicator.done{background:#22c55e;border-color:#16a34a;box-shadow:0 0 14px rgba(34,197,94,0.6);}
+.task-title{font-size:16px;font-weight:700;color:white;}
+.task-desc{background:rgba(99,102,241,0.08);border-left:3px solid #6366f1;padding:14px 18px;border-radius:0 10px 10px 0;margin-bottom:18px;font-size:13px;color:rgba(255,255,255,0.65);line-height:1.7;}
+.task-desc b{color:#a78bfa;display:block;margin-bottom:4px;font-size:14px;}
+.task-feedback{display:none;margin-top:14px;padding:13px 16px;border-radius:10px;font-size:14px;font-weight:500;}
+.task-feedback.success{background:rgba(34,197,94,0.1);border-left:3px solid #22c55e;color:#86efac;}
+.task-feedback.error{background:rgba(239,68,68,0.1);border-left:3px solid #ef4444;color:#fca5a5;}
+.task-submit-btn{padding:13px 28px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border:none;color:white;border-radius:12px;cursor:pointer;font-size:14px;font-family:'Segoe UI',sans-serif;font-weight:700;transition:0.3s;box-shadow:0 5px 18px rgba(99,102,241,0.3);}
+.task-submit-btn:hover{transform:translateY(-2px);box-shadow:0 9px 24px rgba(99,102,241,0.5);}
+
+/* MATCH AREA */
+.match-area{display:flex;gap:24px;margin-bottom:18px;align-items:flex-start;flex-wrap:wrap;}
+.match-words{display:flex;flex-direction:column;gap:9px;min-width:150px;}
+.word-chip{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;padding:9px 14px;border-radius:10px;font-size:13px;font-weight:600;cursor:grab;text-align:center;transition:0.2s;user-select:none;box-shadow:0 3px 10px rgba(99,102,241,0.3);}
+.word-chip:hover{transform:translateY(-2px);box-shadow:0 6px 15px rgba(99,102,241,0.4);}
+.word-chip.dragging{opacity:0.35;}
+.word-chip.placed{opacity:0.3;cursor:default;pointer-events:none;}
+
+/* FLOWCHART */
+.flowchart{display:flex;flex-direction:column;align-items:center;gap:0;flex:1;}
+.fc-arrow{width:2px;height:20px;background:rgba(255,255,255,0.2);margin:0 auto;}
+.branch-row{display:flex;align-items:flex-start;justify-content:center;gap:20px;}
+.branch-col{display:flex;flex-direction:column;align-items:center;gap:0;}
+.branch-label{font-size:11px;font-weight:700;color:rgba(255,255,255,0.4);margin:3px 0;}
+
+/* FLOWCHART SHAPES - dark theme */
+.fc-oval{border-radius:50px;background:rgba(59,130,246,0.15);border:2px solid rgba(59,130,246,0.5);padding:9px 18px;min-width:120px;text-align:center;font-size:12px;font-weight:600;color:#93c5fd;position:relative;}
+.fc-rect{border-radius:6px;background:rgba(245,158,11,0.1);border:2px solid rgba(245,158,11,0.4);padding:9px 18px;min-width:140px;text-align:center;font-size:12px;font-weight:600;color:#fcd34d;position:relative;}
+.fc-diamond{width:150px;height:56px;background:rgba(239,68,68,0.1);border:2px solid rgba(239,68,68,0.4);transform:skewX(-15deg);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#fca5a5;position:relative;}
+.fc-diamond span{transform:skewX(15deg);display:block;}
+.fc-para{background:rgba(16,185,129,0.1);border:2px solid rgba(16,185,129,0.4);padding:9px 18px;min-width:140px;text-align:center;font-size:12px;font-weight:600;color:#6ee7b7;clip-path:polygon(8% 0%,100% 0%,92% 100%,0% 100%);position:relative;}
+
+/* DROP ZONE */
+.drop-zone{min-width:100px;min-height:26px;border:2px dashed rgba(255,255,255,0.2);border-radius:6px;background:rgba(255,255,255,0.04);display:flex;align-items:center;justify-content:center;font-size:11px;color:rgba(255,255,255,0.3);padding:3px 8px;transition:0.2s;}
+.drop-zone.drag-over{border-color:#a78bfa;background:rgba(167,139,250,0.1);}
+.drop-zone.filled{border-color:#22c55e;background:rgba(34,197,94,0.1);color:#86efac;font-weight:700;font-size:12px;}
+.drop-zone.wrong{border-color:#ef4444;background:rgba(239,68,68,0.1);color:#fca5a5;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">IT Academy</div>
+  <nav>
+    <a href="main.html">Басты бет</a>
+    <a href="about.html">Біз туралы</a>
+    <a href="mycours.html">Менің курстарым</a>
+    <a href="contact.html">Байланыс</a>
+    <a href="profil.html">Профиль</a>
+  </nav>
+</header>
+
+<div class="body-wrap">
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sidebar-top">
+    <!-- sidebar.js толтырады -->
+  </div>
+  <div class="help" onclick="location.href='help.html'"><span class="help-icon">?</span> Көмек</div>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+  <!-- PROGRESS -->
+  <div class="progress-wrap">
+    <div class="progress-label"><span>4-сабақ: Алгоритм түрлері</span><span>4 / 15</span></div>
+    <div class="progress-track"><div class="progress-fill"></div></div>
+  </div>
+
+    <!-- VIDEO -->
+<div class="video-wrap" id="videoWrap" style="cursor:pointer;" onclick="playYoutube()">
+  <div class="video-inner" id="videoThumb">
+    <div class="play">▶</div>
+    <p>Видеоны көру үшін басыңыз</p>
+  </div>
+  <iframe
+    id="videoFrame"
+    style="display:none;position:absolute;inset:0;width:100%;height:100%;border:none;border-radius:16px;"
+    allowfullscreen
+    allow="autoplay; encrypted-media">
+  </iframe>
+</div>
+<script>
+function playYoutube() {
+  var frame = document.getElementById('videoFrame');
+  var thumb = document.getElementById('videoThumb');
+  var wrap  = document.getElementById('videoWrap');
+  if (frame.style.display === 'none') {
+    frame.src = 'https://www.youtube.com/embed/ruUGr621lrg?autoplay=1';
+    frame.style.display = 'block';
+    thumb.style.display = 'none';
+    wrap.style.cursor = 'default';
+    wrap.onclick = null;
+  }
+}
+</script>
+
+  <!-- TASK 1 -->
+  <div class="task-block">
+    <div class="task-header">
+      <div class="task-indicator" id="ind1"></div>
+      <div class="task-title">➡️ Тапсырма 1: Сызықтық алгоритм — блок-схеманы толтыр</div>
+    </div>
+    <div class="task-desc">
+      <b>📋 Тапсырма:</b>
+      Сол жақтағы сөздерді сүйреп, блок-схемадағы дұрыс орынға апар.<br>
+      Мысал: <b>Санның квадратын табу</b> алгоритмі.
+    </div>
+    <div class="match-area">
+      <div class="match-words" id="words1">
+        <div class="word-chip" draggable="true" data-word="Аяқтау" data-task="1">Аяқтау</div>
+        <div class="word-chip" draggable="true" data-word="square = n*n" data-task="1">square = n*n</div>
+        <div class="word-chip" draggable="true" data-word="Бастау" data-task="1">Бастау</div>
+        <div class="word-chip" draggable="true" data-word="Нәтижені шығару" data-task="1">Нәтижені шығару</div>
+        <div class="word-chip" draggable="true" data-word="n енгізу" data-task="1">n енгізу</div>
+      </div>
+      <div class="flowchart">
+        <div class="fc-oval"><div class="drop-zone" data-answer="Бастау" data-id="t1_1">сүйре</div></div>
+        <div class="fc-arrow"></div>
+        <div class="fc-para"><div class="drop-zone" data-answer="n енгізу" data-id="t1_2">сүйре</div></div>
+        <div class="fc-arrow"></div>
+        <div class="fc-rect"><div class="drop-zone" data-answer="square = n*n" data-id="t1_3">сүйре</div></div>
+        <div class="fc-arrow"></div>
+        <div class="fc-para"><div class="drop-zone" data-answer="Нәтижені шығару" data-id="t1_4">сүйре</div></div>
+        <div class="fc-arrow"></div>
+        <div class="fc-oval"><div class="drop-zone" data-answer="Аяқтау" data-id="t1_5">сүйре</div></div>
+      </div>
+    </div>
+    <button class="task-submit-btn" id="sbtn1" onclick="checkMatch(1)">✅ Жіберу</button>
+    <div class="task-feedback" id="fb1"></div>
+  </div>
+
+  <!-- TASK 2 -->
+  <div class="task-block">
+    <div class="task-header">
+      <div class="task-indicator" id="ind2"></div>
+      <div class="task-title">🔀 Тапсырма 2: Тармақталған алгоритм — блок-схеманы толтыр</div>
+    </div>
+    <div class="task-desc">
+      <b>📋 Тапсырма:</b>
+      Сол жақтағы сөздерді сүйреп, блок-схемадағы дұрыс орынға апар.<br>
+      Мысал: <b>Сан жұп па, тақ па?</b>
+    </div>
+    <div class="match-area">
+      <div class="match-words" id="words2">
+        <div class="word-chip" draggable="true" data-word='"Тақ"' data-task="2">"Тақ"</div>
+        <div class="word-chip" draggable="true" data-word="Аяқтау" data-task="2">Аяқтау</div>
+        <div class="word-chip" draggable="true" data-word="n енгізу" data-task="2">n енгізу</div>
+        <div class="word-chip" draggable="true" data-word="Бастау" data-task="2">Бастау</div>
+        <div class="word-chip" draggable="true" data-word="n % 2 == 0 ?" data-task="2">n % 2 == 0 ?</div>
+        <div class="word-chip" draggable="true" data-word='"Жұп"' data-task="2">"Жұп"</div>
+      </div>
+      <div class="flowchart">
+        <div class="fc-oval"><div class="drop-zone" data-answer="Бастау" data-id="t2_1">сүйре</div></div>
+        <div class="fc-arrow"></div>
+        <div class="fc-para"><div class="drop-zone" data-answer="n енгізу" data-id="t2_2">сүйре</div></div>
+        <div class="fc-arrow"></div>
+        <div class="fc-diamond"><span><div class="drop-zone" data-answer="n % 2 == 0 ?" data-id="t2_3" style="min-width:96px;">сүйре</div></span></div>
+        <div style="display:flex;justify-content:center;gap:60px;margin:0;">
+          <div class="branch-label">Иә</div>
+          <div class="branch-label">Жоқ</div>
+        </div>
+        <div class="branch-row">
+          <div class="branch-col">
+            <div class="fc-para"><div class="drop-zone" data-answer='"Жұп"' data-id="t2_4">сүйре</div></div>
+          </div>
+          <div class="branch-col">
+            <div class="fc-para"><div class="drop-zone" data-answer='"Тақ"' data-id="t2_5">сүйре</div></div>
+          </div>
+        </div>
+        <div class="fc-arrow"></div>
+        <div class="fc-oval"><div class="drop-zone" data-answer="Аяқтау" data-id="t2_6">сүйре</div></div>
+      </div>
+    </div>
+    <button class="task-submit-btn" id="sbtn2" onclick="checkMatch(2)">✅ Жіберу</button>
+    <div class="task-feedback" id="fb2"></div>
+  </div>
+
+  <!-- TASK 3 -->
+  <div class="task-block">
+    <div class="task-header">
+      <div class="task-indicator" id="ind3"></div>
+      <div class="task-title">🔁 Тапсырма 3: Қайталанатын алгоритм — блок-схеманы толтыр</div>
+    </div>
+    <div class="task-desc">
+      <b>📋 Тапсырма:</b>
+      Сол жақтағы сөздерді сүйреп, блок-схемадағы дұрыс орынға апар.<br>
+      Мысал: <b>1-ден 5-ке дейін сандарды шығару.</b>
+    </div>
+    <div class="match-area">
+      <div class="match-words" id="words3">
+        <div class="word-chip" draggable="true" data-word="i = i+1" data-task="3">i = i+1</div>
+        <div class="word-chip" draggable="true" data-word="Бастау" data-task="3">Бастау</div>
+        <div class="word-chip" draggable="true" data-word="Аяқтау" data-task="3">Аяқтау</div>
+        <div class="word-chip" draggable="true" data-word="i ≤ 5 ?" data-task="3">i ≤ 5 ?</div>
+        <div class="word-chip" draggable="true" data-word="i = 1" data-task="3">i = 1</div>
+        <div class="word-chip" draggable="true" data-word="i шығару" data-task="3">i шығару</div>
+      </div>
+      <div class="flowchart">
+        <div class="fc-oval"><div class="drop-zone" data-answer="Бастау" data-id="t3_1">сүйре</div></div>
+        <div class="fc-arrow"></div>
+        <div class="fc-rect"><div class="drop-zone" data-answer="i = 1" data-id="t3_2">сүйре</div></div>
+        <div class="fc-arrow"></div>
+        <div class="fc-diamond"><span><div class="drop-zone" data-answer="i ≤ 5 ?" data-id="t3_3" style="min-width:86px;">сүйре</div></span></div>
+        <div style="display:flex;justify-content:center;gap:60px;margin:0;">
+          <div class="branch-label">Иә</div>
+          <div class="branch-label" style="font-size:10px;">Жоқ→Аяқтау</div>
+        </div>
+        <div class="branch-row">
+          <div class="branch-col">
+            <div class="fc-para"><div class="drop-zone" data-answer="i шығару" data-id="t3_4">сүйре</div></div>
+            <div class="fc-arrow"></div>
+            <div class="fc-rect"><div class="drop-zone" data-answer="i = i+1" data-id="t3_5">сүйре</div></div>
+            <div style="font-size:11px;color:rgba(255,255,255,0.3);text-align:center;margin-top:4px;">↩️ шартқа оралу</div>
+          </div>
+          <div class="branch-col"></div>
+        </div>
+        <div class="fc-arrow"></div>
+        <div class="fc-oval"><div class="drop-zone" data-answer="Аяқтау" data-id="t3_6">сүйре</div></div>
+      </div>
+    </div>
+    <button class="task-submit-btn" id="sbtn3" onclick="checkMatch(3)">✅ Жіберу</button>
+    <div class="task-feedback" id="fb3"></div>
+  </div>
+
+</div>
+</div>
+
+<script>
+var draggedChip = null;
+var taskDone = {1: false, 2: false, 3: false};
+
+/* ===== DRAG EVENTS ===== */
+document.addEventListener('dragstart', function(e){
+  var chip = e.target.closest('.word-chip');
+  if(chip){ draggedChip = chip; setTimeout(function(){ chip.classList.add('dragging'); }, 0); }
+});
+document.addEventListener('dragend', function(e){
+  if(draggedChip) draggedChip.classList.remove('dragging');
+});
+document.addEventListener('dragover', function(e){
+  var zone = e.target.closest('.drop-zone');
+  if(zone){ e.preventDefault(); zone.classList.add('drag-over'); }
+});
+document.addEventListener('dragleave', function(e){
+  var zone = e.target.closest('.drop-zone');
+  if(zone) zone.classList.remove('drag-over');
+});
+document.addEventListener('drop', function(e){
+  var zone = e.target.closest('.drop-zone');
+  if(!zone || !draggedChip) return;
+  e.preventDefault();
+  zone.classList.remove('drag-over');
+
+  /* Бұрынғы сөзді қайтару */
+  var prev = zone.dataset.placed;
+  if(prev){
+    document.querySelectorAll('.word-chip').forEach(function(c){
+      if(c.dataset.word === prev && c.dataset.task === draggedChip.dataset.task){
+        c.classList.remove('placed');
+      }
+    });
+  }
+
+  zone.textContent = draggedChip.dataset.word;
+  zone.classList.add('filled');
+  zone.classList.remove('wrong');
+  zone.dataset.placed = draggedChip.dataset.word;
+  draggedChip.classList.add('placed');
+  draggedChip = null;
+});
+
+/* ===== CHECK MATCH ===== */
+function checkMatch(taskNum){
+  if(taskDone[taskNum]) return;
+
+  var zones = document.querySelectorAll('.drop-zone[data-id^="t' + taskNum + '_"]');
+  var allFilled = true;
+  zones.forEach(function(z){ if(!z.dataset.placed) allFilled = false; });
+
+  if(!allFilled){
+    showWarnToast('⚠️ Барлық блоктарды толтырыңыз!');
+    return;
+  }
+
+  var allCorrect = true;
+  zones.forEach(function(z){
+    z.classList.remove('filled','wrong');
+    if(z.dataset.placed === z.dataset.answer){
+      z.classList.add('filled');
+    } else {
+      z.classList.add('wrong');
+      allCorrect = false;
+    }
+  });
+
+  var fb = document.getElementById('fb' + taskNum);
+  fb.style.display = 'block';
+
+  if(allCorrect){
+    fb.className = 'task-feedback success';
+    fb.innerHTML = '🎉 <b>Керемет!</b> Барлық блоктар дұрыс орналасты!';
+    document.getElementById('ind' + taskNum).classList.add('done');
+    document.getElementById('sbtn' + taskNum).style.display = 'none';
+    taskDone[taskNum] = true;
+    checkAllDone();
+  } else {
+    fb.className = 'task-feedback error';
+    fb.innerHTML = '❌ <b>Қате бар!</b> Қызыл белгіленген блоктарды тексер. '
+      + '<button onclick="retryTask(' + taskNum + ')" style="margin-left:10px;padding:6px 16px;background:linear-gradient(135deg,#f59e0b,#d97706);border:none;color:white;border-radius:8px;font-size:13px;font-family:Segoe UI,sans-serif;font-weight:700;cursor:pointer;">🔄 Қайтадан</button>';
+
+    /* 1.5с кейін қате блоктарды тазалап, чиптерді қайтару */
+    setTimeout(function(){
+      zones.forEach(function(z){
+        if(z.dataset.placed !== z.dataset.answer){
+          var word = z.dataset.placed;
+          if(word){
+            document.querySelectorAll('.word-chip').forEach(function(c){
+              if(c.dataset.word === word && c.dataset.task === String(taskNum)){
+                c.classList.remove('placed');
+              }
+            });
+            delete z.dataset.placed;
+            z.textContent = 'сүйре';
+            z.classList.remove('filled','wrong');
+          }
+        }
+      });
+    }, 1500);
+  }
+}
+
+function retryTask(taskNum){
+  if(taskDone[taskNum]) return;
+
+  /* Барлық зондарды тазалау */
+  var zones = document.querySelectorAll('.drop-zone[data-id^="t' + taskNum + '_"]');
+  zones.forEach(function(z){
+    var word = z.dataset.placed;
+    if(word){
+      document.querySelectorAll('.word-chip').forEach(function(c){
+        if(c.dataset.word === word && c.dataset.task === String(taskNum)){
+          c.classList.remove('placed');
+        }
+      });
+      delete z.dataset.placed;
+      z.textContent = 'сүйре';
+      z.classList.remove('filled','wrong');
+    }
+  });
+
+  var fb = document.getElementById('fb' + taskNum);
+  fb.style.display = 'none';
+}
+
+/* ===== CHECK ALL DONE ===== */
+function checkAllDone(){
+  if(taskDone[1] && taskDone[2] && taskDone[3]){
+    setTimeout(function(){ showResultModal(); }, 500);
+  }
+}
+
+/* ===== RESULT MODAL ===== */
+function showResultModal(){
+  var existing = document.getElementById('resultModal');
+  if(existing) existing.remove();
+
+  var modal = document.createElement('div');
+  modal.id = 'resultModal';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(12px);z-index:1000;display:flex;align-items:center;justify-content:center;animation:fadeIn 0.2s ease;';
+
+  modal.innerHTML = '<div style="background:linear-gradient(160deg,#1e1050,#2d1b6b);border:1px solid rgba(167,139,250,0.25);border-radius:24px;padding:40px 36px;text-align:center;max-width:420px;width:90%;animation:popIn 0.3s ease;">'
+    + '<div style="font-size:64px;margin-bottom:14px;">🏆</div>'
+    + '<div style="font-size:28px;font-weight:800;color:white;margin-bottom:6px;">3 / 3</div>'
+    + '<div style="font-size:15px;font-weight:700;color:#4ade80;margin-bottom:10px;">✅ Сабақты өттіңіз!</div>'
+    + '<div style="font-size:13px;color:rgba(255,255,255,0.45);margin-bottom:28px;line-height:1.7;">Тамаша! Барлық тапсырма дұрыс орындалды. Келесі сабақ ашылды!</div>'
+    + '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">'
+    + '<button onclick="closeModal()" style="padding:13px 22px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.6);border-radius:12px;font-size:13px;font-family:Segoe UI,sans-serif;font-weight:700;cursor:pointer;">Жабу</button>'
+    + '<a href="lesson5.html" style="text-decoration:none;"><button style="padding:13px 26px;background:linear-gradient(135deg,#059669,#10b981);border:none;color:white;border-radius:12px;font-size:14px;font-family:Segoe UI,sans-serif;font-weight:700;cursor:pointer;box-shadow:0 5px 18px rgba(16,185,129,0.4);">Келесі сабақ: Бағдарламалау деген не? →</button></a>'
+    + '</div></div>';
+
+  document.body.appendChild(modal);
+  if (typeof saveProgress === "function") saveProgress(5);
+  if (typeof saveProgress === "function") saveProgress(5);
+}
+
+function closeModal(){
+  var m = document.getElementById('resultModal');
+  if(m) m.remove();
+}
+
+/* ===== TOAST ===== */
+function showWarnToast(msg){
+  var el = document.getElementById('warnToast');
+  if(!el){
+    el = document.createElement('div');
+    el.id = 'warnToast';
+    el.style.cssText = 'position:fixed;top:78px;right:22px;background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.35);color:#fcd34d;padding:12px 18px;border-radius:12px;font-size:14px;font-weight:600;z-index:500;backdrop-filter:blur(8px);transition:0.3s;';
+    document.body.appendChild(el);
+  }
+  el.textContent = msg;
+  el.style.opacity = '1';
+  setTimeout(function(){ el.style.opacity = '0'; }, 2800);
+}
+
+/* ===== INIT ===== */
+window.addEventListener('load', function(){
+  document.querySelectorAll('.lesson.locked').forEach(function(l){
+    l.addEventListener('click', function(e){
+      e.preventDefault();
+      showWarnToast('🔒 Алдыңғы сабақты аяқтамай бұл сабақты ашу мүмкін емес!');
+    });
+  });
+});
+
+var styleEl = document.createElement('style');
+styleEl.textContent = '@keyframes fadeIn{from{opacity:0}to{opacity:1}} @keyframes popIn{from{opacity:0;transform:scale(0.85) translateY(24px)}to{opacity:1;transform:scale(1) translateY(0)}}';
+document.head.appendChild(styleEl);
+</script>
+<script src="sidebar.js"></script><script>window.addEventListener("load",function(){buildSidebar(4);});</script></body>
+</html>

@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8">
+<title>11-сабақ: Шартты оператор (if / else)</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+body{background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);color:white;min-height:100vh;display:flex;flex-direction:column;}
+
+header{background:rgba(255,255,255,0.05);backdrop-filter:blur(12px);padding:18px 40px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.08);position:sticky;top:0;z-index:200;}
+.logo{font-size:22px;font-weight:800;background:linear-gradient(90deg,#a78bfa,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+nav a{margin-left:24px;text-decoration:none;color:rgba(255,255,255,0.55);font-weight:500;font-size:14px;transition:0.3s;}
+nav a:hover{color:white;}
+
+.body-wrap{display:flex;flex:1;}
+
+.sidebar{width:300px;background:rgba(255,255,255,0.03);border-right:1px solid rgba(255,255,255,0.07);height:calc(100vh - 62px);position:sticky;top:62px;overflow-y:auto;padding:20px 12px;display:flex;flex-direction:column;justify-content:space-between;flex-shrink:0;}
+.sidebar-top h2{text-align:center;margin-bottom:18px;font-size:16px;font-weight:700;}
+.lesson{position:relative;display:flex;align-items:center;gap:11px;padding:11px 12px;margin:4px 0;border-radius:10px;cursor:pointer;transition:0.3s;font-size:13px;font-weight:500;color:rgba(255,255,255,0.65);}
+.lesson:hover{background:rgba(255,255,255,0.07);color:white;}
+.lesson.active{background:rgba(99,102,241,0.2);border:1px solid rgba(99,102,241,0.3);color:white;}
+.lesson.done{color:rgba(255,255,255,0.7);}
+.badge{width:24px;height:24px;border-radius:50%;background:rgba(99,102,241,0.4);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;color:white;}
+.lesson.active .badge{background:#6366f1;}
+.lesson.done .badge{background:#22c55e;}
+.lesson.locked{opacity:0.45;cursor:not-allowed;}
+.lesson.locked::after{content:"";position:absolute;inset:0;border-radius:10px;}
+.lock-icon{position:absolute;right:12px;font-size:12px;opacity:0.5;}
+.lesson.locked:hover{background:transparent;}
+.help{background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.2);color:rgba(255,255,255,0.55);padding:11px 14px;border-radius:12px;cursor:pointer;display:flex;align-items:center;gap:10px;margin:16px 4px 4px;font-size:13px;font-weight:600;transition:0.3s;}
+.help:hover{background:#6366f1;color:white;border-color:transparent;}
+.help-icon{width:26px;height:26px;border-radius:50%;background:#6366f1;color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0;}
+
+.content{flex:1;padding:32px 40px;overflow-y:auto;}
+
+.progress-wrap{margin-bottom:28px;}
+.progress-label{display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:7px;}
+.progress-track{height:5px;background:rgba(255,255,255,0.08);border-radius:4px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,#6366f1,#a78bfa);border-radius:4px;width:73.33%;}
+
+.video-wrap{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;height:280px;display:flex;align-items:center;justify-content:center;margin-bottom:28px;position:relative;overflow:hidden;}
+.video-wrap::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 30% 50%,rgba(99,102,241,0.15),transparent 60%),radial-gradient(circle at 70% 50%,rgba(139,92,246,0.1),transparent 60%);}
+.video-inner{text-align:center;position:relative;z-index:1;}
+.video-inner .play{width:70px;height:70px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 14px;box-shadow:0 8px 24px rgba(99,102,241,0.4);cursor:pointer;transition:0.3s;}
+.video-inner .play:hover{transform:scale(1.1);}
+.video-inner p{font-size:14px;color:rgba(255,255,255,0.4);}
+
+/* ── SECTION DIVIDERS ── */
+.section-title{font-size:19px;font-weight:800;color:white;margin:8px 0 18px;display:flex;align-items:center;gap:10px;}
+.section-title span{font-size:13px;font-weight:600;color:#a78bfa;background:rgba(99,102,241,0.13);border:1px solid rgba(99,102,241,0.25);padding:3px 12px;border-radius:20px;}
+
+/* ── TASK BLOCK ── */
+.task-block{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:26px;margin-bottom:22px;}
+.task-header{display:flex;align-items:center;gap:14px;margin-bottom:16px;}
+.task-indicator{width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,0.1);border:2px solid rgba(255,255,255,0.2);flex-shrink:0;transition:0.5s;}
+.task-indicator.done{background:#22c55e;border-color:#16a34a;box-shadow:0 0 14px rgba(34,197,94,0.6);}
+.task-title{font-size:16px;font-weight:700;color:white;}
+.task-desc{background:rgba(99,102,241,0.08);border-left:3px solid #6366f1;padding:14px 18px;border-radius:0 10px 10px 0;margin-bottom:18px;font-size:13px;color:rgba(255,255,255,0.65);line-height:1.85;}
+.task-desc b{color:#a78bfa;display:block;margin-bottom:6px;font-size:14px;}
+.task-desc code{color:#c4b5fd;background:rgba(99,102,241,0.15);padding:1px 7px;border-radius:4px;font-family:'Courier New',monospace;font-size:13px;}
+.task-feedback{display:none;margin-top:14px;padding:13px 16px;border-radius:10px;font-size:14px;font-weight:500;line-height:1.6;}
+.task-feedback.success{background:rgba(34,197,94,0.1);border-left:3px solid #22c55e;color:#86efac;}
+.task-feedback.error{background:rgba(239,68,68,0.1);border-left:3px solid #ef4444;color:#fca5a5;}
+.retry-btn-inline{margin-left:10px;padding:6px 16px;background:linear-gradient(135deg,#f59e0b,#d97706);border:none;color:white;border-radius:8px;font-size:13px;font-family:'Segoe UI',sans-serif;font-weight:700;cursor:pointer;}
+
+/* ── EDITOR ── */
+.editor-wrap{background:#0a0a1a;border:1px solid rgba(255,255,255,0.1);border-radius:12px;overflow:hidden;margin-bottom:16px;}
+.editor-topbar{background:rgba(255,255,255,0.05);padding:10px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(255,255,255,0.06);}
+.editor-dot{width:11px;height:11px;border-radius:50%;}
+.editor-filename{color:rgba(255,255,255,0.35);font-size:12px;margin-left:6px;}
+.editor-lines{padding:0;}
+.code-line{display:flex;align-items:stretch;min-height:36px;}
+.line-num{width:40px;background:rgba(255,255,255,0.03);color:rgba(255,255,255,0.2);font-family:'Courier New',monospace;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;user-select:none;border-right:1px solid rgba(255,255,255,0.06);}
+.code-input{flex:1;background:transparent;border:none;outline:none;color:#e2e8f0;font-family:'Courier New',monospace;font-size:13px;padding:8px 12px;resize:none;line-height:1.5;}
+.code-input::placeholder{color:rgba(255,255,255,0.2);}
+.add-line-btn{width:100%;background:rgba(255,255,255,0.03);border:none;border-top:1px solid rgba(255,255,255,0.06);color:rgba(255,255,255,0.25);padding:6px;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;gap:6px;font-family:'Segoe UI',sans-serif;transition:0.2s;}
+.add-line-btn:hover{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.5);}
+.btn-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:4px;}
+.run-btn{padding:12px 22px;background:linear-gradient(135deg,#059669,#10b981);border:none;color:white;border-radius:10px;cursor:pointer;font-size:14px;font-family:'Segoe UI',sans-serif;font-weight:700;transition:0.3s;box-shadow:0 4px 14px rgba(16,185,129,0.3);}
+.run-btn:hover{transform:translateY(-1px);}
+.hint-btn{padding:10px 18px;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);color:#fcd34d;border-radius:10px;cursor:pointer;font-size:13px;font-family:'Segoe UI',sans-serif;font-weight:600;transition:0.2s;}
+.hint-btn:hover{background:rgba(245,158,11,0.2);}
+.hint-box{display:none;background:rgba(245,158,11,0.07);border:1px solid rgba(245,158,11,0.2);border-radius:10px;padding:16px 18px;margin-top:12px;font-size:13px;color:#fde68a;line-height:2.1;}
+.hint-box code{color:#c4b5fd;background:rgba(99,102,241,0.15);padding:1px 7px;border-radius:4px;font-family:'Courier New',monospace;}
+.output-box{background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:12px 16px;font-family:'Courier New',monospace;font-size:13px;color:#4ade80;min-height:52px;margin-top:12px;white-space:pre-wrap;line-height:1.6;}
+.output-box.err{color:#f87171;}
+
+/* ── QUIZ (тест сұрақтары) ── */
+.quiz-block{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:26px;margin-bottom:22px;}
+.q-num{display:inline-flex;align-items:center;gap:7px;background:rgba(99,102,241,0.13);border:1px solid rgba(99,102,241,0.22);border-radius:20px;padding:4px 14px;font-size:11px;font-weight:700;color:#a78bfa;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:14px;}
+.q-text{font-size:16px;font-weight:700;color:white;line-height:1.65;margin-bottom:6px;}
+.code-block{background:#0d1117;border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:16px 20px;margin:14px 0 18px;font-family:'Courier New',monospace;font-size:14px;line-height:2;white-space:pre;color:#e2e8f0;}
+.q-opts{display:flex;flex-direction:column;gap:9px;}
+.q-opt{display:flex;align-items:center;gap:13px;padding:12px 16px;background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.09);border-radius:12px;cursor:pointer;transition:all 0.18s;user-select:none;}
+.q-opt:hover:not(.correct):not(.wrong):not(.locked-opt){border-color:rgba(167,139,250,0.45);background:rgba(167,139,250,0.08);}
+.q-opt.selected{border-color:#6366f1;background:rgba(99,102,241,0.14);}
+.q-opt.correct{border-color:#22c55e;background:rgba(34,197,94,0.1);cursor:default;animation:pulseG 0.4s ease;}
+.q-opt.wrong{border-color:#ef4444;background:rgba(239,68,68,0.1);cursor:default;}
+.q-opt.locked-opt{cursor:default;pointer-events:none;}
+.opt-ltr{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:rgba(255,255,255,0.4);flex-shrink:0;}
+.q-opt.selected .opt-ltr{background:#6366f1;color:white;}
+.q-opt.correct .opt-ltr{background:#22c55e;color:white;}
+.q-opt.wrong   .opt-ltr{background:#ef4444;color:white;}
+.opt-txt{font-size:14px;color:rgba(255,255,255,0.78);font-family:'Courier New',monospace;}
+.q-opt.selected .opt-txt,.q-opt.correct .opt-txt,.q-opt.wrong .opt-txt{color:white;}
+.q-fb{display:none;padding:11px 15px;border-radius:10px;font-size:13px;font-weight:600;margin-top:12px;line-height:1.5;}
+.q-fb.ok{background:rgba(34,197,94,0.1);border-left:3px solid #22c55e;color:#86efac;display:block;}
+.q-fb.err{background:rgba(239,68,68,0.1);border-left:3px solid #ef4444;color:#fca5a5;display:block;}
+.q-submit{margin-top:14px;padding:11px 26px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border:none;color:white;border-radius:10px;cursor:pointer;font-size:13px;font-family:'Segoe UI',sans-serif;font-weight:700;transition:0.2s;}
+.q-submit:hover{transform:translateY(-1px);}
+
+@keyframes pulseG{0%{box-shadow:0 0 0 0 rgba(34,197,94,0.5)}70%{box-shadow:0 0 0 10px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">IT Academy</div>
+  <nav>
+    <a href="main.html">Басты бет</a>
+    <a href="about.html">Біз туралы</a>
+    <a href="mycours.html">Менің курстарым</a>
+    <a href="contact.html">Байланыс</a>
+    <a href="profil.html">Профиль</a>
+  </nav>
+</header>
+
+<div class="body-wrap">
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sidebar-top">
+    <!-- sidebar.js толтырады -->
+  </div>
+  <div class="help" onclick="location.href='help.html'"><span class="help-icon">?</span> Көмек</div>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+  <div class="progress-wrap">
+    <div class="progress-label"><span>11-сабақ: Шартты оператор (if / else)</span><span>11 / 15</span></div>
+    <div class="progress-track"><div class="progress-fill"></div></div>
+  </div>
+
+  <div class="video-wrap" id="videoWrap" style="cursor:pointer;" onclick="playYoutube()">
+    <div class="video-inner" id="videoThumb">
+      <div class="play">▶</div>
+      <p>Видеоны көру үшін басыңыз</p>
+    </div>
+    <iframe
+      id="videoFrame"
+      style="display:none;position:absolute;inset:0;width:100%;height:100%;border:none;border-radius:16px;"
+      allowfullscreen
+      allow="autoplay; encrypted-media">
+    </iframe>
+  </div>
+  <script>
+  function playYoutube() {
+    var frame = document.getElementById('videoFrame');
+    var thumb = document.getElementById('videoThumb');
+    var wrap  = document.getElementById('videoWrap');
+    if (frame.style.display === 'none') {
+      frame.src = 'https://www.youtube.com/embed/SOjLykaSpfk?autoplay=1';
+      frame.style.display = 'block';
+      thumb.style.display = 'none';
+      wrap.style.cursor = 'default';
+      wrap.onclick = null;
+    }
+  }
+  </script>
+
+  <!-- ══════════════════════════════════
+       БӨЛІМ 1: ПРАКТИКАЛЫҚ ЕСЕПТЕР
+  ══════════════════════════════════ -->
+  <div class="section-title">🧪 Практикалық есептер <span>2 есеп</span></div>
+
+  <!-- ЕСЕП 1 -->
+  <div class="task-block">
+    <div class="task-header">
+      <div class="task-indicator" id="ind1"></div>
+      <div class="task-title">🌡️ Есеп 1: Ауа райы болжамы</div>
+    </div>
+    <div class="task-desc">
+      <b>📋 Тапсырма мазмұны:</b>
+      Пайдаланушыдан ауаның температурасын (°C) сұра. Температураға байланысты кеңес бер:<br><br>
+      — <b>35°C-тан жоғары</b> → <code>"Өте ыстық! Үйде қал."</code><br>
+      — <b>20–35°C аралығы</b> → <code>"Жылы, серуендеуге болады."</code><br>
+      — <b>5–19°C аралығы</b> → <code>"Салқын, жейде ки."</code><br>
+      — <b>5°C-тан төмен</b> → <code>"Суық! Пальто ки."</code><br><br>
+      Қолдан: <code>if</code> · <code>elif</code> · <code>else</code> · <code>and</code>
+    </div>
+    <div class="editor-wrap">
+      <div class="editor-topbar">
+        <div class="editor-dot" style="background:#ef4444"></div>
+        <div class="editor-dot" style="background:#f59e0b"></div>
+        <div class="editor-dot" style="background:#22c55e"></div>
+        <span class="editor-filename">task1.py</span>
+      </div>
+      <div class="editor-lines" id="lines1">
+        <div class="code-line"><div class="line-num">1</div><textarea class="code-input" rows="1" placeholder="# кодыңды осы жерге жаз..."></textarea></div>
+      </div>
+      <button class="add-line-btn" onclick="addLine('lines1')">＋ Жол қос</button>
+    </div>
+    <div class="btn-row">
+      <button class="run-btn" onclick="check1()">▶ Іске қос және тексер</button>
+    </div>
+    <div class="hint-box" id="hint1">
+      <b>Шығарылу жолы:</b><br>
+      <code>temp = int(input("Температураны жаз (°C): "))</code><br>
+      <code>if temp &gt; 35:</code><br>
+      <code>&nbsp;&nbsp;&nbsp;&nbsp;print("Өте ыстық! Үйде қал.")</code><br>
+      <code>elif temp &gt;= 20 and temp &lt;= 35:</code><br>
+      <code>&nbsp;&nbsp;&nbsp;&nbsp;print("Жылы, серуендеуге болады.")</code><br>
+      <code>elif temp &gt;= 5 and temp &lt;= 19:</code><br>
+      <code>&nbsp;&nbsp;&nbsp;&nbsp;print("Салқын, жейде ки.")</code><br>
+      <code>else:</code><br>
+      <code>&nbsp;&nbsp;&nbsp;&nbsp;print("Суық! Пальто ки.")</code>
+    </div>
+    <div class="output-box" id="out1">Нәтиже осы жерде шығады...</div>
+    <div class="task-feedback" id="fb1"></div>
+  </div>
+
+  <!-- ЕСЕП 2 -->
+  <div class="task-block">
+    <div class="task-header">
+      <div class="task-indicator" id="ind2"></div>
+      <div class="task-title">🎓 Есеп 2: Баға жүйесі</div>
+    </div>
+    <div class="task-desc">
+      <b>📋 Тапсырма мазмұны:</b>
+      Пайдаланушыдан тест нәтижесін (0–100 балл) сұра. Баллға сәйкес баға қой:<br><br>
+      — <b>90–100</b> → <code>"5 — Өте жақсы"</code><br>
+      — <b>75–89</b> → <code>"4 — Жақсы"</code><br>
+      — <b>55–74</b> → <code>"3 — Қанағаттанарлық"</code><br>
+      — <b>0–54</b> → <code>"2 — Қанағаттанарлықсыз"</code><br>
+      — Диапазоннан тыс (теріс немесе &gt;100) → <code>"Қате енгізу! 0–100 аралығында болуы керек."</code><br><br>
+      Қолдан: <code>if</code> · <code>elif</code> · <code>else</code> · <code>and</code> · <code>or</code>
+    </div>
+    <div class="editor-wrap">
+      <div class="editor-topbar">
+        <div class="editor-dot" style="background:#ef4444"></div>
+        <div class="editor-dot" style="background:#f59e0b"></div>
+        <div class="editor-dot" style="background:#22c55e"></div>
+        <span class="editor-filename">task2.py</span>
+      </div>
+      <div class="editor-lines" id="lines2">
+        <div class="code-line"><div class="line-num">1</div><textarea class="code-input" rows="1" placeholder="# кодыңды осы жерге жаз..."></textarea></div>
+      </div>
+      <button class="add-line-btn" onclick="addLine('lines2')">＋ Жол қос</button>
+    </div>
+    <div class="btn-row">
+      <button class="run-btn" onclick="check2()">▶ Іске қос және тексер</button>
+    </div>
+    <div class="hint-box" id="hint2">
+      <b>Шығарылу жолы:</b><br>
+      <code>score = int(input("Балыңды жаз (0-100): "))</code><br>
+      <code>if score &lt; 0 or score &gt; 100:</code><br>
+      <code>&nbsp;&nbsp;&nbsp;&nbsp;print("Қате енгізу! 0–100 аралығында болуы керек.")</code><br>
+      <code>elif score &gt;= 90:</code><br>
+      <code>&nbsp;&nbsp;&nbsp;&nbsp;print("5 — Өте жақсы")</code><br>
+      <code>elif score &gt;= 75:</code><br>
+      <code>&nbsp;&nbsp;&nbsp;&nbsp;print("4 — Жақсы")</code><br>
+      <code>elif score &gt;= 55:</code><br>
+      <code>&nbsp;&nbsp;&nbsp;&nbsp;print("3 — Қанағаттанарлық")</code><br>
+      <code>else:</code><br>
+      <code>&nbsp;&nbsp;&nbsp;&nbsp;print("2 — Қанағаттанарлықсыз")</code>
+    </div>
+    <div class="output-box" id="out2">Нәтиже осы жерде шығады...</div>
+    <div class="task-feedback" id="fb2"></div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       БӨЛІМ 2: ТЕСТ СҰРАҚТАРЫ
+  ══════════════════════════════════ -->
+  <div class="section-title">📝 Тест сұрақтары <span>3 сұрақ</span></div>
+
+  <!-- СҰРАҚ 1 -->
+  <div class="quiz-block">
+    <div class="q-num">🐍 Код оқу · Сұрақ 1</div>
+    <div class="q-text">Мына код экранға не шығарады?</div>
+    <div class="code-block">x = 15
+if x > 20:
+    print("Үлкен")
+elif x > 10:
+    print("Орташа")
+else:
+    print("Кіші")</div>
+    <div class="q-opts" id="opts1">
+      <div class="q-opt" data-idx="0" onclick="selectOpt(1,0)"><div class="opt-ltr">A</div><div class="opt-txt">Үлкен</div></div>
+      <div class="q-opt" data-idx="1" onclick="selectOpt(1,1)"><div class="opt-ltr">B</div><div class="opt-txt">Орташа</div></div>
+      <div class="q-opt" data-idx="2" onclick="selectOpt(1,2)"><div class="opt-ltr">C</div><div class="opt-txt">Кіші</div></div>
+      <div class="q-opt" data-idx="3" onclick="selectOpt(1,3)"><div class="opt-ltr">D</div><div class="opt-txt">Үлкен және Орташа екеуі де</div></div>
+    </div>
+    <button class="q-submit" id="qsub1" onclick="submitQ(1,1)">✅ Жіберу</button>
+    <div class="q-fb" id="qfb1"></div>
+  </div>
+
+  <!-- СҰРАҚ 2 -->
+  <div class="quiz-block">
+    <div class="q-num">🐍 Код оқу · Сұрақ 2</div>
+    <div class="q-text">Мына код экранға не шығарады?</div>
+    <div class="code-block">a = 10
+b = 10
+if a > b:
+    print("a үлкен")
+elif a == b:
+    print("Тең")
+else:
+    print("b үлкен")</div>
+    <div class="q-opts" id="opts2">
+      <div class="q-opt" data-idx="0" onclick="selectOpt(2,0)"><div class="opt-ltr">A</div><div class="opt-txt">a үлкен</div></div>
+      <div class="q-opt" data-idx="1" onclick="selectOpt(2,1)"><div class="opt-ltr">B</div><div class="opt-txt">b үлкен</div></div>
+      <div class="q-opt" data-idx="2" onclick="selectOpt(2,2)"><div class="opt-ltr">C</div><div class="opt-txt">Тең</div></div>
+      <div class="q-opt" data-idx="3" onclick="selectOpt(2,3)"><div class="opt-ltr">D</div><div class="opt-txt">Ештеңе шығармайды</div></div>
+    </div>
+    <button class="q-submit" id="qsub2" onclick="submitQ(2,2)">✅ Жіберу</button>
+    <div class="q-fb" id="qfb2"></div>
+  </div>
+
+  <!-- СҰРАҚ 3 -->
+  <div class="quiz-block">
+    <div class="q-num">🐍 Код оқу · Сұрақ 3</div>
+    <div class="q-text">Мына код экранға не шығарады?</div>
+    <div class="code-block">age = 17
+has_id = True
+if age >= 18 or has_id:
+    print("Рұқсат бар")
+else:
+    print("Рұқсат жоқ")</div>
+    <div class="q-opts" id="opts3">
+      <div class="q-opt" data-idx="0" onclick="selectOpt(3,0)"><div class="opt-ltr">A</div><div class="opt-txt">Рұқсат жоқ</div></div>
+      <div class="q-opt" data-idx="1" onclick="selectOpt(3,1)"><div class="opt-ltr">B</div><div class="opt-txt">Рұқсат бар</div></div>
+      <div class="q-opt" data-idx="2" onclick="selectOpt(3,2)"><div class="opt-ltr">C</div><div class="opt-txt">Қате шығады</div></div>
+      <div class="q-opt" data-idx="3" onclick="selectOpt(3,3)"><div class="opt-ltr">D</div><div class="opt-txt">Ештеңе шығармайды</div></div>
+    </div>
+    <button class="q-submit" id="qsub3" onclick="submitQ(3,1)">✅ Жіберу</button>
+    <div class="q-fb" id="qfb3"></div>
+  </div>
+
+</div><!-- /content -->
+</div><!-- /body-wrap -->
+
+<script>
+/* ══ STATE ══ */
+var taskDone = {1:false, 2:false};
+var quizDone = {1:false, 2:false, 3:false};
+var quizSel  = {1:-1, 2:-1, 3:-1};
+var lineCounts = {lines1:1, lines2:1};
+
+/* ══ EDITOR ══ */
+function addLine(id){
+  lineCounts[id]++;
+  var n = lineCounts[id];
+  var div = document.createElement('div');
+  div.className = 'code-line';
+  div.innerHTML = '<div class="line-num">'+n+'</div><textarea class="code-input" rows="1"></textarea>';
+  document.getElementById(id).appendChild(div);
+  div.querySelector('textarea').focus();
+}
+document.addEventListener('input', function(e){
+  if(e.target.classList.contains('code-input')){
+    e.target.style.height = 'auto';
+    e.target.style.height = e.target.scrollHeight + 'px';
+  }
+});
+function getCode(id){
+  return Array.from(document.querySelectorAll('#'+id+' .code-input'))
+    .map(function(i){ return i.value; }).join('\n').trim();
+}
+function n(code){ return code.replace(/\s+/g,' ').toLowerCase().trim(); }
+
+/* ══ HINT ══ */
+function toggleHint(num){
+  var h = document.getElementById('hint'+num);
+  h.style.display = h.style.display === 'block' ? 'none' : 'block';
+}
+
+/* ══ TASK FEEDBACK ══ */
+function showFb(num, ok, msg){
+  var fb = document.getElementById('fb'+num);
+  fb.style.display = 'block';
+  fb.className = 'task-feedback ' + (ok ? 'success' : 'error');
+  fb.innerHTML = msg;
+}
+function markTaskDone(num){
+  taskDone[num] = true;
+  document.getElementById('ind'+num).classList.add('done');
+  checkAllDone();
+}
+
+/* ══════════════════════════════════════
+   ЕСЕП 1 — Ауа райы
+   Критерий: input+int, >35, elif, and, 4 жағдай print
+══════════════════════════════════════ */
+function check1(){
+  if(taskDone[1]) return;
+  var code = n(getCode('lines1'));
+  var out  = document.getElementById('out1');
+
+  if(!code.includes('input')){
+    out.className='output-box err';
+    out.textContent='❌ Қате: input() жоқ. Температураны сұра.'; return;
+  }
+  if(!code.includes('int(')){
+    out.className='output-box err';
+    out.textContent='❌ Қате: int(input()) керек — температура сан болуы керек.'; return;
+  }
+  if(!code.includes('elif')){
+    out.className='output-box err';
+    out.textContent='❌ Қате: elif жоқ. 4 түрлі жағдай үшін if/elif/elif/else қолдан.'; return;
+  }
+  if(!code.includes('and')){
+    out.className='output-box err';
+    out.textContent='❌ Қате: and операторы жоқ. Аралықты тексеру үшін and қолдан (мысалы: temp >= 20 and temp <= 35).'; return;
+  }
+  var prints = (code.match(/print\s*\(/g)||[]).length;
+  if(prints < 4){
+    out.className='output-box err';
+    out.textContent='❌ Қате: print() 4 рет болуы керек — 4 жағдай үшін.'; return;
+  }
+  if(!(code.includes('ыстық') || code.includes('үйде'))){
+    out.className='output-box err';
+    out.textContent='❌ Қате: «Өте ыстық! Үйде қал.» мәтіні жоқ.'; return;
+  }
+  if(!(code.includes('пальто') || code.includes('суық'))){
+    out.className='output-box err';
+    out.textContent='❌ Қате: «Суық! Пальто ки.» мәтіні жоқ.'; return;
+  }
+
+  out.className='output-box';
+  out.textContent='✅ Бағдарлама дұрыс!\n\nМысал нәтижелер:\n> Температураны жаз: 40\n> Өте ыстық! Үйде қал.\n\n> Температураны жаз: 25\n> Жылы, серуендеуге болады.\n\n> Температураны жаз: 12\n> Салқын, жейде ки.\n\n> Температураны жаз: -3\n> Суық! Пальто ки.';
+  showFb(1, true, '🎉 <b>Керемет!</b> if / elif / else тізбегін дұрыс жаздың!');
+  markTaskDone(1);
+}
+
+/* ══════════════════════════════════════
+   ЕСЕП 2 — Баға жүйесі
+   Критерий: input+int, or, elif x3+, 5 жағдай print
+══════════════════════════════════════ */
+function check2(){
+  if(taskDone[2]) return;
+  var code = n(getCode('lines2'));
+  var out  = document.getElementById('out2');
+
+  if(!code.includes('input')){
+    out.className='output-box err';
+    out.textContent='❌ Қате: input() жоқ. Балды сұра.'; return;
+  }
+  if(!code.includes('int(')){
+    out.className='output-box err';
+    out.textContent='❌ Қате: int(input()) керек.'; return;
+  }
+  if(!code.includes('or')){
+    out.className='output-box err';
+    out.textContent='❌ Қате: or операторы жоқ. Диапазоннан тыс тексеру үшін or қолдан (score < 0 or score > 100).'; return;
+  }
+  var elifCount = (code.match(/elif/g)||[]).length;
+  if(elifCount < 3){
+    out.className='output-box err';
+    out.textContent='❌ Қате: elif кем дегенде 3 рет болуы керек — 5 жағдай үшін.'; return;
+  }
+  if(!(code.includes('өте жақсы') || code.includes('5'))){
+    out.className='output-box err';
+    out.textContent='❌ Қате: «5 — Өте жақсы» мәтіні жоқ.'; return;
+  }
+  if(!(code.includes('қате енгізу') || code.includes('қате'))){
+    out.className='output-box err';
+    out.textContent='❌ Қате: диапазоннан тыс болғанда «Қате енгізу!» мәтіні жоқ.'; return;
+  }
+
+  out.className='output-box';
+  out.textContent='✅ Бағдарлама дұрыс!\n\nМысал нәтижелер:\n> Балыңды жаз: 95\n> 5 — Өте жақсы\n\n> Балыңды жаз: 80\n> 4 — Жақсы\n\n> Балыңды жаз: 60\n> 3 — Қанағаттанарлық\n\n> Балыңды жаз: 40\n> 2 — Қанағаттанарлықсыз\n\n> Балыңды жаз: 110\n> Қате енгізу! 0–100 аралығында болуы керек.';
+  showFb(2, true, '🎉 <b>Тамаша!</b> Күрделі elif тізбегін дұрыс жаздың!');
+  markTaskDone(2);
+}
+
+/* ══ QUIZ LOGIC ══ */
+function selectOpt(qNum, idx){
+  if(quizDone[qNum]) return;
+  quizSel[qNum] = idx;
+  document.querySelectorAll('#opts'+qNum+' .q-opt').forEach(function(o){
+    o.classList.remove('selected');
+  });
+  document.querySelector('#opts'+qNum+' [data-idx="'+idx+'"]').classList.add('selected');
+}
+
+function submitQ(qNum, correctIdx){
+  if(quizDone[qNum]) return;
+  var sel = quizSel[qNum];
+  var fb  = document.getElementById('qfb'+qNum);
+  if(sel === -1){
+    fb.className='q-fb err'; fb.textContent='⚠️ Жауап таңда!'; return;
+  }
+  if(sel === correctIdx){
+    quizDone[qNum] = true;
+    document.querySelectorAll('#opts'+qNum+' .q-opt').forEach(function(o){
+      o.classList.add('locked-opt');
+      if(parseInt(o.dataset.idx) === correctIdx) o.classList.add('correct');
+    });
+    document.getElementById('qsub'+qNum).style.display = 'none';
+    var explains = {
+      1: '✅ <b>Дұрыс!</b> x=15 болғандықтан <b>x > 20</b> жалған, бірақ <b>x > 10</b> ақиқат → <b>elif</b> блогы орындалады.',
+      2: '✅ <b>Дұрыс!</b> a және b екеуі де 10, сондықтан <b>a > b</b> жалған, <b>a == b</b> ақиқат → <b>«Тең»</b> шығады.',
+      3: '✅ <b>Дұрыс!</b> age=17 болса да <b>has_id=True</b>, <b>or</b> операторында бір шарт ақиқат болса жеткілікті → «Рұқсат бар».'
+    };
+    fb.className='q-fb ok'; fb.innerHTML = explains[qNum];
+    checkAllDone();
+  } else {
+    var sel_el = document.querySelector('#opts'+qNum+' [data-idx="'+sel+'"]');
+    sel_el.classList.add('wrong');
+    fb.className='q-fb err'; fb.innerHTML='❌ <b>Қате!</b> Қайтадан таңдап көр.';
+    setTimeout(function(){
+      sel_el.classList.remove('wrong','selected');
+      quizSel[qNum] = -1;
+      fb.style.display = 'none';
+    }, 900);
+  }
+}
+
+/* ══ CHECK ALL ══ */
+function checkAllDone(){
+  var tDone = taskDone[1] && taskDone[2];
+  var qDone = quizDone[1] && quizDone[2] && quizDone[3];
+  if(tDone && qDone) setTimeout(showModal, 500);
+}
+
+/* ══ RESULT MODAL ══ */
+function showModal(){
+  if(document.getElementById('resModal')) return;
+  var m = document.createElement('div');
+  m.id = 'resModal';
+  m.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(12px);z-index:1000;display:flex;align-items:center;justify-content:center;';
+  m.innerHTML = '<div style="background:linear-gradient(160deg,#1e1050,#2d1b6b);border:1px solid rgba(167,139,250,0.25);border-radius:24px;padding:40px 36px;text-align:center;max-width:440px;width:90%;animation:popIn 0.3s ease;">'
+    +'<div style="font-size:64px;margin-bottom:14px">🏆</div>'
+    +'<div style="font-size:28px;font-weight:800;margin-bottom:6px">5 / 5</div>'
+    +'<div style="font-size:15px;font-weight:700;color:#4ade80;margin-bottom:10px">✅ Сабақты өттіңіз!</div>'
+    +'<div style="font-size:13px;color:rgba(255,255,255,0.45);margin-bottom:28px;line-height:1.7">Тамаша! 2 есеп + 3 сұрақ — барлығы дұрыс! if / elif / else операторын жетік меңгердің.</div>'
+    +'<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">'
+    +'<button onclick="document.getElementById(\'resModal\').remove()" style="padding:13px 22px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.6);border-radius:12px;font-size:13px;font-family:Segoe UI,sans-serif;font-weight:700;cursor:pointer;">Жабу</button>'
+    +'<a href="lesson12.html" style="text-decoration:none;"><button style="padding:13px 26px;background:linear-gradient(135deg,#059669,#10b981);border:none;color:white;border-radius:12px;font-size:14px;font-family:Segoe UI,sans-serif;font-weight:700;cursor:pointer;box-shadow:0 5px 18px rgba(16,185,129,0.4)">Келесі сабақ: Қайталау операторы →</button></a>'
+    +'</div></div>';
+  document.body.appendChild(m);
+  if(typeof saveProgress==="function") saveProgress(12);
+}
+
+/* ══ LOCKED TOAST ══ */
+function showWarnToast(msg){
+  var el=document.getElementById('wT');
+  if(!el){ el=document.createElement('div'); el.id='wT';
+    el.style.cssText='position:fixed;top:78px;right:22px;background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.35);color:#fcd34d;padding:12px 18px;border-radius:12px;font-size:14px;font-weight:600;z-index:500;backdrop-filter:blur(8px);transition:opacity 0.3s;';
+    document.body.appendChild(el); }
+  el.textContent=msg; el.style.opacity='1';
+  setTimeout(function(){ el.style.opacity='0'; },2800);
+}
+window.addEventListener('load',function(){
+  document.querySelectorAll('.lesson.locked').forEach(function(l){
+    l.addEventListener('click',function(){
+      showWarnToast('🔒 Алдыңғы сабақты аяқтамай бұл сабақты ашу мүмкін емес!');
+    });
+  });
+});
+var s=document.createElement('style');
+s.textContent='@keyframes popIn{from{opacity:0;transform:scale(0.85) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}';
+document.head.appendChild(s);
+</script>
+<script src="sidebar.js"></script><script>window.addEventListener("load",function(){buildSidebar(11);});</script></body>
+</html>

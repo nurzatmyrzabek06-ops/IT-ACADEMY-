@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Менің курстарым — IT Academy</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+body{background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);color:white;min-height:100vh;display:flex;flex-direction:column;}
+
+header{background:rgba(255,255,255,0.05);backdrop-filter:blur(12px);padding:18px 40px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.08);position:sticky;top:0;z-index:200;}
+.logo{font-size:22px;font-weight:800;background:linear-gradient(90deg,#a78bfa,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;cursor:pointer;}
+nav{display:flex;align-items:center;}
+nav a{margin-left:22px;text-decoration:none;color:rgba(255,255,255,0.55);font-weight:500;font-size:14px;transition:0.3s;}
+nav a:hover{color:white;}
+nav a.active{color:#a78bfa;font-weight:700;}
+.nav-user{display:flex;align-items:center;gap:9px;margin-left:22px;cursor:pointer;}
+.nav-avatar{width:33px;height:33px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:17px;border:2px solid rgba(167,139,250,0.4);}
+.nav-name{font-size:13px;font-weight:700;color:#a78bfa;}
+.nav-login-btn{margin-left:22px;padding:7px 18px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border:none;color:white;border-radius:20px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Segoe UI',sans-serif;transition:0.3s;text-decoration:none;}
+
+.page-wrap{flex:1;max-width:1060px;margin:0 auto;width:100%;padding:36px 28px 60px;}
+
+/* TABS */
+.tabs{display:flex;gap:6px;margin-bottom:28px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:5px;}
+.tab{flex:1;padding:11px 16px;border:none;border-radius:10px;font-size:14px;font-family:'Segoe UI',sans-serif;font-weight:600;cursor:pointer;transition:0.25s;color:rgba(255,255,255,0.45);background:transparent;}
+.tab:hover{color:rgba(255,255,255,0.75);}
+.tab.active{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;box-shadow:0 4px 14px rgba(99,102,241,0.35);}
+
+/* SECTION TITLE */
+.sec-title{font-size:18px;font-weight:800;color:white;margin-bottom:18px;display:flex;align-items:center;gap:10px;}
+.sec-title .tag{font-size:12px;font-weight:600;color:#a78bfa;background:rgba(99,102,241,0.13);border:1px solid rgba(99,102,241,0.25);padding:3px 12px;border-radius:20px;}
+
+/* STATS ROW */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px;}
+.s-card{background:rgba(255,255,255,0.05);border:1.5px solid rgba(255,255,255,0.08);border-radius:16px;padding:18px 14px;text-align:center;transition:0.3s;}
+.s-card:hover{border-color:rgba(99,102,241,0.3);transform:translateY(-2px);}
+.s-icon{font-size:22px;margin-bottom:7px;}
+.s-num{font-size:26px;font-weight:800;color:white;line-height:1;}
+.s-label{font-size:11px;color:rgba(255,255,255,0.38);margin-top:4px;font-weight:600;}
+
+/* COURSE CARD */
+.courses-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:32px;}
+.course-card{background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.08);border-radius:18px;padding:22px;transition:0.3s;position:relative;overflow:hidden;}
+.course-card::before{content:'';position:absolute;top:-30px;right:-30px;width:100px;height:100px;border-radius:50%;background:radial-gradient(circle,rgba(167,139,250,0.07),transparent 70%);}
+.course-card:hover{border-color:rgba(99,102,241,0.35);transform:translateY(-3px);box-shadow:0 10px 28px rgba(0,0,0,0.25);}
+.cc-top{display:flex;align-items:flex-start;gap:14px;margin-bottom:16px;}
+.cc-icon{width:52px;height:52px;border-radius:14px;background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.2);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
+.cc-info{flex:1;}
+.cc-title{font-size:14px;font-weight:800;color:white;margin-bottom:4px;line-height:1.4;}
+.cc-meta{display:flex;gap:7px;flex-wrap:wrap;}
+.cc-tag{font-size:10px;font-weight:600;padding:2px 9px;border-radius:20px;background:rgba(99,102,241,0.13);border:1px solid rgba(99,102,241,0.22);color:rgba(255,255,255,0.5);}
+.cc-tag.green{background:rgba(34,197,94,0.1);border-color:rgba(34,197,94,0.25);color:#4ade80;}
+.cc-tag.orange{background:rgba(245,158,11,0.1);border-color:rgba(245,158,11,0.25);color:#fcd34d;}
+
+/* PROGRESS */
+.cc-progress{margin-bottom:14px;}
+.pr-row{display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,0.38);margin-bottom:6px;font-weight:600;}
+.pr-row span:last-child{color:#a78bfa;}
+.pr-track{height:6px;background:rgba(255,255,255,0.07);border-radius:4px;overflow:hidden;}
+.pr-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#6366f1,#a78bfa);transition:width 0.8s ease;}
+.pr-fill.green{background:linear-gradient(90deg,#059669,#10b981);}
+
+/* LESSONS LIST */
+.cc-lessons{display:flex;flex-direction:column;gap:5px;margin-bottom:16px;}
+.lesson-row{display:flex;align-items:center;gap:9px;font-size:12px;color:rgba(255,255,255,0.45);}
+.lesson-row.done{color:rgba(255,255,255,0.65);}
+.l-check{width:16px;height:16px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.15);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px;}
+.lesson-row.done .l-check{background:#22c55e;border-color:#16a34a;color:white;}
+
+/* CC ACTIONS */
+.cc-actions{display:flex;gap:9px;}
+.cc-btn{flex:1;padding:10px;border:none;border-radius:10px;font-size:13px;font-family:'Segoe UI',sans-serif;font-weight:700;cursor:pointer;transition:0.3s;text-decoration:none;text-align:center;}
+.cc-btn.primary{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;box-shadow:0 3px 10px rgba(99,102,241,0.3);}
+.cc-btn.primary:hover{box-shadow:0 5px 16px rgba(99,102,241,0.5);transform:translateY(-1px);}
+.cc-btn.secondary{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);}
+.cc-btn.secondary:hover{background:rgba(255,255,255,0.1);color:white;}
+.cc-btn.cert{background:linear-gradient(135deg,#d97706,#f59e0b);color:white;box-shadow:0 3px 10px rgba(245,158,11,0.25);}
+.cc-btn.cert:hover{box-shadow:0 5px 16px rgba(245,158,11,0.45);}
+
+/* COMPLETED BADGE */
+.done-badge{position:absolute;top:14px;right:14px;background:linear-gradient(135deg,#059669,#10b981);color:white;font-size:10px;font-weight:700;padding:4px 10px;border-radius:20px;box-shadow:0 2px 8px rgba(16,185,129,0.3);}
+
+/* EMPTY STATE */
+.empty-state{text-align:center;padding:60px 20px;background:rgba(255,255,255,0.03);border:1.5px dashed rgba(255,255,255,0.1);border-radius:20px;}
+.empty-icon{font-size:52px;margin-bottom:16px;}
+.empty-title{font-size:18px;font-weight:700;color:white;margin-bottom:8px;}
+.empty-sub{font-size:13px;color:rgba(255,255,255,0.38);line-height:1.8;margin-bottom:22px;}
+.empty-btn{display:inline-block;padding:12px 28px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border:none;color:white;border-radius:12px;font-size:14px;font-family:'Segoe UI',sans-serif;font-weight:700;cursor:pointer;text-decoration:none;transition:0.3s;box-shadow:0 4px 14px rgba(99,102,241,0.35);}
+.empty-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(99,102,241,0.5);}
+
+/* ── CERTIFICATES ── */
+.certs-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
+.cert-card{background:linear-gradient(135deg,rgba(245,158,11,0.1),rgba(217,119,6,0.06));border:1.5px solid rgba(245,158,11,0.25);border-radius:18px;padding:28px 24px;position:relative;overflow:hidden;transition:0.3s;}
+.cert-card:hover{border-color:rgba(245,158,11,0.45);transform:translateY(-3px);box-shadow:0 10px 28px rgba(0,0,0,0.25);}
+.cert-card::before{content:'';position:absolute;top:-40px;right:-40px;width:130px;height:130px;border-radius:50%;background:radial-gradient(circle,rgba(245,158,11,0.1),transparent 70%);}
+.cert-card::after{content:'';position:absolute;bottom:-30px;left:-30px;width:90px;height:90px;border-radius:50%;background:radial-gradient(circle,rgba(245,158,11,0.07),transparent 70%);}
+.cert-top{display:flex;align-items:center;gap:14px;margin-bottom:18px;position:relative;z-index:1;}
+.cert-medal{font-size:40px;}
+.cert-info{}
+.cert-title{font-size:14px;font-weight:800;color:white;margin-bottom:4px;}
+.cert-sub{font-size:11px;color:rgba(255,255,255,0.42);line-height:1.6;}
+.cert-divider{height:1px;background:rgba(245,158,11,0.18);margin-bottom:16px;position:relative;z-index:1;}
+.cert-details{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;position:relative;z-index:1;}
+.cert-detail{}
+.cd-label{font-size:10px;font-weight:700;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;}
+.cd-val{font-size:13px;font-weight:700;color:rgba(255,255,255,0.8);}
+.cert-id{font-size:10px;color:rgba(255,255,255,0.25);font-family:'Courier New',monospace;margin-bottom:16px;position:relative;z-index:1;}
+.cert-actions{display:flex;gap:8px;position:relative;z-index:1;}
+.cert-btn{flex:1;padding:10px;border:none;border-radius:10px;font-size:12px;font-family:'Segoe UI',sans-serif;font-weight:700;cursor:pointer;transition:0.3s;text-align:center;text-decoration:none;}
+.cert-btn.gold{background:linear-gradient(135deg,#d97706,#f59e0b);color:white;box-shadow:0 3px 10px rgba(245,158,11,0.3);}
+.cert-btn.gold:hover{box-shadow:0 5px 16px rgba(245,158,11,0.5);}
+.cert-btn.ghost{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);}
+.cert-btn.ghost:hover{background:rgba(255,255,255,0.1);color:white;}
+.cert-stars{color:#fcd34d;font-size:13px;letter-spacing:2px;margin-bottom:6px;}
+
+/* CERT MODAL */
+.cert-modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(12px);z-index:500;align-items:center;justify-content:center;}
+.cert-modal-bg.open{display:flex;}
+.cert-modal{background:linear-gradient(160deg,#1a1040,#2d1b6b);border:1px solid rgba(245,158,11,0.3);border-radius:24px;padding:0;width:94%;max-width:600px;position:relative;animation:popIn 0.3s ease;overflow:hidden;}
+.cert-preview{background:linear-gradient(135deg,#1e1b4b,#312e81);padding:40px 48px;text-align:center;position:relative;border-bottom:1px solid rgba(245,158,11,0.2);}
+.cert-preview::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(245,158,11,0.12),transparent 60%),radial-gradient(ellipse at 20% 100%,rgba(99,102,241,0.1),transparent 50%);}
+.cp-logo{font-size:16px;font-weight:800;background:linear-gradient(90deg,#a78bfa,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:20px;position:relative;z-index:1;}
+.cp-trophy{font-size:56px;margin-bottom:14px;position:relative;z-index:1;}
+.cp-title{font-size:13px;font-weight:700;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;position:relative;z-index:1;}
+.cp-name{font-size:28px;font-weight:800;color:white;margin-bottom:8px;position:relative;z-index:1;}
+.cp-course{font-size:15px;font-weight:700;color:#fcd34d;margin-bottom:18px;position:relative;z-index:1;}
+.cp-line{height:1px;background:linear-gradient(90deg,transparent,rgba(245,158,11,0.4),transparent);margin-bottom:18px;}
+.cp-details{display:flex;justify-content:space-around;position:relative;z-index:1;}
+.cpd{text-align:center;}
+.cpd-label{font-size:10px;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;}
+.cpd-val{font-size:13px;font-weight:700;color:rgba(255,255,255,0.75);}
+.cert-modal-footer{padding:20px 28px;display:flex;gap:10px;align-items:center;justify-content:space-between;}
+.cm-id{font-size:11px;color:rgba(255,255,255,0.22);font-family:'Courier New',monospace;}
+.cm-btns{display:flex;gap:9px;}
+.cm-btn{padding:10px 20px;border:none;border-radius:10px;font-size:13px;font-family:'Segoe UI',sans-serif;font-weight:700;cursor:pointer;transition:0.3s;text-decoration:none;}
+.cm-btn.gold{background:linear-gradient(135deg,#d97706,#f59e0b);color:white;}
+.cm-btn.ghost{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.6);}
+.cm-btn.close-btn{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);color:#fca5a5;}
+.modal-x{position:absolute;top:12px;right:14px;background:rgba(255,255,255,0.07);border:none;color:rgba(255,255,255,0.35);width:28px;height:28px;border-radius:50%;font-size:14px;cursor:pointer;z-index:10;display:flex;align-items:center;justify-content:center;transition:0.2s;}
+.modal-x:hover{background:rgba(239,68,68,0.2);color:#fca5a5;}
+
+/* AUTH WALL */
+.auth-wall{text-align:center;padding:70px 24px;background:rgba(255,255,255,0.03);border:1.5px dashed rgba(255,255,255,0.1);border-radius:20px;}
+.aw-icon{font-size:56px;margin-bottom:16px;}
+.aw-title{font-size:20px;font-weight:800;color:white;margin-bottom:8px;}
+.aw-sub{font-size:14px;color:rgba(255,255,255,0.38);line-height:1.8;margin-bottom:24px;}
+.aw-btn{display:inline-block;padding:13px 32px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border:none;color:white;border-radius:12px;font-size:14px;font-family:'Segoe UI',sans-serif;font-weight:700;cursor:pointer;text-decoration:none;box-shadow:0 5px 18px rgba(99,102,241,0.35);transition:0.3s;}
+.aw-btn:hover{transform:translateY(-2px);}
+
+/* NOT-LOGGED section hidden */
+.hidden{display:none;}
+
+@keyframes popIn{from{opacity:0;transform:scale(0.88) translateY(16px);}to{opacity:1;transform:scale(1) translateY(0);}}
+footer{text-align:center;padding:14px;font-size:12px;color:rgba(255,255,255,0.17);border-top:1px solid rgba(255,255,255,0.04);}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo" onclick="location.href='Басты бет.html'">IT Academy</div>
+  <nav>
+    <a href="main.html">Басты бет</a>
+    <a href="about.html">Біз туралы</a>
+    <a href="mycours.html" class="active">Менің курстарым</a>
+    <a href="contact.html">Байланыс</a>
+    <a href="help.html">Көмек</a>
+    <span id="navArea"></span>
+  </nav>
+</header>
+
+<div class="page-wrap">
+
+  <!-- NOT LOGGED IN -->
+  <div id="authWall" class="auth-wall hidden">
+    <div class="aw-icon">🔐</div>
+    <div class="aw-title">Кіру қажет</div>
+    <div class="aw-sub">Курстарыңыз бен сертификаттарыңызды көру үшін<br>жүйеге кіріңіз немесе тіркеліңіз.</div>
+    <a href="profil.html" class="aw-btn">Кіру / Тіркелу →</a>
+  </div>
+
+  <!-- LOGGED IN CONTENT -->
+  <div id="mainContent" class="hidden">
+
+    <!-- TABS -->
+    <div class="tabs">
+      <button class="tab active" id="tab1" onclick="switchTab(1)">📚 Менің курстарым</button>
+      <button class="tab" id="tab2" onclick="switchTab(2)">🏆 Сертификаттарым</button>
+    </div>
+
+    <!-- ══════════ TAB 1: КУРСТАР ══════════ -->
+    <div id="panel1">
+
+      <!-- STATS -->
+      <div class="stats-row" id="statsRow"></div>
+
+      <!-- ACTIVE COURSES -->
+      <div id="activeSection">
+        <div class="sec-title">📖 Оқып жатқан курстар <span id="activeCount">0 курс</span></div>
+        <div class="courses-grid" id="activeCourses"></div>
+      </div>
+
+      <!-- COMPLETED COURSES -->
+      <div id="completedSection" class="hidden">
+        <div class="sec-title">✅ Аяқталған курстар <span id="doneCount">0 курс</span></div>
+        <div class="courses-grid" id="doneCourses"></div>
+      </div>
+
+      <!-- EMPTY -->
+      <div id="emptyActive" class="empty-state hidden">
+        <div class="empty-icon">📚</div>
+        <div class="empty-title">Курс жоқ</div>
+        <div class="empty-sub">Сіз әлі ешқандай курсқа қосылмаған екенсіз.<br>Басты беттен қызықты курс таңдаңыз!</div>
+        <a href="main.html" class="empty-btn">🚀 Курстарды қарау</a>
+      </div>
+
+    </div>
+
+    <!-- ══════════ TAB 2: СЕРТИФИКАТТАР ══════════ -->
+    <div id="panel2" class="hidden">
+
+      <!-- CERTS GRID -->
+      <div id="certsSection">
+        <div class="sec-title">🏆 Алған сертификаттарым <span id="certCount">0 сертификат</span></div>
+        <div class="certs-grid" id="certsGrid"></div>
+      </div>
+
+      <!-- EMPTY CERTS -->
+      <div id="emptyCerts" class="empty-state hidden">
+        <div class="empty-icon">🏅</div>
+        <div class="empty-title">Сертификат жоқ</div>
+        <div class="empty-sub">Курсты толық аяқтасаңыз сертификат автоматты беріледі.<br>Оқуды жалғастырыңыз!</div>
+        <a href="main.html" class="empty-btn">📚 Курсқа оралу</a>
+      </div>
+
+    </div>
+
+  </div><!-- /mainContent -->
+
+</div><!-- /page-wrap -->
+
+<!-- CERTIFICATE MODAL -->
+<div class="cert-modal-bg" id="certModalBg" onclick="closeCertModal(event)">
+  <div class="cert-modal">
+    <button class="modal-x" onclick="closeCertModalBtn()">✕</button>
+    <div class="cert-preview">
+      <div class="cp-logo">IT Academy</div>
+      <div class="cp-trophy">🏆</div>
+      <div class="cp-title">Сертификат</div>
+      <div class="cp-name" id="cm-student"></div>
+      <div class="cp-course" id="cm-course"></div>
+      <div class="cp-line"></div>
+      <div class="cp-details">
+        <div class="cpd"><div class="cpd-label">Күні</div><div class="cpd-val" id="cm-date"></div></div>
+        <div class="cpd"><div class="cpd-label">Ұзақтығы</div><div class="cpd-val" id="cm-dur"></div></div>
+        <div class="cpd"><div class="cpd-label">Баға</div><div class="cpd-val" id="cm-grade"></div></div>
+      </div>
+    </div>
+    <div class="cert-modal-footer">
+      <div class="cm-id" id="cm-id"></div>
+      <div class="cm-btns">
+        <button class="cm-btn ghost" onclick="closeCertModalBtn()">Жабу</button>
+        <button class="cm-btn gold" onclick="printCert()">⬇️ Жүктеу</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>© 2026 IT Academy. Барлық құқықтар қорғалған.</footer>
+
+<script>
+const COURSES = [
+  {id:'algo',icon:'🧮',title:'Алгоритмдеу және бағдарламалау негіздері',tag:'Бағдарламалау',dur:'15 сабақ',durNum:15,level:'Бастауыш',link:'python-course.html'},
+  {id:'react',icon:'⚛️',title:'React Негіздері',tag:'Фронтенд',dur:'7 сабақ',durNum:7,level:'Орта',link:''},
+  {id:'sql',icon:'🗄️',title:'SQL Продвинутый',tag:'Дерекқор',dur:'7 сабақ',durNum:7,level:'Орта',link:''},
+  {id:'py',icon:'🐍',title:'Python Advanced',tag:'Бағдарламалау',dur:'7 сабақ',durNum:7,level:'Жоғары',link:''},
+  {id:'web',icon:'🎨',title:'Web Design',tag:'Дизайн',dur:'6 сабақ',durNum:6,level:'Бастауыш',link:''},
+  {id:'node',icon:'🟢',title:'Node.js Бастапқы',tag:'Бэкенд',dur:'7 сабақ',durNum:7,level:'Орта',link:''},
+  {id:'ds',icon:'📊',title:'Data Science',tag:'Деректер',dur:'7 сабақ',durNum:7,level:'Жоғары',link:''},
+  {id:'ml',icon:'🤖',title:'Machine Learning',tag:'AI/ML',dur:'7 сабақ',durNum:7,level:'Жоғары',link:''},
+  {id:'linux',icon:'🐧',title:'Linux негіздері',tag:'Жүйелер',dur:'6 сабақ',durNum:6,level:'Бастауыш',link:''},
+];
+
+const gd = (k,d) => { try{ return JSON.parse(localStorage.getItem('ita_'+k))??d; }catch{ return d; } };
+const sd = (k,v) => localStorage.setItem('ita_'+k, JSON.stringify(v));
+const getUser = () => gd('user', null);
+
+// Прогресс базадан оқылады (get_progress.php)
+function getProgress(id, email){
+  // Тек python курсы үшін базадан оқу, қалғандары 0
+  return 0;
+}
+
+function getCertDate(id){
+  const dates = {algo:'2025-12-18', py:'2026-01-05'};
+  return dates[id] || '2026-03-01';
+}
+
+function formatDate(d){
+  const months = ['қаңтар','ақпан','наурыз','сәуір','мамыр','маусым','шілде','тамыз','қыркүйек','қазан','қараша','желтоқсан'];
+  const [y,m,day] = d.split('-');
+  return day+' '+months[parseInt(m)-1]+' '+y;
+}
+
+function genCertId(id, email){
+  let h = 0;
+  const s = id + email;
+  for(let i=0;i<s.length;i++) h = (h<<5)-h+s.charCodeAt(i)|0;
+  return 'ITA-'+Math.abs(h).toString(16).toUpperCase().slice(0,8);
+}
+
+/* ── RENDER NAV ── */
+function renderNav(){
+  const u = getUser();
+  const el = document.getElementById('navArea');
+  if(u){
+    el.innerHTML = `<span class="nav-user" onclick="location.href='profil.html'">
+      <div class="nav-avatar">${u.avatar||'🧑‍💻'}</div>
+      <span class="nav-name">${u.first_name}</span>
+    </span>`;
+  } else {
+    el.innerHTML = `<a href="profil.html" class="nav-login-btn">Кіру / Тіркелу</a>`;
+  }
+}
+
+/* ── MAIN RENDER ── */
+window.addEventListener('load', function(){
+  renderNav();
+  const u = getUser();
+  if(!u){
+    document.getElementById('authWall').classList.remove('hidden');
+    return;
+  }
+  document.getElementById('mainContent').classList.remove('hidden');
+  renderAll(u);
+});
+
+function renderAll(u){
+  const myCourses = gd('courses_'+u.email, []);
+  if(!myCourses.length){
+    document.getElementById('statsRow').innerHTML = buildStats(0,0,0,0);
+    document.getElementById('emptyActive').classList.remove('hidden');
+    document.getElementById('activeSection').classList.add('hidden');
+    renderCerts(u, []);
+    return;
+  }
+
+  // Базадан max_lesson оқу
+  fetch('get_progress.php?user_id=' + u.id)
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      var maxLesson = parseInt(data.max_lesson) || 0;
+      // 15 сабақтың бәрі аяқталса 100%
+      var pythonProg = Math.round((maxLesson / 15) * 100);
+      if(maxLesson >= 15) pythonProg = 100;
+
+      const active = [], done = [], certs = [];
+      myCourses.forEach(function(id){
+        const c = COURSES.find(x => x.id === id);
+        if(!c) return;
+        // Тек python/algo курсы үшін базадан прогресс
+        var prog = (id === 'algo' || id === 'py') ? pythonProg : 0;
+        if(prog >= 100){ done.push({...c, prog:100}); certs.push(id); }
+        else { active.push({...c, prog}); }
+      });
+
+  // STATS
+  const totalMins = gd('studyMins_'+u.email, 0);
+  const hours = totalMins >= 60 ? Math.floor(totalMins/60)+'сағ' : totalMins+'мин';
+  document.getElementById('statsRow').innerHTML = buildStats(
+    myCourses.length, done.length, certs.length, hours||'0мин'
+  );
+
+  // ACTIVE
+  if(active.length){
+    document.getElementById('activeCount').textContent = active.length + ' курс';
+    document.getElementById('activeCourses').innerHTML = active.map(c => buildCourseCard(c, u, false)).join('');
+  } else {
+    document.getElementById('activeSection').classList.add('hidden');
+  }
+
+  // DONE
+  if(done.length){
+    document.getElementById('completedSection').classList.remove('hidden');
+    document.getElementById('doneCount').textContent = done.length + ' курс';
+    document.getElementById('doneCourses').innerHTML = done.map(c => buildCourseCard(c, u, true)).join('');
+  }
+
+  // EMPTY
+  if(!active.length && !done.length){
+    document.getElementById('emptyActive').classList.remove('hidden');
+    document.getElementById('activeSection').classList.add('hidden');
+  }
+
+      renderCerts(u, certs);
+    })
+    .catch(function(){
+      // Қате болса прогресс 0
+      renderCerts(u, []);
+    });
+}
+
+function buildStats(total, done, certs, hours){
+  return `
+    <div class="s-card"><div class="s-icon">📚</div><div class="s-num">${total}</div><div class="s-label">Барлық курс</div></div>
+    <div class="s-card"><div class="s-icon">🔄</div><div class="s-num">${total-done}</div><div class="s-label">Оқып жатыр</div></div>
+    <div class="s-card"><div class="s-icon">✅</div><div class="s-num">${done}</div><div class="s-label">Аяқталды</div></div>
+    <div class="s-card"><div class="s-icon">🏆</div><div class="s-num">${certs}</div><div class="s-label">Сертификат</div></div>
+  `;
+}
+
+function buildCourseCard(c, u, isDone){
+  const lessonsTotal = c.durNum;
+  const lessonsDone = Math.round(c.prog / 100 * lessonsTotal);
+  const levelColor = c.level === 'Бастауыш' ? 'green' : c.level === 'Орта' ? 'orange' : '';
+
+  const lessons = [];
+  for(let i = 0; i < Math.min(lessonsTotal, 5); i++){
+    const d = i < lessonsDone;
+    lessons.push(`<div class="lesson-row ${d?'done':''}">
+      <div class="l-check">${d?'✓':''}</div>
+      <span>Сабақ ${i+1}</span>
+    </div>`);
+  }
+  if(lessonsTotal > 5){
+    lessons.push(`<div class="lesson-row" style="color:rgba(255,255,255,0.25);font-size:11px;padding-left:25px;">...және тағы ${lessonsTotal-5} сабақ</div>`);
+  }
+
+  const actionBtn = isDone
+    ? `<a href="${c.link||'#'}" class="cc-btn primary">▶ Қайталау</a>
+       <button class="cc-btn cert" onclick="openCertModal('${c.id}')">🏆 Сертификат</button>`
+    : `<a href="${c.link||'#'}" class="cc-btn primary">▶ Жалғастыру</a>
+       <button class="cc-btn secondary" onclick="">📊 Статистика</button>`;
+
+  return `<div class="course-card">
+    ${isDone ? '<div class="done-badge">✓ Аяқталды</div>' : ''}
+    <div class="cc-top">
+      <div class="cc-icon">${c.icon}</div>
+      <div class="cc-info">
+        <div class="cc-title">${c.title}</div>
+        <div class="cc-meta">
+          <span class="cc-tag">${c.tag}</span>
+          <span class="cc-tag ${levelColor}">${c.level}</span>
+          <span class="cc-tag">${c.dur}</span>
+        </div>
+      </div>
+    </div>
+    <div class="cc-progress">
+      <div class="pr-row"><span>Прогресс</span><span>${c.prog}% · ${lessonsDone}/${lessonsTotal} сабақ</span></div>
+      <div class="pr-track"><div class="pr-fill ${isDone?'green':''}" style="width:${c.prog}%"></div></div>
+    </div>
+    <div class="cc-lessons">${lessons.join('')}</div>
+    <div class="cc-actions">${actionBtn}</div>
+  </div>`;
+}
+
+function renderCerts(u, certIds){
+  const grid = document.getElementById('certsGrid');
+  document.getElementById('certCount').textContent = certIds.length + ' сертификат';
+
+  if(!certIds.length){
+    document.getElementById('certsSection').classList.add('hidden');
+    document.getElementById('emptyCerts').classList.remove('hidden');
+    return;
+  }
+
+  grid.innerHTML = certIds.map(function(id){
+    const c = COURSES.find(x => x.id === id);
+    if(!c) return '';
+    const certId = genCertId(id, u.email);
+    const date = formatDate(getCertDate(id));
+    return `<div class="cert-card">
+      <div class="cert-top">
+        <div class="cert-medal">🏆</div>
+        <div class="cert-info">
+          <div class="cert-stars">★★★★★</div>
+          <div class="cert-title">${c.title}</div>
+          <div class="cert-sub">${c.tag} · ${c.level} · ${c.dur}</div>
+        </div>
+      </div>
+      <div class="cert-divider"></div>
+      <div class="cert-details">
+        <div class="cert-detail"><div class="cd-label">Оқушы</div><div class="cd-val">${u.first_name} ${u.last_name||''}</div></div>
+        <div class="cert-detail"><div class="cd-label">Берілген күні</div><div class="cd-val">${date}</div></div>
+        <div class="cert-detail"><div class="cd-label">Ұзақтығы</div><div class="cd-val">${c.dur}</div></div>
+        <div class="cert-detail"><div class="cd-label">Баға</div><div class="cd-val">Үздік ✨</div></div>
+      </div>
+      <div class="cert-id">ID: ${certId}</div>
+      <div class="cert-actions">
+        <button class="cert-btn gold" onclick="openCertModal('${id}')">👁️ Көру</button>
+        <button class="cert-btn ghost" onclick="printCert('${id}')">⬇️ Жүктеу</button>
+        <button class="cert-btn ghost" onclick="shareLinkedIn()">🔗 LinkedIn</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ── TABS ── */
+function switchTab(n){
+  [1,2].forEach(function(i){
+    document.getElementById('tab'+i).classList.toggle('active', i===n);
+    document.getElementById('panel'+i).classList.toggle('hidden', i!==n);
+  });
+}
+
+/* ── CERT MODAL ── */
+var currentCertId = null;
+function openCertModal(id){
+  const u = getUser();
+  if(!u) return;
+  const c = COURSES.find(x => x.id === id);
+  if(!c) return;
+  currentCertId = id;
+  document.getElementById('cm-student').textContent = (u.first_name||'') + ' ' + (u.last_name||'');
+  document.getElementById('cm-course').textContent = c.title;
+  document.getElementById('cm-date').textContent = formatDate(getCertDate(id));
+  document.getElementById('cm-dur').textContent = c.dur;
+  document.getElementById('cm-grade').textContent = 'Үздік ✨';
+  document.getElementById('cm-id').textContent = 'ID: ' + genCertId(id, u.email);
+  document.getElementById('certModalBg').classList.add('open');
+}
+function closeCertModal(e){
+  if(e.target === document.getElementById('certModalBg')) closeCertModalBtn();
+}
+function closeCertModalBtn(){
+  document.getElementById('certModalBg').classList.remove('open');
+  currentCertId = null;
+}
+function printCert(certId){
+  const u = getUser();
+  if(!u){ alert('Жүйеге кіріңіз!'); return; }
+
+  // Модал ашылмаған болса — алдымен ашамыз
+  if(certId && !currentCertId){
+    openCertModal(certId);
+    // Модал анимациясы аяқталған соң жүктейміз
+    setTimeout(function(){ doDownload(u); }, 400);
+    return;
+  }
+  doDownload(u);
+}
+
+function doDownload(u){
+  const modal = document.querySelector('.cert-preview');
+  if(!modal){ alert('Сертификат табылмады!'); return; }
+
+  function capture(){
+    html2canvas(modal, {
+      scale: 3,
+      backgroundColor: '#1a1040',
+      useCORS: true,
+      allowTaint: true,
+      logging: false
+    }).then(function(canvas){
+      const name = ((u.first_name||'') + '_' + (u.last_name||'')).replace(/[^a-zA-Z0-9_]/g,'') || 'student';
+      const dataUrl = canvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.href = dataUrl;
+      link.download = 'IT_Academy_Certificate_' + name + '.png';
+      link.style.display = 'none';
+      document.body.appendChild(link);
+      link.click();
+      setTimeout(function(){ document.body.removeChild(link); }, 1000);
+    }).catch(function(err){
+      console.error(err);
+      alert('Жүктеу қатесі. Қайталап көріңіз.');
+    });
+  }
+
+  if(typeof html2canvas === 'function'){
+    capture();
+  } else {
+    const script = document.createElement('script');
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+    script.onload = capture;
+    script.onerror = function(){ alert('Кітапхана жүктелмеді. Интернет байланысын тексеріңіз.'); };
+    document.head.appendChild(script);
+  }
+}
+
+function shareLinkedIn(){
+  const u = getUser();
+  const c = currentCertId ? COURSES.find(x => x.id === currentCertId) : null;
+  const title = c ? c.title : 'IT Academy курсы';
+  const certId = (u && currentCertId) ? genCertId(currentCertId, u.email) : '';
+  const url = encodeURIComponent('https://itacademy.kz');
+  const name = encodeURIComponent('IT Academy');
+  const certName = encodeURIComponent(title);
+  const certNum = encodeURIComponent(certId);
+  const liUrl = `https://www.linkedin.com/profile/add?startTask=CERTIFICATION_NAME&name=${certName}&organizationName=${name}&certUrl=${url}&certId=${certNum}`;
+  window.open(liUrl, '_blank');
+}
+</script>
+</body>
+</html>

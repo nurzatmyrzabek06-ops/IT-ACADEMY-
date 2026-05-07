@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IT Academy Dashboard</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+body{background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);color:white;min-height:100vh;display:flex;flex-direction:column;}
+header{background:rgba(255,255,255,0.05);backdrop-filter:blur(12px);padding:18px 40px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.08);position:sticky;top:0;z-index:200;}
+.logo{font-size:22px;font-weight:800;background:linear-gradient(90deg,#a78bfa,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+nav{display:flex;align-items:center;}
+nav a{margin-left:22px;text-decoration:none;color:rgba(255,255,255,0.55);font-weight:500;font-size:14px;transition:0.3s;}
+nav a:hover{color:white;}
+nav a.active{color:#a78bfa;font-weight:700;}
+.nav-user{display:flex;align-items:center;gap:9px;margin-left:22px;cursor:pointer;}
+.nav-avatar{width:33px;height:33px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:17px;border:2px solid rgba(167,139,250,0.4);}
+.nav-name{font-size:13px;font-weight:700;color:#a78bfa;}
+.nav-login-btn{margin-left:22px;padding:7px 18px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border:none;color:white;border-radius:20px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Segoe UI',sans-serif;transition:0.3s;}
+.nav-login-btn:hover{box-shadow:0 4px 14px rgba(99,102,241,0.5);}
+.container{display:flex;gap:22px;padding:26px;flex:1;}
+.sidebar{width:255px;background:rgba(255,255,255,0.05);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.08);padding:20px;border-radius:20px;display:flex;flex-direction:column;justify-content:space-between;height:calc(100vh - 92px);position:sticky;top:84px;}
+.sb-title{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#a78bfa;font-weight:700;margin-bottom:13px;}
+.side-course{background:rgba(99,102,241,0.12);border:1px solid rgba(99,102,241,0.2);color:rgba(255,255,255,0.8);padding:11px 12px;border-radius:11px;margin-bottom:7px;cursor:pointer;transition:0.3s;font-weight:600;font-size:12px;display:flex;align-items:center;gap:9px;}
+.side-course:hover{background:linear-gradient(135deg,#6366f1,#8b5cf6);border-color:transparent;transform:translateX(4px);color:white;box-shadow:0 4px 14px rgba(99,102,241,0.3);}
+.sc-icon{font-size:15px;flex-shrink:0;}
+.sc-sub{font-size:10px;color:rgba(255,255,255,0.32);margin-top:1px;}
+.no-courses{font-size:12px;color:rgba(255,255,255,0.27);text-align:center;padding:16px 0;line-height:1.9;}
+.help-btn{background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.18);color:rgba(255,255,255,0.5);padding:11px 13px;border-radius:11px;cursor:pointer;display:flex;align-items:center;gap:9px;font-size:13px;font-weight:600;transition:0.3s;text-decoration:none;}
+.help-btn:hover{background:#6366f1;color:white;border-color:transparent;}
+.help-icon{width:25px;height:25px;border-radius:50%;background:#6366f1;color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0;}
+.main{flex:1;display:flex;flex-direction:column;gap:20px;overflow-y:auto;max-height:calc(100vh - 92px);}
+.card{background:rgba(255,255,255,0.05);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.08);padding:22px;border-radius:20px;}
+.card-title{font-size:15px;font-weight:700;color:white;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.stats{display:flex;flex-wrap:wrap;gap:13px;}
+.stat{flex:1;min-width:120px;padding:18px 14px;border-radius:14px;background:rgba(99,102,241,0.13);border:1px solid rgba(99,102,241,0.2);text-align:center;transition:0.3s;position:relative;overflow:hidden;}
+.stat::before{content:'';position:absolute;top:-18px;right:-18px;width:55px;height:55px;border-radius:50%;background:rgba(167,139,250,0.1);}
+.stat:hover{background:rgba(99,102,241,0.25);transform:translateY(-3px);box-shadow:0 8px 22px rgba(99,102,241,0.22);}
+.si{font-size:19px;margin-bottom:5px;display:block;}
+.stat h3{font-size:22px;font-weight:800;color:white;margin-bottom:3px;}
+.stat p{font-size:10px;color:rgba(255,255,255,0.38);font-weight:600;}
+.cal-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:13px;}
+.cal-title{font-size:14px;font-weight:700;color:white;}
+.calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;}
+.dlbl{text-align:center;font-size:10px;font-weight:700;color:rgba(255,255,255,0.27);padding:2px 0;text-transform:uppercase;}
+.day{position:relative;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);padding:11px 3px;text-align:center;border-radius:8px;cursor:pointer;transition:0.2s;font-weight:600;font-size:11px;color:rgba(255,255,255,0.5);}
+.day:hover{background:rgba(99,102,241,0.28);border-color:rgba(99,102,241,0.4);color:white;}
+.day.hh{border-color:rgba(167,139,250,0.24);}
+.day .tt{visibility:hidden;position:absolute;bottom:110%;left:50%;transform:translateX(-50%);background:#1e1b4b;border:1px solid rgba(167,139,250,0.3);color:white;padding:4px 8px;border-radius:6px;font-size:10px;white-space:nowrap;z-index:10;}
+.day:hover .tt{visibility:visible;}
+.day .dot{width:4px;height:4px;border-radius:50%;background:#a78bfa;margin:3px auto 0;display:none;}
+.day.locked{opacity:0.2;pointer-events:none;}
+.day.hh .dot{display:block;}
+.rec-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;}
+.rec-card{background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.17);color:rgba(255,255,255,0.78);padding:18px 14px;border-radius:14px;text-align:center;cursor:pointer;transition:0.3s;font-weight:600;font-size:12px;position:relative;}
+.rc-icon{font-size:24px;margin-bottom:7px;display:block;}
+.rc-tag{font-size:10px;color:rgba(255,255,255,0.28);margin-top:4px;font-weight:500;}
+.rec-card:hover{background:rgba(99,102,241,0.25);border-color:rgba(167,139,250,0.32);transform:translateY(-4px);box-shadow:0 8px 20px rgba(99,102,241,0.2);color:white;}
+.eb{position:absolute;top:8px;right:8px;background:linear-gradient(135deg,#059669,#10b981);color:white;font-size:9px;font-weight:700;padding:3px 7px;border-radius:20px;}
+
+/* MODAL */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.78);backdrop-filter:blur(8px);z-index:500;align-items:center;justify-content:center;}
+.modal-bg.open{display:flex;}
+.modal{background:linear-gradient(160deg,#1a1040,#2d1b6b);border:1px solid rgba(167,139,250,0.22);border-radius:22px;padding:32px;width:92%;max-width:510px;position:relative;animation:mIn 0.26s ease;max-height:88vh;overflow-y:auto;}
+@keyframes mIn{from{opacity:0;transform:scale(0.9) translateY(16px);}to{opacity:1;transform:scale(1) translateY(0);}}
+.mc{position:absolute;top:13px;right:15px;background:rgba(255,255,255,0.07);border:none;color:rgba(255,255,255,0.4);width:28px;height:28px;border-radius:50%;font-size:15px;cursor:pointer;transition:0.2s;display:flex;align-items:center;justify-content:center;}
+.mc:hover{background:rgba(239,68,68,0.2);color:#fca5a5;}
+.mi{font-size:48px;text-align:center;margin-bottom:11px;}
+.mt{font-size:19px;font-weight:800;color:white;margin-bottom:5px;}
+.md{font-size:13px;color:rgba(255,255,255,0.48);line-height:1.7;margin-bottom:16px;}
+.mm{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:18px;}
+.mtag{background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.18);color:rgba(255,255,255,0.62);padding:5px 11px;border-radius:20px;font-size:11px;font-weight:600;}
+.mlt h4{font-size:11px;font-weight:700;color:rgba(255,255,255,0.32);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:9px;}
+.li{display:flex;align-items:center;gap:8px;padding:7px 10px;background:rgba(255,255,255,0.04);border-radius:8px;margin-bottom:5px;font-size:12px;color:rgba(255,255,255,0.62);}
+.ln{width:19px;height:19px;border-radius:50%;background:rgba(99,102,241,0.28);color:#a78bfa;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;}
+.mbtns{display:flex;gap:9px;margin-top:18px;}
+.sbtn{flex:1;padding:13px;border:none;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;border-radius:11px;font-size:14px;font-family:'Segoe UI',sans-serif;font-weight:700;cursor:pointer;transition:0.3s;box-shadow:0 5px 16px rgba(99,102,241,0.32);}
+.sbtn:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(99,102,241,0.46);}
+.sbtn.go{background:linear-gradient(135deg,#059669,#10b981);box-shadow:0 5px 16px rgba(16,185,129,0.26);}
+.sbtn.go:hover{box-shadow:0 8px 22px rgba(16,185,129,0.4);}
+.lbtn{padding:13px 16px;border:1.5px solid rgba(239,68,68,0.28);background:rgba(239,68,68,0.07);color:#fca5a5;border-radius:11px;font-size:13px;font-family:'Segoe UI',sans-serif;font-weight:700;cursor:pointer;transition:0.3s;white-space:nowrap;}
+.lbtn:hover{background:rgba(239,68,68,0.18);border-color:rgba(239,68,68,0.45);}
+
+/* AUTH TOAST */
+.at{display:none;position:fixed;top:78px;right:22px;background:linear-gradient(135deg,#1a1040,#2d1b6b);border:1px solid rgba(167,139,250,0.28);border-radius:16px;padding:20px 22px;z-index:600;min-width:290px;animation:toIn 0.28s ease;box-shadow:0 10px 30px rgba(0,0,0,0.5);}
+.at.show{display:block;}
+@keyframes toIn{from{opacity:0;transform:translateX(18px);}to{opacity:1;transform:translateX(0);}}
+.at-title{font-size:15px;font-weight:800;color:white;margin-bottom:4px;}
+.at-sub{font-size:12px;color:rgba(255,255,255,0.42);margin-bottom:14px;line-height:1.6;}
+.at-btn{display:block;width:100%;padding:11px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border:none;color:white;border-radius:10px;font-size:13px;font-family:'Segoe UI',sans-serif;font-weight:700;cursor:pointer;text-align:center;text-decoration:none;transition:0.3s;}
+.at-btn:hover{box-shadow:0 5px 14px rgba(99,102,241,0.42);}
+.at-x{position:absolute;top:10px;right:12px;background:none;border:none;color:rgba(255,255,255,0.28);cursor:pointer;font-size:15px;}
+
+/* CONFIRM MODAL */
+.confirm-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);z-index:600;align-items:center;justify-content:center;}
+.confirm-bg.open{display:flex;}
+.confirm-box{background:linear-gradient(160deg,#1a1040,#2d1b6b);border:1px solid rgba(239,68,68,0.3);border-radius:20px;padding:30px;width:90%;max-width:380px;text-align:center;animation:mIn 0.25s ease;}
+.confirm-icon{font-size:44px;margin-bottom:12px;}
+.confirm-title{font-size:17px;font-weight:800;color:white;margin-bottom:7px;}
+.confirm-sub{font-size:13px;color:rgba(255,255,255,0.45);margin-bottom:22px;line-height:1.6;}
+.confirm-btns{display:flex;gap:10px;}
+.confirm-yes{flex:1;padding:12px;background:linear-gradient(135deg,#dc2626,#ef4444);border:none;color:white;border-radius:10px;font-size:14px;font-family:'Segoe UI',sans-serif;font-weight:700;cursor:pointer;transition:0.3s;}
+.confirm-yes:hover{box-shadow:0 5px 14px rgba(239,68,68,0.4);}
+.confirm-no{flex:1;padding:12px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.7);border-radius:10px;font-size:14px;font-family:'Segoe UI',sans-serif;font-weight:700;cursor:pointer;transition:0.3s;}
+.confirm-no:hover{background:rgba(255,255,255,0.12);}
+
+footer{text-align:center;padding:14px;font-size:12px;color:rgba(255,255,255,0.17);border-top:1px solid rgba(255,255,255,0.04);}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">IT Academy</div>
+  <nav>
+    <a href="main.html" class="active">Басты бет</a>
+    <a href="about.html">Біз туралы</a>
+    <a href="mycours.html">Менің курстарым</a>
+    <a href="contact.html">Байланыс</a>
+    <span id="navArea"></span>
+  </nav>
+</header>
+
+<div class="container">
+  <div class="sidebar">
+    <div>
+      <div class="sb-title">Менің курстарым</div>
+      <div id="sbList"></div>
+    </div>
+    <a href="help.html" class="help-btn"><div class="help-icon">?</div>Көмек керек пе?</a>
+  </div>
+  <div class="main">
+    <div class="card">
+      <div class="card-title">📊 Жалпы аналитика</div>
+      <div class="stats">
+        <div class="stat"><span class="si">🔑</span><h3 id="sL">—</h3><p>Кіру саны</p></div>
+        <div class="stat"><span class="si">⏱️</span><h3 id="sT">—</h3><p>Оқу уақыты</p></div>
+        <div class="stat"><span class="si">📚</span><h3 id="sC">—</h3><p>Менің курстарым</p></div>
+        <div class="stat"><span class="si">✅</span><h3 id="sD">—</h3><p>Аяқталған сабақ</p></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="cal-hdr">
+        <div class="cal-title">📅 MARCH 2026</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.28);">🟣 белсенді күн</div>
+      </div>
+      <div class="calendar" id="cal"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">✨ Барлық курстар</div>
+      <div class="rec-grid" id="rg"></div>
+    </div>
+  </div>
+</div>
+
+<!-- COURSE MODAL -->
+<div class="modal-bg" id="mb" onclick="closeBg(event)">
+  <div class="modal">
+    <button class="mc" onclick="closeModal()">✕</button>
+    <div class="mi" id="mIc"></div>
+    <div class="mt" id="mTi"></div>
+    <div class="md" id="mDe"></div>
+    <div class="mm" id="mMe"></div>
+    <div class="mlt"><h4>Сабақтар тізімі</h4><div id="mLs"></div></div>
+    <div class="mbtns" id="mBt"></div>
+  </div>
+</div>
+
+<!-- AUTH TOAST -->
+<div class="at" id="at">
+  <button class="at-x" onclick="closeToast()">✕</button>
+  <div class="at-title">🔐 Аккаунт жоқ!</div>
+  <div class="at-sub">Курсты бастау үшін жүйеге кіріңіз немесе тіркеліңіз. Тіркелу тегін!</div>
+  <a href="profil.html" class="at-btn">Тіркелу / Кіру →</a>
+</div>
+
+<!-- CONFIRM MODAL -->
+<div class="confirm-bg" id="cfBg">
+  <div class="confirm-box">
+    <div class="confirm-icon">🚪</div>
+    <div class="confirm-title">Курстан шығасыз ба?</div>
+    <div class="confirm-sub">Бұл курстан шығасыз. Прогресіңіз жойылмайды, кейін қайта қосыла аласыз.</div>
+    <div class="confirm-btns">
+      <button class="confirm-yes" onclick="confirmLeave()">Иә, шығу</button>
+      <button class="confirm-no" onclick="closeCf()">Жоқ, қалу</button>
+    </div>
+  </div>
+</div>
+
+<footer>© 2026 IT Academy. Барлық құқықтар қорғалған.</footer>
+
+<!-- ========== CHATAPA AI ========== -->
+<style>
+/* CHAT BUTTON */
+.chat-fab{
+  position:fixed;bottom:28px;right:28px;z-index:1000;
+  width:60px;height:60px;border-radius:50%;
+  background:linear-gradient(135deg,#6366f1,#8b5cf6);
+  border:none;cursor:pointer;
+  box-shadow:0 6px 24px rgba(99,102,241,0.55);
+  display:flex;align-items:center;justify-content:center;
+  font-size:26px;transition:0.3s;
+  animation:pulse-fab 2.5s ease-in-out infinite;
+}
+.chat-fab:hover{transform:scale(1.1);box-shadow:0 10px 32px rgba(99,102,241,0.7);}
+@keyframes pulse-fab{
+  0%,100%{box-shadow:0 6px 24px rgba(99,102,241,0.55);}
+  50%{box-shadow:0 6px 32px rgba(139,92,246,0.8),0 0 0 8px rgba(99,102,241,0.12);}
+}
+.chat-fab .notif{
+  position:absolute;top:2px;right:2px;
+  width:16px;height:16px;border-radius:50%;
+  background:#10b981;border:2px solid #0f0c29;
+  font-size:9px;color:white;font-weight:800;
+  display:flex;align-items:center;justify-content:center;
+}
+
+/* CHAT WINDOW */
+.chat-window{
+  position:fixed;bottom:100px;right:28px;z-index:1000;
+  width:360px;height:520px;
+  background:linear-gradient(160deg,#1a1040,#2d1b6b);
+  border:1px solid rgba(167,139,250,0.25);
+  border-radius:22px;
+  display:none;flex-direction:column;
+  box-shadow:0 20px 60px rgba(0,0,0,0.6);
+  animation:chatIn 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  overflow:hidden;
+}
+.chat-window.open{display:flex;}
+@keyframes chatIn{from{opacity:0;transform:translateY(20px) scale(0.95);}to{opacity:1;transform:translateY(0) scale(1);}}
+
+/* CHAT HEADER */
+.chat-header{
+  padding:16px 18px;
+  background:linear-gradient(135deg,rgba(99,102,241,0.3),rgba(139,92,246,0.2));
+  border-bottom:1px solid rgba(255,255,255,0.08);
+  display:flex;align-items:center;gap:12px;
+  flex-shrink:0;
+}
+.chat-avatar{
+  width:40px;height:40px;border-radius:50%;
+  background:linear-gradient(135deg,#6366f1,#a78bfa);
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;flex-shrink:0;
+  box-shadow:0 0 0 3px rgba(167,139,250,0.3);
+}
+.chat-header-info{flex:1;}
+.chat-header-name{font-size:15px;font-weight:800;color:white;}
+.chat-header-status{font-size:11px;color:#10b981;font-weight:600;display:flex;align-items:center;gap:4px;}
+.chat-header-status::before{content:'';width:6px;height:6px;border-radius:50%;background:#10b981;display:inline-block;}
+.chat-close{background:rgba(255,255,255,0.08);border:none;color:rgba(255,255,255,0.5);width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:14px;transition:0.2s;display:flex;align-items:center;justify-content:center;}
+.chat-close:hover{background:rgba(239,68,68,0.2);color:#fca5a5;}
+
+/* MESSAGES */
+.chat-messages{
+  flex:1;overflow-y:auto;padding:16px;
+  display:flex;flex-direction:column;gap:10px;
+  scrollbar-width:thin;scrollbar-color:rgba(167,139,250,0.3) transparent;
+}
+.chat-messages::-webkit-scrollbar{width:4px;}
+.chat-messages::-webkit-scrollbar-thumb{background:rgba(167,139,250,0.3);border-radius:4px;}
+
+/* MESSAGE BUBBLES */
+.msg{display:flex;gap:8px;align-items:flex-end;max-width:88%;}
+.msg.bot{align-self:flex-start;}
+.msg.user{align-self:flex-end;flex-direction:row-reverse;}
+.msg-av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#a78bfa);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.msg-bubble{
+  padding:10px 14px;border-radius:16px;font-size:13px;line-height:1.6;
+  max-width:100%;word-wrap:break-word;
+}
+.msg.bot .msg-bubble{
+  background:rgba(255,255,255,0.07);
+  border:1px solid rgba(255,255,255,0.1);
+  color:rgba(255,255,255,0.9);
+  border-bottom-left-radius:4px;
+}
+.msg.user .msg-bubble{
+  background:linear-gradient(135deg,#6366f1,#8b5cf6);
+  color:white;border-bottom-right-radius:4px;
+  box-shadow:0 4px 12px rgba(99,102,241,0.3);
+}
+
+/* TYPING INDICATOR */
+.typing{display:flex;gap:4px;align-items:center;padding:10px 14px;}
+.typing span{width:7px;height:7px;border-radius:50%;background:#a78bfa;animation:bounce 1.2s ease-in-out infinite;}
+.typing span:nth-child(2){animation-delay:0.2s;}
+.typing span:nth-child(3){animation-delay:0.4s;}
+@keyframes bounce{0%,60%,100%{transform:translateY(0);}30%{transform:translateY(-7px);}}
+
+/* QUICK REPLIES */
+.quick-replies{
+  display:flex;flex-wrap:wrap;gap:6px;
+  padding:0 16px 10px;flex-shrink:0;
+}
+.qr{
+  padding:6px 12px;border-radius:20px;
+  background:rgba(99,102,241,0.15);
+  border:1px solid rgba(99,102,241,0.3);
+  color:rgba(255,255,255,0.7);font-size:11px;font-weight:600;
+  cursor:pointer;transition:0.2s;white-space:nowrap;
+}
+.qr:hover{background:rgba(99,102,241,0.35);color:white;border-color:#6366f1;}
+
+/* INPUT */
+.chat-input-row{
+  padding:12px 14px;
+  border-top:1px solid rgba(255,255,255,0.07);
+  display:flex;gap:8px;align-items:center;flex-shrink:0;
+}
+.chat-input{
+  flex:1;background:rgba(255,255,255,0.07);
+  border:1.5px solid rgba(255,255,255,0.1);
+  border-radius:12px;padding:10px 14px;
+  color:white;font-size:13px;
+  font-family:'Segoe UI',sans-serif;outline:none;transition:0.2s;
+}
+.chat-input::placeholder{color:rgba(255,255,255,0.25);}
+.chat-input:focus{border-color:#a78bfa;background:rgba(167,139,250,0.08);}
+.chat-send{
+  width:38px;height:38px;border-radius:50%;
+  background:linear-gradient(135deg,#6366f1,#8b5cf6);
+  border:none;cursor:pointer;font-size:16px;
+  display:flex;align-items:center;justify-content:center;
+  transition:0.2s;flex-shrink:0;
+  box-shadow:0 3px 10px rgba(99,102,241,0.4);
+}
+.chat-send:hover{transform:scale(1.1);}
+</style>
+
+<!-- FAB BUTTON -->
+<button class="chat-fab" onclick="toggleChat()" id="chatFab">
+  🤖
+  <div class="notif">1</div>
+</button>
+
+<!-- CHAT WINDOW -->
+<div class="chat-window" id="chatWindow">
+  <div class="chat-header">
+    <div class="chat-avatar">🤖</div>
+    <div class="chat-header-info">
+      <div class="chat-header-name">Chatapa AI</div>
+      <div class="chat-header-status">Онлайн — әрдайым қолжетімді</div>
+    </div>
+    <button class="chat-close" onclick="toggleChat()">✕</button>
+  </div>
+
+  <div class="chat-messages" id="chatMessages"></div>
+
+  <div class="quick-replies" id="quickReplies">
+    <div class="qr" onclick="sendQuick('Курстар туралы айт')">📚 Курстар</div>
+    <div class="qr" onclick="sendQuick('Сабақ кестесі қандай?')">📅 Кесте</div>
+    <div class="qr" onclick="sendQuick('Тіркелу қалай?')">✍️ Тіркелу</div>
+    <div class="qr" onclick="sendQuick('Баға қанша?')">💰 Баға</div>
+  </div>
+
+  <div class="chat-input-row">
+    <input class="chat-input" id="chatInput" placeholder="Сұрағыңызды жазыңыз..." onkeydown="if(event.key==='Enter')sendMsg()">
+    <button class="chat-send" onclick="sendMsg()">➤</button>
+  </div>
+</div>
+
+<script>
+// ===== CHATAPA AI =====
+const BOT_NAME = 'Chatapa AI';
+
+const KB = [
+  // Сәлемдесу
+  {q:['сәлем','salem','привет','hello','hi','сәл'],
+   a:'Сәлем! 👋 Мен **Chatapa AI** — IT Academy-дің ақылды көмекшісі. Сізге қалай көмектесе аламын?'},
+
+  // Курстар
+  {q:['курс','курстар','оқу','бағдарлама','python','react','html','css','javascript','java'],
+   a:'📚 **IT Academy-де қол жетімді курстар:**\n\n🧮 Алгоритмдеу және Python негіздері — 15 сабақ\n⚛️ React негіздері — 7 сабақ\n🌐 HTML & CSS — 5 сабақ\n📊 Деректер қоры — 6 сабақ\n🐍 Python Advanced — 8 сабақ\n🎨 UI/UX Design — 4 сабақ\n\nКурсты бастау үшін тіркеліңіз! 🚀'},
+
+  // Тіркелу
+  {q:['тіркел','тіркелу','аккаунт','жасау','кіру','логин','регистрация','register'],
+   a:'✍️ **Тіркелу өте оңай:**\n\n1️⃣ Жоғарыда **"Профиль"** батырмасын басыңыз\n2️⃣ Атыңызды, email-іңізді, телефоныңызды енгізіңіз\n3️⃣ Құпия сөз жасаңыз\n4️⃣ **"Аккаунт жасау"** батырмасын басыңыз\n\nТіркелу **тегін!** 🎉'},
+
+  // Кесте
+  {q:['кесте','сабақ','уақыт','кезде','schedule','время'],
+   a:'📅 **Сабақ кестесі:**\n\nСабақтар онлайн форматта өтеді — **кез келген уақытта** оқи аласыз!\n\n⏰ Сабақтар 24/7 қол жетімді\n📱 Телефоннан да оқуға болады\n💾 Сабақтарды кейінге қалдыруға болады'},
+
+  // Баға
+  {q:['баға','ақша','тегін','төлем','price','бесплатно','cost'],
+   a:'💰 **Баға туралы:**\n\nIT Academy-де барлық курстар **қазіргі уақытта тегін!**\n\n✅ Тіркелу — тегін\n✅ Барлық сабақтар — тегін\n✅ Сертификат — тегін\n\nМүмкіндіктен пайдаланыңыз! 🎓'},
+
+  // Сертификат
+  {q:['сертификат','диплом','куәлік','certificate'],
+   a:'🏆 **Сертификат туралы:**\n\nКурсты аяқтаған соң **IT Academy сертификаты** беріледі.\n\n✅ Электронды форматта\n✅ Компанияларға ұсынуға болады\n✅ LinkedIn-ге жүктеуге болады'},
+
+  // Байланыс
+  {q:['байланыс','телефон','email','contact','хабарласу','сұрақ'],
+   a:'📞 **Бізбен байланыс:**\n\n📧 Email: info@itacademy.kz\n📱 Telegram: @itacademy_kz\n🌐 Сайт: itacademy.kz\n\nНемесе **"Байланыс"** бетіне өтіңіз 👆'},
+
+  // Ұмытты
+  {q:['пароль','құпия сөз','ұмыттым','забыл','reset'],
+   a:'🔑 **Құпия сөзді ұмыттыңыз ба?**\n\n1️⃣ **"Профиль"** бетіне өтіңіз\n2️⃣ **"Кіру"** бетінде **"Құпия сөзді ұмыттым"** басыңыз\n3️⃣ Email-іңізді енгізіңіз\n4️⃣ Кодты алып, жаңа пароль орнатыңыз'},
+
+  // Рахмет
+  {q:['рахмет','спасибо','thanks','thank'],
+   a:'😊 Хош! Тағы сұрақтарыңыз болса — әрдайым осындамын. Сәттілік! 🚀'},
+];
+
+function findAnswer(text) {
+  const t = text.toLowerCase().trim();
+  for (const item of KB) {
+    if (item.q.some(k => t.includes(k))) return item.a;
+  }
+  return '🤔 Бұл сұрақты толық түсінбедім. Анығырақ жазыңыз немесе мына тақырыптарды сұраңыз:\n\n📚 Курстар • 📅 Кесте • ✍️ Тіркелу • 💰 Баға • 🏆 Сертификат • 📞 Байланыс';
+}
+
+function formatMsg(text) {
+  return text
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\n/g, '<br>');
+}
+
+function addMsg(text, type) {
+  const wrap = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = 'msg ' + type;
+  if (type === 'bot') {
+    div.innerHTML = `<div class="msg-av">🤖</div><div class="msg-bubble">${formatMsg(text)}</div>`;
+  } else {
+    div.innerHTML = `<div class="msg-bubble">${text}</div>`;
+  }
+  wrap.appendChild(div);
+  wrap.scrollTop = wrap.scrollHeight;
+}
+
+function showTyping() {
+  const wrap = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = 'msg bot'; div.id = 'typing';
+  div.innerHTML = `<div class="msg-av">🤖</div><div class="msg-bubble"><div class="typing"><span></span><span></span><span></span></div></div>`;
+  wrap.appendChild(div);
+  wrap.scrollTop = wrap.scrollHeight;
+}
+
+function removeTyping() {
+  const t = document.getElementById('typing');
+  if (t) t.remove();
+}
+
+function sendMsg() {
+  const inp = document.getElementById('chatInput');
+  const text = inp.value.trim();
+  if (!text) return;
+  inp.value = '';
+  addMsg(text, 'user');
+  document.getElementById('quickReplies').style.display = 'none';
+  showTyping();
+  setTimeout(() => {
+    removeTyping();
+    addMsg(findAnswer(text), 'bot');
+  }, 900 + Math.random() * 500);
+}
+
+function sendQuick(text) {
+  document.getElementById('chatInput').value = text;
+  sendMsg();
+}
+
+function toggleChat() {
+  const win = document.getElementById('chatWindow');
+  const fab = document.getElementById('chatFab');
+  const isOpen = win.classList.contains('open');
+  if (isOpen) {
+    win.classList.remove('open');
+    fab.innerHTML = '🤖<div class="notif" style="display:none"></div>';
+  } else {
+    win.classList.add('open');
+    fab.innerHTML = '✕';
+    fab.style.fontSize = '20px';
+    // Алғашқы хабарлама
+    const msgs = document.getElementById('chatMessages');
+    if (msgs.children.length === 0) {
+      setTimeout(() => addMsg('Сәлем! 👋 Мен **Chatapa AI** — IT Academy-дің көмекшісі.\n\nКурстар, тіркелу, кесте және басқа сұрақтар бойынша көмектесемін!', 'bot'), 400);
+    }
+  }
+}
+</script>
+
+<script>
+/* ========== COURSES ========== */
+const COURSES = [
+  {
+    id:'algo', icon:'🧮',
+    title:'Алгоритмдеу және бағдарламалау негіздері',
+    tag:'Бағдарламалау', dur:'15 сабақ', level:'Бастауыш',
+    desc:'Алгоритм негіздерінен Python бағдарламалауға дейін. Бастаушыларға арналған толық курс.',
+    link:'lesson1.html',
+    lessons:['Алгоритм деген не?','Алгоритмнің қасиеттері','Алгоритмді жазу тәсілдері','Алгоритм түрлері','Бағдарламалау деген не?','Бағдарламалау тілдері','Айнымалы және мәлімет типтері','Енгізу және шығару командалары','Арифметикалық операторлар','Салыстыру операторлары','Шартты оператор (if / else)','Қайталау операторы (for циклі)','while циклі','Тізімдер (List)','Қорытынды жоба']
+  },
+  {id:'react',icon:'⚛️',title:'React Негіздері',tag:'Фронтенд',dur:'7 сабақ',level:'Орта',desc:'React компоненттері, hooks, state/props.',link:'',lessons:['React деген не?','JSX','Компоненттер','Props/State','useEffect','React Router','Жоба: Todo App']},
+  {id:'sql',icon:'🗄️',title:'SQL Продвинутый',tag:'Дерекқор',dur:'7 сабақ',level:'Орта',desc:'JOIN, индекстер, транзакциялар.',link:'',lessons:['SELECT/WHERE','JOIN','GROUP BY','Подзапросы','Индекстер','Транзакциялар','Жоба']},
+  {id:'py',icon:'🐍',title:'Python Advanced',tag:'Бағдарламалау',dur:'7 сабақ',level:'Жоғары',desc:'Декораторлар, ООП, asyncio, REST API.',link:'',lessons:['ООП','Декораторлар','Генераторлар','asyncio','pytest','API','Жоба']},
+  {id:'web',icon:'🎨',title:'Web Design',tag:'Дизайн',dur:'6 сабақ',level:'Бастауыш',desc:'CSS Grid, Flexbox, анимациялар, Figma.',link:'',lessons:['Дизайн негіздері','CSS Grid','Flexbox','Анимациялар','Адаптивті','Figma']},
+  {id:'node',icon:'🟢',title:'Node.js Бастапқы',tag:'Бэкенд',dur:'7 сабақ',level:'Орта',desc:'Express, маршруттар, MongoDB.',link:'',lessons:['Node.js','npm','Express','Маршруттар','Middleware','MongoDB','Жоба']},
+  {id:'ds',icon:'📊',title:'Data Science',tag:'Деректер',dur:'7 сабақ',level:'Жоғары',desc:'pandas, numpy, matplotlib, ML.',link:'',lessons:['Python for DS','NumPy','Pandas','Matplotlib','Статистика','ML кіріспе','Жоба']},
+  {id:'ml',icon:'🤖',title:'Machine Learning',tag:'AI/ML',dur:'7 сабақ',level:'Жоғары',desc:'sklearn, нейрондық желілер, модельдер.',link:'',lessons:['ML негіздері','Регрессия','Классификация','Кластерлеу','Нейрондық желілер','sklearn','Жоба']},
+  {id:'linux',icon:'🐧',title:'Linux негіздері',tag:'Жүйелер',dur:'6 сабақ',level:'Бастауыш',desc:'Командалар, файл жүйесі, bash.',link:'',lessons:['Linux тарихы','Командалар','Файл жүйесі','Пайдаланушылар','Рұқсаттар','Bash']},
+];
+
+/* ========== STORAGE ========== */
+const gd=(k,d)=>{try{return JSON.parse(localStorage.getItem('ita_'+k))??d;}catch{return d;}};
+const sd=(k,v)=>localStorage.setItem('ita_'+k,JSON.stringify(v));
+
+/* ========== USER ========== */
+const getUser=()=>gd('user',null);
+const loggedIn=()=>!!getUser();
+
+/* ========== INIT ========== */
+window._t0=Date.now();
+window.addEventListener('load',()=>{
+  const u=getUser();
+  if(u){
+    // кіру саны базада сақталады
+  }
+  renderNav();
+  renderStats();
+  const _u=getUser();
+  if(_u&&_u.id){
+    fetch('get_stats.php?user_id='+_u.id)
+      .then(r=>r.json())
+      .then(d=>{
+        renderCal(d.active_days||[]);
+        document.getElementById('sL').textContent = d.total_logins||0;
+        const mins = d.total_minutes||0;
+        const h = Math.floor(mins/60), m = mins%60;
+        document.getElementById('sT').textContent = h>0 ? h+'сағ '+m+'мин' : m+'мин';
+      })
+      .catch(()=>renderCal([]));
+  } else { renderCal([]); }
+  renderCourses();
+  renderSidebar();
+});
+window.addEventListener('beforeunload',()=>{
+  const u=getUser();
+  if(!u||!u.id)return;
+  const m=Math.round((Date.now()-window._t0)/60000);
+  if(m<1)return;
+  // Базаға сақта
+  const body=new URLSearchParams();
+  body.append('user_id',u.id);
+  body.append('minutes',m);
+  navigator.sendBeacon('save_study_time.php',body);
+});
+
+/* ========== NAV ========== */
+function renderNav(){
+  const u=getUser();
+  const el=document.getElementById('navArea');
+  if(u){
+    el.innerHTML=`<span class="nav-user" onclick="location.href='profil.html'">
+      <div class="nav-avatar">${u.avatar||'🧑‍💻'}</div>
+      <span class="nav-name">${u.first_name}</span>
+    </span>`;
+  } else {
+    el.innerHTML=`<button class="nav-login-btn" onclick="location.href='profil.html'">Кіру / Тіркелу</button>`;
+  }
+}
+
+/* ========== STATS ========== */
+function renderStats(){
+  const u=getUser();
+  if(!u) return;
+  // oқу уақыты get_stats.php арқылы жүктеледі
+  // кіру саны get_stats.php арқылы жүктеледі
+  // sT get_stats.php-та жаңартылады
+  document.getElementById('sC').textContent=gd('courses_'+u.email,[]).length;
+  document.getElementById('sD').textContent=gd('done_'+u.email,0);
+}
+
+/* ========== CALENDAR ========== */
+function renderCal(activeDays){
+  activeDays = activeDays || [];
+  const g=document.getElementById('cal');
+  const dl=['Дс','Сс','Ср','Бс','Жм','Сб','Жк'];
+  const rn=['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII','XIII','XIV','XV','XVI','XVII','XVIII','XIX','XX','XXI','XXII','XXIII','XXIV','XXV','XXVI','XXVII','XXVIII','XXIX','XXX'];
+  const today=new Date();
+  const todayDay=today.getDate();
+  const isMarch2026=(today.getMonth()===2&&today.getFullYear()===2026);
+  g.innerHTML=dl.map(d=>`<div class="dlbl">${d}</div>`).join('');
+  // Март 1, 2026 - Жексенбі, offset=6
+  for(let i=0;i<6;i++) g.innerHTML+=`<div class="day" style="opacity:0;pointer-events:none;"></div>`;
+  for(let i=0;i<30;i++){
+    const dayNum=i+1;
+    const dateStr='2026-03-'+String(dayNum).padStart(2,'0');
+    const isActive=activeDays.includes(dateStr);
+    const isToday=isMarch2026&&dayNum===todayDay;
+    const isPast=isMarch2026?dayNum<todayDay:false;
+    const isFuture=isMarch2026?dayNum>todayDay:false;
+    let cls,tt;
+    if(isToday){
+      cls=isActive?'day hh':'day';
+      tt=isActive?`<span class="tt">бүгін</span><div class="dot"></div>`:`<span class="tt">бүгін</span>`;
+    } else if(isPast){
+      cls=isActive?'day hh':'day';
+      tt=isActive?`<span class="tt">белсенді</span><div class="dot"></div>`:'';
+    } else if(isFuture){
+      cls='day locked';
+      tt='';
+    } else {
+      cls='day';tt='';
+    }
+    g.innerHTML+=`<div class="${cls}">${rn[i]}${tt}</div>`;
+  }
+}
+
+/* ========== COURSES GRID ========== */
+function renderCourses(){
+  const u=getUser();
+  const my=u?gd('courses_'+u.email,[]):[];
+  document.getElementById('rg').innerHTML=COURSES.map(c=>{
+    const en=my.includes(c.id);
+    return `<div class="rec-card" onclick="openModal('${c.id}')">
+      ${en?'<div class="eb">✓ Қосылдым</div>':''}
+      <span class="rc-icon">${c.icon}</span>
+      <div>${c.title}</div>
+      <div class="rc-tag">${c.tag} · ${c.level} · ${c.dur}</div>
+    </div>`;
+  }).join('');
+}
+
+/* ========== SIDEBAR ========== */
+function renderSidebar(){
+  const u=getUser();
+  const el=document.getElementById('sbList');
+  if(!u){
+    el.innerHTML='<div class="no-courses">🔐 Кіріңіз немесе тіркеліңіз — курстарыңыз осында сақталады.</div>';
+    return;
+  }
+  const my=gd('courses_'+u.email,[]);
+  if(!my.length){
+    el.innerHTML='<div class="no-courses">📚 Курс жоқ.<br>Төменнен таңдаңыз!</div>';
+    return;
+  }
+  el.innerHTML=my.map(id=>{
+    const c=COURSES.find(x=>x.id===id);
+    if(!c)return'';
+    return `<div class="side-course" onclick="openModal('${c.id}')">
+      <span class="sc-icon">${c.icon}</span>
+      <div><div>${c.title}</div><div class="sc-sub">${c.dur} · ${c.level}</div></div>
+    </div>`;
+  }).join('');
+}
+
+/* ========== MODAL ========== */
+let curId=null;
+function openModal(id){
+  const c=COURSES.find(x=>x.id===id);
+  if(!c)return;
+  curId=id;
+  const u=getUser();
+  const en=u?gd('courses_'+u.email,[]).includes(id):false;
+  document.getElementById('mIc').textContent=c.icon;
+  document.getElementById('mTi').textContent=c.title;
+  document.getElementById('mDe').textContent=c.desc;
+  document.getElementById('mMe').innerHTML=[c.tag,c.level,c.dur].map(t=>`<span class="mtag">${t}</span>`).join('');
+  document.getElementById('mLs').innerHTML=c.lessons.map((l,i)=>
+    `<div class="li"><div class="ln">${i+1}</div>${l}</div>`).join('');
+  const bt=document.getElementById('mBt');
+  if(en){
+    bt.innerHTML=`<button class="sbtn go" onclick="goCourse()">▶ Жалғастыру</button>
+                  <button class="lbtn" onclick="askLeave()">🚪 Курстан шығу</button>`;
+  } else {
+    bt.innerHTML=`<button class="sbtn" onclick="startCourse()">🚀 Бастау — курсқа қосылу</button>`;
+  }
+  document.getElementById('mb').classList.add('open');
+}
+function closeModal(){document.getElementById('mb').classList.remove('open');curId=null;}
+function closeBg(e){if(e.target===document.getElementById('mb'))closeModal();}
+
+/* ========== ENROLL ========== */
+function startCourse(){
+  if(!loggedIn()){
+    closeModal();
+    showToast();
+    return;
+  }
+  const u=getUser();
+  const my=gd('courses_'+u.email,[]);
+  if(!my.includes(curId)){
+    my.unshift(curId);
+    sd('courses_'+u.email,my);
+  }
+  refresh();
+  // Батырманы жаңарт
+  document.getElementById('mBt').innerHTML=`
+    <button class="sbtn go" onclick="goCourse()">▶ Жалғастыру</button>
+    <button class="lbtn" onclick="askLeave()">🚪 Курстан шығу</button>`;
+}
+
+function goCourse(){
+  const c=COURSES.find(x=>x.id===curId);
+  if(c&&c.link){location.href=c.link;}
+  else{alert('Бұл курстың сабақтары жақында қосылады! 🚧');}
+  closeModal();
+}
+
+/* ========== LEAVE ========== */
+function askLeave(){
+  closeModal();
+  document.getElementById('cfBg').classList.add('open');
+}
+function closeCf(){document.getElementById('cfBg').classList.remove('open');}
+function confirmLeave(){
+  const u=getUser();
+  if(!u)return;
+  let my=gd('courses_'+u.email,[]);
+  my=my.filter(x=>x!==curId);
+  sd('courses_'+u.email,my);
+  closeCf();
+  curId=null;
+  refresh();
+}
+
+function refresh(){renderStats();renderSidebar();renderCourses();}
+
+/* ========== AUTH TOAST ========== */
+function showToast(){
+  const el=document.getElementById('at');
+  el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),7000);
+}
+function closeToast(){document.getElementById('at').classList.remove('show');}
+</script>
+</body>
+</html>

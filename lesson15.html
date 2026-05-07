@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8">
+<title>15-сабақ: Қорытынды тапсырмалар</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+body{background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);color:white;min-height:100vh;display:flex;flex-direction:column;}
+
+header{background:rgba(255,255,255,0.05);backdrop-filter:blur(12px);padding:18px 40px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.08);position:sticky;top:0;z-index:200;}
+.logo{font-size:22px;font-weight:800;background:linear-gradient(90deg,#a78bfa,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+nav a{margin-left:24px;text-decoration:none;color:rgba(255,255,255,0.55);font-weight:500;font-size:14px;transition:0.3s;}
+nav a:hover{color:white;}
+
+.body-wrap{display:flex;flex:1;}
+
+.sidebar{width:300px;background:rgba(255,255,255,0.03);border-right:1px solid rgba(255,255,255,0.07);height:calc(100vh - 62px);position:sticky;top:62px;overflow-y:auto;padding:20px 12px;display:flex;flex-direction:column;justify-content:space-between;flex-shrink:0;}
+.sidebar-top h2{text-align:center;margin-bottom:18px;font-size:16px;font-weight:700;}
+.lesson{position:relative;display:flex;align-items:center;gap:11px;padding:11px 12px;margin:4px 0;border-radius:10px;cursor:pointer;transition:0.3s;font-size:13px;font-weight:500;color:rgba(255,255,255,0.65);}
+.lesson:hover{background:rgba(255,255,255,0.07);color:white;}
+.lesson.active{background:rgba(99,102,241,0.2);border:1px solid rgba(99,102,241,0.3);color:white;}
+.lesson.done{color:rgba(255,255,255,0.7);}
+.badge{width:24px;height:24px;border-radius:50%;background:rgba(99,102,241,0.4);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;color:white;}
+.lesson.active .badge{background:#6366f1;}
+.lesson.done .badge{background:#22c55e;}
+.lesson.locked{opacity:0.45;cursor:not-allowed;}
+.lesson.locked::after{content:"";position:absolute;inset:0;border-radius:10px;}
+.lock-icon{position:absolute;right:12px;font-size:12px;opacity:0.5;}
+.lesson.locked:hover{background:transparent;}
+.help{background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.2);color:rgba(255,255,255,0.55);padding:11px 14px;border-radius:12px;cursor:pointer;display:flex;align-items:center;gap:10px;margin:16px 4px 4px;font-size:13px;font-weight:600;transition:0.3s;}
+.help:hover{background:#6366f1;color:white;border-color:transparent;}
+.help-icon{width:26px;height:26px;border-radius:50%;background:#6366f1;color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0;}
+
+.content{flex:1;padding:32px 40px;overflow-y:auto;}
+
+.progress-wrap{margin-bottom:28px;}
+.progress-label{display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:7px;}
+.progress-track{height:5px;background:rgba(255,255,255,0.08);border-radius:4px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,#6366f1,#a78bfa);border-radius:4px;transition:width 0.5s;width:0%;}
+
+/* HERO BANNER */
+.hero-banner{background:linear-gradient(135deg,rgba(99,102,241,0.15),rgba(139,92,246,0.1));border:1px solid rgba(99,102,241,0.25);border-radius:20px;padding:32px 36px;margin-bottom:32px;display:flex;align-items:center;gap:28px;}
+.hero-icon{font-size:64px;flex-shrink:0;}
+.hero-text h1{font-size:24px;font-weight:800;color:white;margin-bottom:8px;}
+.hero-text p{font-size:14px;color:rgba(255,255,255,0.55);line-height:1.8;}
+.hero-stats{display:flex;gap:16px;margin-top:16px;flex-wrap:wrap;}
+.stat-pill{background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.25);padding:7px 16px;border-radius:20px;font-size:13px;font-weight:700;color:#a78bfa;}
+
+/* SCOREBOARD */
+.scoreboard{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:20px 26px;margin-bottom:28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;}
+.score-item{text-align:center;}
+.score-val{font-size:28px;font-weight:800;color:#a78bfa;}
+.score-val.green{color:#4ade80;}
+.score-val.yellow{color:#fcd34d;}
+.score-label{font-size:11px;color:rgba(255,255,255,0.4);margin-top:3px;text-transform:uppercase;letter-spacing:0.5px;}
+.score-div{width:1px;height:40px;background:rgba(255,255,255,0.08);}
+
+/* SECTION TITLE */
+.section-title{font-size:19px;font-weight:800;color:white;margin:8px 0 18px;display:flex;align-items:center;gap:10px;}
+.section-title span{font-size:13px;font-weight:600;color:#a78bfa;background:rgba(99,102,241,0.13);border:1px solid rgba(99,102,241,0.25);padding:3px 12px;border-radius:20px;}
+
+/* LOCKED SECTION */
+.locked-section{background:rgba(255,255,255,0.02);border:2px dashed rgba(255,255,255,0.1);border-radius:16px;padding:36px;text-align:center;margin-bottom:22px;}
+.locked-section .lock-big{font-size:48px;margin-bottom:14px;}
+.locked-section p{font-size:15px;color:rgba(255,255,255,0.4);font-weight:600;}
+.locked-section small{font-size:13px;color:rgba(255,255,255,0.25);}
+
+/* QUIZ */
+.quiz-block{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:26px;margin-bottom:22px;}
+.quiz-block.locked-q{opacity:0.35;pointer-events:none;}
+.q-num{display:inline-flex;align-items:center;gap:7px;background:rgba(99,102,241,0.13);border:1px solid rgba(99,102,241,0.22);border-radius:20px;padding:4px 14px;font-size:11px;font-weight:700;color:#a78bfa;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:14px;}
+.q-text{font-size:16px;font-weight:700;color:white;line-height:1.65;margin-bottom:6px;}
+.code-block{background:#0d1117;border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:16px 20px;margin:14px 0 18px;font-family:'Courier New',monospace;font-size:14px;line-height:2;white-space:pre;color:#e2e8f0;}
+.q-opts{display:flex;flex-direction:column;gap:9px;}
+.q-opt{display:flex;align-items:center;gap:13px;padding:12px 16px;background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.09);border-radius:12px;cursor:pointer;transition:all 0.18s;user-select:none;}
+.q-opt:hover:not(.correct):not(.wrong):not(.locked-opt){border-color:rgba(167,139,250,0.45);background:rgba(167,139,250,0.08);}
+.q-opt.selected{border-color:#6366f1;background:rgba(99,102,241,0.14);}
+.q-opt.correct{border-color:#22c55e;background:rgba(34,197,94,0.1);cursor:default;animation:pulseG 0.4s ease;}
+.q-opt.wrong{border-color:#ef4444;background:rgba(239,68,68,0.1);cursor:default;}
+.q-opt.locked-opt{cursor:default;pointer-events:none;}
+.opt-ltr{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:rgba(255,255,255,0.4);flex-shrink:0;}
+.q-opt.selected .opt-ltr{background:#6366f1;color:white;}
+.q-opt.correct .opt-ltr{background:#22c55e;color:white;}
+.q-opt.wrong .opt-ltr{background:#ef4444;color:white;}
+.opt-txt{font-size:14px;color:rgba(255,255,255,0.78);}
+.q-opt.selected .opt-txt,.q-opt.correct .opt-txt,.q-opt.wrong .opt-txt{color:white;}
+.q-fb{display:none;padding:11px 15px;border-radius:10px;font-size:13px;font-weight:600;margin-top:12px;line-height:1.5;}
+.q-fb.ok{background:rgba(34,197,94,0.1);border-left:3px solid #22c55e;color:#86efac;display:block;}
+.q-fb.err{background:rgba(239,68,68,0.1);border-left:3px solid #ef4444;color:#fca5a5;display:block;}
+.q-submit{margin-top:14px;padding:11px 26px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border:none;color:white;border-radius:10px;cursor:pointer;font-size:13px;font-family:'Segoe UI',sans-serif;font-weight:700;transition:0.2s;}
+.q-submit:hover{transform:translateY(-1px);}
+
+/* TASK */
+.task-block{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:26px;margin-bottom:22px;}
+.task-header{display:flex;align-items:center;gap:14px;margin-bottom:16px;}
+.task-indicator{width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,0.1);border:2px solid rgba(255,255,255,0.2);flex-shrink:0;transition:0.5s;}
+.task-indicator.done{background:#22c55e;border-color:#16a34a;box-shadow:0 0 14px rgba(34,197,94,0.6);}
+.task-title{font-size:16px;font-weight:700;color:white;}
+.task-desc{background:rgba(99,102,241,0.08);border-left:3px solid #6366f1;padding:14px 18px;border-radius:0 10px 10px 0;margin-bottom:18px;font-size:13px;color:rgba(255,255,255,0.65);line-height:1.85;}
+.task-desc b{color:#a78bfa;display:block;margin-bottom:6px;font-size:14px;}
+.task-desc code{color:#c4b5fd;background:rgba(99,102,241,0.15);padding:1px 7px;border-radius:4px;font-family:'Courier New',monospace;font-size:13px;}
+.task-feedback{display:none;margin-top:14px;padding:13px 16px;border-radius:10px;font-size:14px;font-weight:500;line-height:1.6;}
+.task-feedback.success{background:rgba(34,197,94,0.1);border-left:3px solid #22c55e;color:#86efac;}
+.task-feedback.error{background:rgba(239,68,68,0.1);border-left:3px solid #ef4444;color:#fca5a5;}
+
+/* EDITOR */
+.editor-wrap{background:#0a0a1a;border:1px solid rgba(255,255,255,0.1);border-radius:12px;overflow:hidden;margin-bottom:16px;}
+.editor-topbar{background:rgba(255,255,255,0.05);padding:10px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(255,255,255,0.06);}
+.editor-dot{width:11px;height:11px;border-radius:50%;}
+.editor-filename{color:rgba(255,255,255,0.35);font-size:12px;margin-left:6px;}
+.editor-lines{padding:0;}
+.code-line{display:flex;align-items:stretch;min-height:36px;}
+.line-num{width:40px;background:rgba(255,255,255,0.03);color:rgba(255,255,255,0.2);font-family:'Courier New',monospace;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;user-select:none;border-right:1px solid rgba(255,255,255,0.06);}
+.code-input{flex:1;background:transparent;border:none;outline:none;color:#e2e8f0;font-family:'Courier New',monospace;font-size:13px;padding:8px 12px;resize:none;line-height:1.5;}
+.code-input::placeholder{color:rgba(255,255,255,0.2);}
+.add-line-btn{width:100%;background:rgba(255,255,255,0.03);border:none;border-top:1px solid rgba(255,255,255,0.06);color:rgba(255,255,255,0.25);padding:6px;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;gap:6px;font-family:'Segoe UI',sans-serif;transition:0.2s;}
+.add-line-btn:hover{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.5);}
+.btn-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:4px;}
+.run-btn{padding:12px 22px;background:linear-gradient(135deg,#059669,#10b981);border:none;color:white;border-radius:10px;cursor:pointer;font-size:14px;font-family:'Segoe UI',sans-serif;font-weight:700;transition:0.3s;box-shadow:0 4px 14px rgba(16,185,129,0.3);}
+.run-btn:hover{transform:translateY(-1px);}
+
+
+
+
+.output-box{background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:12px 16px;font-family:'Courier New',monospace;font-size:13px;color:#4ade80;min-height:52px;margin-top:12px;white-space:pre-wrap;line-height:1.6;}
+.output-box.err{color:#f87171;}
+
+/* QUIZ UNLOCK BANNER */
+.unlock-banner{background:linear-gradient(135deg,rgba(34,197,94,0.12),rgba(16,185,129,0.08));border:1px solid rgba(34,197,94,0.3);border-radius:16px;padding:24px 28px;margin-bottom:28px;text-align:center;display:none;}
+.unlock-banner .ub-icon{font-size:44px;margin-bottom:10px;}
+.unlock-banner h3{font-size:20px;font-weight:800;color:#4ade80;margin-bottom:6px;}
+.unlock-banner p{font-size:14px;color:rgba(255,255,255,0.5);}
+
+@keyframes pulseG{0%{box-shadow:0 0 0 0 rgba(34,197,94,0.5)}70%{box-shadow:0 0 0 10px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
+@keyframes popIn{from{opacity:0;transform:scale(0.85) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">IT Academy</div>
+  <nav>
+    <a href="main.html">Басты бет</a>
+    <a href="about.html">Біз туралы</a>
+    <a href="mycours.html">Менің курстарым</a>
+    <a href="contact.html">Байланыс</a>
+    <a href="profil.html">Профиль</a>
+  </nav>
+</header>
+
+<div class="body-wrap">
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sidebar-top">
+    <!-- sidebar.js толтырады -->
+  </div>
+  <div class="help" onclick="location.href='help.html'"><span class="help-icon">?</span> Көмек</div>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+  <div class="progress-wrap">
+    <div class="progress-label"><span>15-сабақ: Қорытынды тапсырмалар</span><span id="progressTxt">0 / 30</span></div>
+    <div class="progress-track"><div class="progress-fill" id="progressBar"></div></div>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero-banner">
+    <div class="hero-icon">🏁</div>
+    <div class="hero-text">
+      <h1>Қорытынды тапсырмалар</h1>
+      <p>14 сабақта үйренгеннің бәрі осы жерде тексеріледі. Алдымен 15 тест сұрағын жауаптай, сосын 15 практикалық есеп шығар.</p>
+      <div class="hero-stats">
+        <div class="stat-pill">📝 15 тест сұрағы</div>
+        <div class="stat-pill">💻 15 практикалық есеп</div>
+        <div class="stat-pill">🏆 30 ұпай</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCOREBOARD -->
+  <div class="scoreboard">
+    <div class="score-item"><div class="score-val" id="sc-quiz">0</div><div class="score-label">Тест</div></div>
+    <div class="score-div"></div>
+    <div class="score-item"><div class="score-val green" id="sc-task">0</div><div class="score-label">Есеп</div></div>
+    <div class="score-div"></div>
+    <div class="score-item"><div class="score-val yellow" id="sc-total">0 / 30</div><div class="score-label">Жалпы</div></div>
+    <div class="score-div"></div>
+    <div class="score-item"><div class="score-val" id="sc-pct" style="color:#60a5fa">0%</div><div class="score-label">Пайыз</div></div>
+  </div>
+
+  <!-- ═══════════════════════
+       БӨЛІМ 1: 15 ТЕСТ
+  ═══════════════════════ -->
+  <div class="section-title">📝 Тест сұрақтары <span>15 сұрақ</span></div>
+
+  <!-- Q1 -->
+  <div class="quiz-block" id="qb1">
+    <div class="q-num">📚 Алгоритм · Сұрақ 1</div>
+    <div class="q-text">Алгоритм дегеніміз не?</div>
+    <div class="q-opts" id="opts1">
+      <div class="q-opt" data-idx="0" onclick="selQ(1,0)"><div class="opt-ltr">A</div><div class="opt-txt">Компьютер атауы</div></div>
+      <div class="q-opt" data-idx="1" onclick="selQ(1,1)"><div class="opt-ltr">B</div><div class="opt-txt">Есепті шешу үшін нақты қадамдар тізбегі</div></div>
+      <div class="q-opt" data-idx="2" onclick="selQ(1,2)"><div class="opt-ltr">C</div><div class="opt-txt">Бағдарламалау тілі</div></div>
+      <div class="q-opt" data-idx="3" onclick="selQ(1,3)"><div class="opt-ltr">D</div><div class="opt-txt">Интернет желісі</div></div>
+    </div>
+    <button class="q-submit" id="qsub1" onclick="subQ(1,1)">✅ Жіберу</button>
+    <div class="q-fb" id="qfb1"></div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="quiz-block" id="qb2">
+    <div class="q-num">📚 Алгоритм қасиеті · Сұрақ 2</div>
+    <div class="q-text">Алгоритмнің қай қасиеті «нақты соңы болуы керек» дегенді білдіреді?</div>
+    <div class="q-opts" id="opts2">
+      <div class="q-opt" data-idx="0" onclick="selQ(2,0)"><div class="opt-ltr">A</div><div class="opt-txt">Нақтылық</div></div>
+      <div class="q-opt" data-idx="1" onclick="selQ(2,1)"><div class="opt-ltr">B</div><div class="opt-txt">Реттілік</div></div>
+      <div class="q-opt" data-idx="2" onclick="selQ(2,2)"><div class="opt-ltr">C</div><div class="opt-txt">Аяқталуы</div></div>
+      <div class="q-opt" data-idx="3" onclick="selQ(2,3)"><div class="opt-ltr">D</div><div class="opt-txt">Жалпылығы</div></div>
+    </div>
+    <button class="q-submit" id="qsub2" onclick="subQ(2,2)">✅ Жіберу</button>
+    <div class="q-fb" id="qfb2"></div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="quiz-block" id="qb3">
+    <div class="q-num">📊 Блок-схема · Сұрақ 3</div>
+    <div class="q-text">Блок-схемада шарт (тармақталу) үшін қай фигура қолданылады?</div>
+    <div class="q-opts" id="opts3">
+      <div class="q-opt" data-idx="0" onclick="selQ(3,0)"><div class="opt-ltr">A</div><div class="opt-txt">Тіктөртбұрыш</div></div>
+      <div class="q-opt" data-idx="1" onclick="selQ(3,1)"><div class="opt-ltr">B</div><div class="opt-txt">Овал</div></div>
+      <div class="q-opt" data-idx="2" onclick="selQ(3,2)"><div class="opt-ltr">C</div><div class="opt-txt">Ромб</div></div>
+      <div class="q-opt" data-idx="3" onclick="selQ(3,3)"><div class="opt-ltr">D</div><div class="opt-txt">Параллелограмм</div></div>
+    </div>
+    <button class="q-submit" id="qsub3" onclick="subQ(3,2)">✅ Жіберу</button>
+    <div class="q-fb" id="qfb3"></div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="quiz-block" id="qb4">
+    <div class="q-num">🐍 Python · Сұрақ 4</div>
+    <div class="q-text">Python тілінде айнымалыға мән беру қалай жазылады?</div>
+    <div class="q-opts" id="opts4">
+      <div class="q-opt" data-idx="0" onclick="selQ(4,0)"><div class="opt-ltr">A</div><div class="opt-txt">int x = 5</div></div>
+      <div class="q-opt" data-idx="1" onclick="selQ(4,1)"><div class="opt-ltr">B</div><div class="opt-txt">x == 5</div></div>
+      <div class="q-opt" data-idx="2" onclick="selQ(4,2)"><div class="opt-ltr">C</div><div class="opt-txt">x = 5</div></div>
+      <div class="q-opt" data-idx="3" onclick="selQ(4,3)"><div class="opt-ltr">D</div><div class="opt-txt">var x = 5</div></div>
+    </div>
+    <button class="q-submit" id="qsub4" onclick="subQ(4,2)">✅ Жіберу</button>
+    <div class="q-fb" id="qfb4"></div>
+  </div>
+
+  <!-- Q5 -->
+  <div class="quiz-block" id="qb5">
+    <div class="q-num">🔢 Типтер · Сұрақ 5</div>
+    <div class="q-text"><code>"Сәлем, Дүние!"</code> мәні қандай деректер типіне жатады?</div>
+    <div class="q-opts" id="opts5">
+      <div class="q-opt" data-idx="0" onclick="selQ(5,0)"><div class="opt-ltr">A</div><div class="opt-txt">int</div></div>
+      <div class="q-opt" data-idx="1" onclick="selQ(5,1)"><div class="opt-ltr">B</div><div class="opt-txt">float</div></div>
+      <div class="q-opt" data-idx="2" onclick="selQ(5,2)"><div class="opt-ltr">C</div><div class="opt-txt">bool</div></div>
+      <div class="q-opt" data-idx="3" onclick="selQ(5,3)"><div class="opt-ltr">D</div><div class="opt-txt">str</div></div>
+    </div>
+    <button class="q-submit" id="qsub5" onclick="subQ(5,3)">✅ Жіберу</button>
+    <div class="q-fb" id="qfb5"></div>
+  </div>
+
+  <!-- Q6 -->
+  <div class="quiz-block" id="qb6">
+    <div class="q-num">⌨️ Енгізу · Сұрақ 6</div>
+    <div class="q-text">Пайдаланушыдан бүтін сан алу үшін дұрыс код қайсы?</div>
+    <div class="q-opts" id="opts6">
+      <div class="q-opt" data-idx="0" onclick="selQ(6,0)"><div class="opt-ltr">A</div><div class="opt-txt">x = input()</div></div>
+      <div class="q-opt" data-idx="1" onclick="selQ(6,1)"><div class="opt-ltr">B</div><div class="opt-txt">x = int(input())</div></div>
+      <div class="q-opt" data-idx="2" onclick="selQ(6,2)"><div class="opt-ltr">C</div><div class="opt-txt">x = str(input())</div></div>
+      <div class="q-opt" data-idx="3" onclick="selQ(6,3)"><div class="opt-ltr">D</div><div class="opt-txt">x = read()</div></div>
+    </div>
+    <button class="q-submit" id="qsub6" onclick="subQ(6,1)">✅ Жіберу</button>
+    <div class="q-fb" id="qfb6"></div>
+  </div>
+
+  <!-- Q7 -->
+  <div class="quiz-block" id="qb7">
+    <div class="q-num">➗ Операторлар · Сұрақ 7</div>
+    <div class="q-text"><code>17 % 5</code> нәтижесі қандай?</div>
+    <div class="q-opts" id="opts7">
+      <div class="q-opt" data-idx="0" onclick="selQ(7,0)"><div class="opt-ltr">A</div><div class="opt-txt">3</div></div>
+      <div class="q-opt" data-idx="1" onclick="selQ(7,1)"><div class="opt-ltr">B</div><div class="opt-txt">2</div></div>
+      <div class="q-opt" data-idx="2" onclick="selQ(7,2)"><div class="opt-ltr">C</div><div class="opt-txt">85</div></div>
+      <div class="q-opt" data-idx="3" onclick="selQ(7,3)"><div class="opt-ltr">D</div><div class="opt-txt">3.4</div></div>
+    </div>
+    <button class="q-submit" id="qsub7" onclick="subQ(7,1)">✅ Жіберу</button>
+    <div class="q-fb" id="qfb7"></div>
+  </div>
+
+  <!-- Q8 -->
+  <div class="quiz-block" id="qb8">
+    <div class="q-num">🔍 Салыстыру · Сұрақ 8</div>
+    <div class="q-text"><code>10 == 10.0</code> нәтижесі не болады?</div>
+    <div class="q-opts" id="opts8">
+      <div class="q-opt" data-idx="0" onclick="selQ(8,0)"><div class="opt-ltr">A</div><div class="opt-txt">False</div></div>
+      <div class="q-opt" data-idx="1" onclick="selQ(8,1)"><div class="opt-ltr">B</div><div class="opt-txt">True</div></div>
+      <div class="q-opt" data-idx="2" onclick="selQ(8,2)"><div class="opt-ltr">C</div><div class="opt-txt">Error</div></div>
+      <div class="q-opt" data-idx="3" onclick="selQ(8,3)"><div class="opt-ltr">D</div><div class="opt-txt">None</div></div>
+    </div>
+    <button class="q-submit" id="qsub8" onclick="subQ(8,1)">✅ Жіберу</button>
+    <div class="q-fb" id="qfb8"></div>
+  </div>
+
+  <!-- Q9 -->
+  <div class="quiz-block" id="qb9">
+    <div class="q-num">🌿 Шарт · Сұрақ 9</div>
+    <div class="q-text">Мына код не шығарады?</div>
+    <div class="code-block">жас = 20
+if жас >= 18:
+    print("Кәмелет")
+else:
+    print("Кәмелет емес")</div>
+    <div class="q-opts" id="opts9">
+      <div class="q-opt" data-idx="0" onclick="selQ(9,0)"><div class="opt-ltr">A</div><div class="opt-txt">Кәмелет емес</div></div>
+      <div class="q-opt" data-idx="1" onclick="selQ(9,1)"><div class="opt-ltr">B</div><div class="opt-txt">Кәмелет</div></div>
+      <div class="q-opt" data-idx="2" onclick="selQ(9,2)"><div class="opt-ltr">C</div><div class="opt-txt">Екеуі де</div></div>
+      <div class="q-opt" data-idx="3" onclick="selQ(9,3)"><div class="opt-ltr">D</div><div class="opt-txt">Ештеңе шықпайды</div></div>
+    </div>
+    <button class="q-submit" id="qsub9" onclick="subQ(9,1)">✅ Жіберу</button>
+    <div class="q-fb" id="qfb9"></div>
+  </div>
+
+  <!-- Q10 -->
+  <div class="quiz-block" id="qb10">
+    <div class="q-num">🔁 for · Сұрақ 10</div>
+    <div class="q-text"><code>range(2, 8, 2)</code> қандай сандар береді?</div>
+    <div class="q-opts" id="opts10">
+      <div class="q-opt" data-idx="0" onclick="selQ(10,0)"><div class="opt-ltr">A</div><div class="opt-txt">2, 4, 6, 8</div></div>
+      <div class="q-opt" data-idx="1" onclick="selQ(10,1)"><div class="opt-ltr">B</div><div class="opt-txt">2, 4, 6</div></div>
+      <div class="q-opt" data-idx="2" onclick="selQ(10,2)"><div class="opt-ltr">C</div><div class="opt-txt">2, 3, 4, 5, 6, 7</div></div>
+      <div class="q-opt" data-idx="3" onclick="selQ(10,3)"><div class="opt-ltr">D</div><div class="opt-txt">0, 2, 4, 6</div></div>
+    </div>
+    <button class="q-submit" id="qsub10" onclick="subQ(10,1)">✅ Жіберу</button>
+    <div class="q-fb" id="qfb10"></div>
+  </div>
+
+  <!-- Q11 -->
+  <div class="quiz-block" id="qb11">
+    <div class="q-num">🔄 while · Сұрақ 11</div>
+    <div class="q-text">Шексіз цикл қаупінен қорғанудың дұрыс жолы қайсы?</div>
+    <div class="q-opts" id="opts11">
+      <div class="q-opt" data-idx="0" onclick="selQ(11,0)"><div class="opt-ltr">A</div><div class="opt-txt">Циклді тастап кету</div></div>
+      <div class="q-opt" data-idx="1" onclick="selQ(11,1)"><div class="opt-ltr">B</div><div class="opt-txt">Санауышты цикл ішінде өзгерту (i += 1)</div></div>
+      <div class="q-opt" data-idx="2" onclick="selQ(11,2)"><div class="opt-ltr">C</div><div class="opt-txt">while орнына if қолдану</div></div>
+      <div class="q-opt" data-idx="3" onclick="selQ(11,3)"><div class="opt-ltr">D</div><div class="opt-txt">print() ішіне жазу</div></div>
+    </div>
+    <button class="q-submit" id="qsub11" onclick="subQ(11,1)">✅ Жіберу</button>
+    <div class="q-fb" id="qfb11"></div>
+  </div>
+
+  <!-- Q12 -->
+  <div class="quiz-block" id="qb12">
+    <div class="q-num">📋 Тізім · Сұрақ 12</div>
+    <div class="q-text">Тізімнің соңына жаңа элемент қосу үшін қай әдіс қолданылады?</div>
+    <div class="q-opts" id="opts12">
+      <div class="q-opt" data-idx="0" onclick="selQ(12,0)"><div class="opt-ltr">A</div><div class="opt-txt">.add()</div></div>
+      <div class="q-opt" data-idx="1" onclick="selQ(12,1)"><div class="opt-ltr">B</div><div class="opt-txt">.insert()</div></div>
+      <div class="q-opt" data-idx="2" onclick="selQ(12,2)"><div class="opt-ltr">C</div><div class="opt-txt">.append()</div></div>
+      <div class="q-opt" data-idx="3" onclick="selQ(12,3)"><div class="opt-ltr">D</div><div class="opt-txt">.push()</div></div>
+    </div>
+    <button class="q-submit" id="qsub12" onclick="subQ(12,2)">✅ Жіберу</button>
+    <div class="q-fb" id="qfb12"></div>
+  </div>
+
+  <!-- Q13 -->
+  <div class="quiz-block" id="qb13">
+    <div class="q-num">📋 Индекс · Сұрақ 13</div>
+    <div class="q-text"><code>т = ["а", "б", "в", "г"]</code> болса, <code>т[1]</code> нені береді?</div>
+    <div class="q-opts" id="opts13">
+      <div class="q-opt" data-idx="0" onclick="selQ(13,0)"><div class="opt-ltr">A</div><div class="opt-txt">"а"</div></div>
+      <div class="q-opt" data-idx="1" onclick="selQ(13,1)"><div class="opt-ltr">B</div><div class="opt-txt">"б"</div></div>
+      <div class="q-opt" data-idx="2" onclick="selQ(13,2)"><div class="opt-ltr">C</div><div class="opt-txt">"в"</div></div>
+      <div class="q-opt" data-idx="3" onclick="selQ(13,3)"><div class="opt-ltr">D</div><div class="opt-txt">"г"</div></div>
+    </div>
+    <button class="q-submit" id="qsub13" onclick="subQ(13,1)">✅ Жіберу</button>
+    <div class="q-fb" id="qfb13"></div>
+  </div>
+
+  <!-- Q14 -->
+  <div class="quiz-block" id="qb14">
+    <div class="q-num">🧠 Логика · Сұрақ 14</div>
+    <div class="q-text"><code>True and False</code> нәтижесі не?</div>
+    <div class="q-opts" id="opts14">
+      <div class="q-opt" data-idx="0" onclick="selQ(14,0)"><div class="opt-ltr">A</div><div class="opt-txt">True</div></div>
+      <div class="q-opt" data-idx="1" onclick="selQ(14,1)"><div class="opt-ltr">B</div><div class="opt-txt">False</div></div>
+      <div class="q-opt" data-idx="2" onclick="selQ(14,2)"><div class="opt-ltr">C</div><div class="opt-txt">Error</div></div>
+      <div class="q-opt" data-idx="3" onclick="selQ(14,3)"><div class="opt-ltr">D</div><div class="opt-txt">None</div></div>
+    </div>
+    <button class="q-submit" id="qsub14" onclick="subQ(14,1)">✅ Жіберу</button>
+    <div class="q-fb" id="qfb14"></div>
+  </div>
+
+  <!-- Q15 -->
+  <div class="quiz-block" id="qb15">
+    <div class="q-num">📏 len() · Сұрақ 15</div>
+    <div class="q-text"><code>len([10, 20, 30, 40, 50])</code> нәтижесі не?</div>
+    <div class="q-opts" id="opts15">
+      <div class="q-opt" data-idx="0" onclick="selQ(15,0)"><div class="opt-ltr">A</div><div class="opt-txt">4</div></div>
+      <div class="q-opt" data-idx="1" onclick="selQ(15,1)"><div class="opt-ltr">B</div><div class="opt-txt">50</div></div>
+      <div class="q-opt" data-idx="2" onclick="selQ(15,2)"><div class="opt-ltr">C</div><div class="opt-txt">5</div></div>
+      <div class="q-opt" data-idx="3" onclick="selQ(15,3)"><div class="opt-ltr">D</div><div class="opt-txt">6</div></div>
+    </div>
+    <button class="q-submit" id="qsub15" onclick="subQ(15,2)">✅ Жіберу</button>
+    <div class="q-fb" id="qfb15"></div>
+  </div>
+
+  <!-- UNLOCK BANNER (shows after all quiz done) -->
+  <div class="unlock-banner" id="unlockBanner">
+    <div class="ub-icon">🎯</div>
+    <h3>Тест бөлімі аяқталды!</h3>
+    <p>Барлық 15 сұрақты жауаптадың. Енді практикалық есептер ашылды!</p>
+  </div>
+
+  <!-- ═══════════════════════
+       БӨЛІМ 2: 15 ЕСЕП
+  ═══════════════════════ -->
+  <div class="section-title" id="taskSectionTitle" style="display:none;">💻 Практикалық есептер <span>15 есеп</span></div>
+
+  <!-- LOCKED placeholder shown before quiz done -->
+  <div class="locked-section" id="lockedTasks">
+    <div class="lock-big">🔒</div>
+    <p>Практикалық есептер жабық</p>
+    <small>Алдымен барлық 15 тест сұрағын жауаптаңыз</small>
+  </div>
+
+  <!-- TASKS CONTAINER (hidden until quiz done) -->
+  <div id="tasksContainer" style="display:none;">
+
+  <!-- ЕСЕП 1 -->
+  <div class="task-block">
+    <div class="task-header"><div class="task-indicator" id="ind1"></div><div class="task-title">👋 Есеп 1: Өзіңді таныстыр</div></div>
+    <div class="task-desc">
+      <b>📋 Тапсырма:</b>
+      Атыңды және жасыңды сақтайтын екі айнымалы жаса. Экранға <code>"Менің атым: [ат], жасым: [жас]"</code> түрінде шығар.
+    </div>
+    <div class="editor-wrap"><div class="editor-topbar"><div class="editor-dot" style="background:#ef4444"></div><div class="editor-dot" style="background:#f59e0b"></div><div class="editor-dot" style="background:#22c55e"></div><span class="editor-filename">task1.py</span></div><div class="editor-lines" id="lines1"><div class="code-line"><div class="line-num">1</div><textarea class="code-input" rows="1" placeholder="# кодыңды жаз..."></textarea></div></div><button class="add-line-btn" onclick="addLine('lines1')">＋ Жол қос</button></div>
+    <div class="btn-row"><button class="run-btn" onclick="chk(1)">▶ Тексер</button></div>
+    
+    <div class="output-box" id="out1">Нәтиже осы жерде шығады...</div>
+    <div class="task-feedback" id="fb1"></div>
+  </div>
+
+  <!-- ЕСЕП 2 -->
+  <div class="task-block">
+    <div class="task-header"><div class="task-indicator" id="ind2"></div><div class="task-title">🔢 Есеп 2: Екі санның амалдары</div></div>
+    <div class="task-desc">
+      <b>📋 Тапсырма:</b>
+      <code>a = 12</code>, <code>b = 5</code> берілген. Осы екі санның қосындысын, айырмасын, көбейтіндісін және бөліндісін жеке жолдарда шығар.
+    </div>
+    <div class="editor-wrap"><div class="editor-topbar"><div class="editor-dot" style="background:#ef4444"></div><div class="editor-dot" style="background:#f59e0b"></div><div class="editor-dot" style="background:#22c55e"></div><span class="editor-filename">task2.py</span></div><div class="editor-lines" id="lines2"><div class="code-line"><div class="line-num">1</div><textarea class="code-input" rows="1" placeholder="# кодыңды жаз..."></textarea></div></div><button class="add-line-btn" onclick="addLine('lines2')">＋ Жол қос</button></div>
+    <div class="btn-row"><button class="run-btn" onclick="chk(2)">▶ Тексер</button></div>
+    
+    <div class="output-box" id="out2">Нәтиже осы жерде шығады...</div>
+    <div class="task-feedback" id="fb2"></div>
+  </div>
+
+  <!-- ЕСЕП 3 -->
+  <div class="task-block">
+    <div class="task-header"><div class="task-indicator" id="ind3"></div><div class="task-title">🌡️ Есеп 3: Температура түрлендіру</div></div>
+    <div class="task-desc">
+      <b>📋 Тапсырма:</b>
+      Celsius температурасын Fahrenheit-ке айналдыр. Формула: <code>F = C * 9/5 + 32</code>.<br>
+      <code>celsius = 100</code> болса, нәтижені шығар.
+    </div>
+    <div class="editor-wrap"><div class="editor-topbar"><div class="editor-dot" style="background:#ef4444"></div><div class="editor-dot" style="background:#f59e0b"></div><div class="editor-dot" style="background:#22c55e"></div><span class="editor-filename">task3.py</span></div><div class="editor-lines" id="lines3"><div class="code-line"><div class="line-num">1</div><textarea class="code-input" rows="1" placeholder="# кодыңды жаз..."></textarea></div></div><button class="add-line-btn" onclick="addLine('lines3')">＋ Жол қос</button></div>
+    <div class="btn-row"><button class="run-btn" onclick="chk(3)">▶ Тексер</button></div>
+    
+    <div class="output-box" id="out3">Нәтиже осы жерде шығады...</div>
+    <div class="task-feedback" id="fb3"></div>
+  </div>
+
+  <!-- ЕСЕП 4 -->
+  <div class="task-block">
+    <div class="task-header"><div class="task-indicator" id="ind4"></div><div class="task-title">🔢 Есеп 4: Жұп немесе тақ?</div></div>
+    <div class="task-desc">
+      <b>📋 Тапсырма:</b>
+      <code>n = 7</code> саны жұп па, тақ па — <code>if / else</code> және <code>%</code> оператор арқылы тексер. Тиісті хабарлама шығар.
+    </div>
+    <div class="editor-wrap"><div class="editor-topbar"><div class="editor-dot" style="background:#ef4444"></div><div class="editor-dot" style="background:#f59e0b"></div><div class="editor-dot" style="background:#22c55e"></div><span class="editor-filename">task4.py</span></div><div class="editor-lines" id="lines4"><div class="code-line"><div class="line-num">1</div><textarea class="code-input" rows="1" placeholder="# кодыңды жаз..."></textarea></div></div><button class="add-line-btn" onclick="addLine('lines4')">＋ Жол қос</button></div>
+    <div class="btn-row"><button class="run-btn" onclick="chk(4)">▶ Тексер</button></div>
+    
+    <div class="output-box" id="out4">Нәтиже осы жерде шығады...</div>
+    <div class="task-feedback" id="fb4"></div>
+  </div>
+
+  <!-- ЕСЕП 5 -->
+  <div class="task-block">
+    <div class="task-header"><div class="task-indicator" id="ind5"></div><div class="task-title">🏅 Есеп 5: Медальдар</div></div>
+    <div class="task-desc">
+      <b>📋 Тапсырма:</b>
+      <code>орын = 2</code> берілген. if / elif / else пайдаланып:<br>
+      1-орын → <code>"🥇 Алтын медаль"</code><br>
+      2-орын → <code>"🥈 Күміс медаль"</code><br>
+      3-орын → <code>"🥉 Қола медаль"</code><br>
+      Басқа → <code>"Финалға жеткен жоқ"</code>
+    </div>
+    <div class="editor-wrap"><div class="editor-topbar"><div class="editor-dot" style="background:#ef4444"></div><div class="editor-dot" style="background:#f59e0b"></div><div class="editor-dot" style="background:#22c55e"></div><span class="editor-filename">task5.py</span></div><div class="editor-lines" id="lines5"><div class="code-line"><div class="line-num">1</div><textarea class="code-input" rows="1" placeholder="# кодыңды жаз..."></textarea></div></div><button class="add-line-btn" onclick="addLine('lines5')">＋ Жол қос</button></div>
+    <div class="btn-row"><button class="run-btn" onclick="chk(5)">▶ Тексер</button></div>
+    
+    <div class="output-box" id="out5">Нәтиже осы жерде шығады...</div>
+    <div class="task-feedback" id="fb5"></div>
+  </div>
+
+  <!-- ЕСЕП 6 -->
+  <div class="task-block">
+    <div class="task-header"><div class="task-indicator" id="ind6"></div><div class="task-title">⭐ Есеп 6: Жұлдызшалар</div></div>
+    <div class="task-desc">
+      <b>📋 Тапсырма:</b>
+      <code>for</code> циклі мен <code>range()</code> пайдаланып, экранға 5 жол бойынша жұлдызша шығар:<br>
+      <code>*</code><br><code>**</code><br><code>***</code><br><code>****</code><br><code>*****</code>
+    </div>
+    <div class="editor-wrap"><div class="editor-topbar"><div class="editor-dot" style="background:#ef4444"></div><div class="editor-dot" style="background:#f59e0b"></div><div class="editor-dot" style="background:#22c55e"></div><span class="editor-filename">task6.py</span></div><div class="editor-lines" id="lines6"><div class="code-line"><div class="line-num">1</div><textarea class="code-input" rows="1" placeholder="# кодыңды жаз..."></textarea></div></div><button class="add-line-btn" onclick="addLine('lines6')">＋ Жол қос</button></div>
+    <div class="btn-row"><button class="run-btn" onclick="chk(6)">▶ Тексер</button></div>
+    
+    <div class="output-box" id="out6">Нәтиже осы жерде шығады...</div>
+    <div class="task-feedback" id="fb6"></div>
+  </div>
+
+  <!-- ЕСЕП 7 -->
+  <div class="task-block">
+    <div class="task-header"><div class="task-indicator" id="ind7"></div><div class="task-title">➕ Есеп 7: 1-ден 100-ге дейін қосынды</div></div>
+    <div class="task-desc">
+      <b>📋 Тапсырма:</b>
+      <code>for</code> циклі пайдаланып, 1-ден 100-ге дейінгі барлық сандардың қосындысын есепте. Нәтиже: <code>5050</code>.
+    </div>
+    <div class="editor-wrap"><div class="editor-topbar"><div class="editor-dot" style="background:#ef4444"></div><div class="editor-dot" style="background:#f59e0b"></div><div class="editor-dot" style="background:#22c55e"></div><span class="editor-filename">task7.py</span></div><div class="editor-lines" id="lines7"><div class="code-line"><div class="line-num">1</div><textarea class="code-input" rows="1" placeholder="# кодыңды жаз..."></textarea></div></div><button class="add-line-btn" onclick="addLine('lines7')">＋ Жол қос</button></div>
+    <div class="btn-row"><button class="run-btn" onclick="chk(7)">▶ Тексер</button></div>
+    
+    <div class="output-box" id="out7">Нәтиже осы жерде шығады...</div>
+    <div class="task-feedback" id="fb7"></div>
+  </div>
+
+  <!-- ЕСЕП 8 -->
+  <div class="task-block">
+    <div class="task-header"><div class="task-indicator" id="ind8"></div><div class="task-title">🔐 Есеп 8: PIN-код тексергіш</div></div>
+    <div class="task-desc">
+      <b>📋 Тапсырма:</b>
+      Дұрыс PIN-код: <code>"4321"</code>. <code>while</code> циклін пайдаланып, пайдаланушы дұрыс PIN енгізгенше <code>"Қате PIN! Қайталаңыз."</code> деп қайта сұра. Дұрыс болса <code>"✅ Кіруге рұқсат!"</code> шығар.
+    </div>
+    <div class="editor-wrap"><div class="editor-topbar"><div class="editor-dot" style="background:#ef4444"></div><div class="editor-dot" style="background:#f59e0b"></div><div class="editor-dot" style="background:#22c55e"></div><span class="editor-filename">task8.py</span></div><div class="editor-lines" id="lines8"><div class="code-line"><div class="line-num">1</div><textarea class="code-input" rows="1" placeholder="# кодыңды жаз..."></textarea></div></div><button class="add-line-btn" onclick="addLine('lines8')">＋ Жол қос</button></div>
+    <div class="btn-row"><button class="run-btn" onclick="chk(8)">▶ Тексер</button></div>
+    
+    <div class="output-box" id="out8">Нәтиже осы жерде шығады...</div>
+    <div class="task-feedback" id="fb8"></div>
+  </div>
+
+  <!-- ЕСЕП 9 -->
+  <div class="task-block">
+    <div class="task-header"><div class="task-indicator" id="ind9"></div><div class="task-title">📋 Есеп 9: Тізімдегі максималды сан</div></div>
+    <div class="task-desc">
+      <b>📋 Тапсырма:</b>
+      <code>сандар = [34, 17, 82, 45, 61, 9, 78]</code> тізімі берілген. <code>for</code> цикл арқылы тізімдегі <b>ең үлкен санды</b> тап және шығар.
+    </div>
+    <div class="editor-wrap"><div class="editor-topbar"><div class="editor-dot" style="background:#ef4444"></div><div class="editor-dot" style="background:#f59e0b"></div><div class="editor-dot" style="background:#22c55e"></div><span class="editor-filename">task9.py</span></div><div class="editor-lines" id="lines9"><div class="code-line"><div class="line-num">1</div><textarea class="code-input" rows="1" placeholder="# кодыңды жаз..."></textarea></div></div><button class="add-line-btn" onclick="addLine('lines9')">＋ Жол қос</button></div>
+    <div class="btn-row"><button class="run-btn" onclick="chk(9)">▶ Тексер</button></div>
+    
+    <div class="output-box" id="out9">Нәтиже осы жерде шығады...</div>
+    <div class="task-feedback" id="fb9"></div>
+  </div>
+
+  <!-- ЕСЕП 10 -->
+  <div class="task-block">
+    <div class="task-header"><div class="task-indicator" id="ind10"></div><div class="task-title">🧮 Есеп 10: Кері санақ</div></div>
+    <div class="task-desc">
+      <b>📋 Тапсырма:</b>
+      <code>while</code> циклін пайдаланып, 10-нан 1-ге дейін кері санап шығар. Соңында <code>"🚀 Ұшу!"</code> деп жаз.
+    </div>
+    <div class="editor-wrap"><div class="editor-topbar"><div class="editor-dot" style="background:#ef4444"></div><div class="editor-dot" style="background:#f59e0b"></div><div class="editor-dot" style="background:#22c55e"></div><span class="editor-filename">task10.py</span></div><div class="editor-lines" id="lines10"><div class="code-line"><div class="line-num">1</div><textarea class="code-input" rows="1" placeholder="# кодыңды жаз..."></textarea></div></div><button class="add-line-btn" onclick="addLine('lines10')">＋ Жол қос</button></div>
+    <div class="btn-row"><button class="run-btn" onclick="chk(10)">▶ Тексер</button></div>
+    
+    <div class="output-box" id="out10">Нәтиже осы жерде шығады...</div>
+    <div class="task-feedback" id="fb10"></div>
+  </div>
+
+  <!-- ЕСЕП 11 -->
+  <div class="task-block">
+    <div class="task-header"><div class="task-indicator" id="ind11"></div><div class="task-title">🎒 Есеп 11: Тізімге қосу</div></div>
+    <div class="task-desc">
+      <b>📋 Тапсырма:</b>
+      <code>мектеп_заттары = ["дәптер", "қалам"]</code> берілген. Тізімге <code>"сызғыш"</code>, <code>"өшіргіш"</code> қос. Нәтиже тізімді және оның ұзындығын шығар.
+    </div>
+    <div class="editor-wrap"><div class="editor-topbar"><div class="editor-dot" style="background:#ef4444"></div><div class="editor-dot" style="background:#f59e0b"></div><div class="editor-dot" style="background:#22c55e"></div><span class="editor-filename">task11.py</span></div><div class="editor-lines" id="lines11"><div class="code-line"><div class="line-num">1</div><textarea class="code-input" rows="1" placeholder="# кодыңды жаз..."></textarea></div></div><button class="add-line-btn" onclick="addLine('lines11')">＋ Жол қос</button></div>
+    <div class="btn-row"><button class="run-btn" onclick="chk(11)">▶ Тексер</button></div>
+    
+    <div class="output-box" id="out11">Нәтиже осы жерде шығады...</div>
+    <div class="task-feedback" id="fb11"></div>
+  </div>
+
+  <!-- ЕСЕП 12 -->
+  <div class="task-block">
+    <div class="task-header"><div class="task-indicator" id="ind12"></div><div class="task-title">🔢 Есеп 12: Көбейту кестесі</div></div>
+    <div class="task-desc">
+      <b>📋 Тапсырма:</b>
+      <code>for</code> циклі мен <code>range()</code> пайдаланып, <b>3-тің көбейту кестесін</b> 1-ден 5-ке дейін шығар.<br>
+      Үлгі: <code>3 x 1 = 3</code>, <code>3 x 2 = 6</code>, ...
+    </div>
+    <div class="editor-wrap"><div class="editor-topbar"><div class="editor-dot" style="background:#ef4444"></div><div class="editor-dot" style="background:#f59e0b"></div><div class="editor-dot" style="background:#22c55e"></div><span class="editor-filename">task12.py</span></div><div class="editor-lines" id="lines12"><div class="code-line"><div class="line-num">1</div><textarea class="code-input" rows="1" placeholder="# кодыңды жаз..."></textarea></div></div><button class="add-line-btn" onclick="addLine('lines12')">＋ Жол қос</button></div>
+    <div class="btn-row"><button class="run-btn" onclick="chk(12)">▶ Тексер</button></div>
+    
+    <div class="output-box" id="out12">Нәтиже осы жерде шығады...</div>
+    <div class="task-feedback" id="fb12"></div>
+  </div>
+
+  <!-- ЕСЕП 13 -->
+  <div class="task-block">
+    <div class="task-header"><div class="task-indicator" id="ind13"></div><div class="task-title">📊 Есеп 13: Тізімнен тақ сандар</div></div>
+    <div class="task-desc">
+      <b>📋 Тапсырма:</b>
+      <code>сандар = [1, 4, 7, 10, 13, 6, 9, 2]</code> тізімінен тек <b>тақ сандарды</b> <code>for</code> цикл мен <code>if</code> пайдаланып шығар.
+    </div>
+    <div class="editor-wrap"><div class="editor-topbar"><div class="editor-dot" style="background:#ef4444"></div><div class="editor-dot" style="background:#f59e0b"></div><div class="editor-dot" style="background:#22c55e"></div><span class="editor-filename">task13.py</span></div><div class="editor-lines" id="lines13"><div class="code-line"><div class="line-num">1</div><textarea class="code-input" rows="1" placeholder="# кодыңды жаз..."></textarea></div></div><button class="add-line-btn" onclick="addLine('lines13')">＋ Жол қос</button></div>
+    <div class="btn-row"><button class="run-btn" onclick="chk(13)">▶ Тексер</button></div>
+    
+    <div class="output-box" id="out13">Нәтиже осы жерде шығады...</div>
+    <div class="task-feedback" id="fb13"></div>
+  </div>
+
+  <!-- ЕСЕП 14 -->
+  <div class="task-block">
+    <div class="task-header"><div class="task-indicator" id="ind14"></div><div class="task-title">💬 Есеп 14: Амандасу бағдарламасы</div></div>
+    <div class="task-desc">
+      <b>📋 Тапсырма:</b>
+      Пайдаланушыдан атын сұра (<code>input()</code>). Егер ат <code>"Бот"</code> болса <code>"Сен робот па?!"</code>, кез келген басқа ат болса <code>"Сәлем, [ат]!"</code> деп шығар.
+    </div>
+    <div class="editor-wrap"><div class="editor-topbar"><div class="editor-dot" style="background:#ef4444"></div><div class="editor-dot" style="background:#f59e0b"></div><div class="editor-dot" style="background:#22c55e"></div><span class="editor-filename">task14.py</span></div><div class="editor-lines" id="lines14"><div class="code-line"><div class="line-num">1</div><textarea class="code-input" rows="1" placeholder="# кодыңды жаз..."></textarea></div></div><button class="add-line-btn" onclick="addLine('lines14')">＋ Жол қос</button></div>
+    <div class="btn-row"><button class="run-btn" onclick="chk(14)">▶ Тексер</button></div>
+    
+    <div class="output-box" id="out14">Нәтиже осы жерде шығады...</div>
+    <div class="task-feedback" id="fb14"></div>
+  </div>
+
+  <!-- ЕСЕП 15 -->
+  <div class="task-block">
+    <div class="task-header"><div class="task-indicator" id="ind15"></div><div class="task-title">🏆 Есеп 15: Барлығын біріктір</div></div>
+    <div class="task-desc">
+      <b>📋 Тапсырма:</b>
+      <code>оқушылар = ["Алия", "Берік", "Гүлім", "Дәурен", "Еркін"]</code> тізімі берілген.<br>
+      <code>for</code> цикл мен <code>enumerate()</code> пайдаланып, нөмірімен бірге барлық атты шығар. Нөмірлеу <b>1-ден</b> басталуы керек.<br>
+      Үлгі: <code>1. Алия</code>, <code>2. Берік</code>, ...
+    </div>
+    <div class="editor-wrap"><div class="editor-topbar"><div class="editor-dot" style="background:#ef4444"></div><div class="editor-dot" style="background:#f59e0b"></div><div class="editor-dot" style="background:#22c55e"></div><span class="editor-filename">task15.py</span></div><div class="editor-lines" id="lines15"><div class="code-line"><div class="line-num">1</div><textarea class="code-input" rows="1" placeholder="# кодыңды жаз..."></textarea></div></div><button class="add-line-btn" onclick="addLine('lines15')">＋ Жол қос</button></div>
+    <div class="btn-row"><button class="run-btn" onclick="chk(15)">▶ Тексер</button></div>
+    
+    <div class="output-box" id="out15">Нәтиже осы жерде шығады...</div>
+    <div class="task-feedback" id="fb15"></div>
+  </div>
+
+  </div><!-- /tasksContainer -->
+
+</div><!-- /content -->
+</div><!-- /body-wrap -->
+
+<script>
+/* ═══════════════════════ STATE ═══════════════════════ */
+var quizDone  = {};
+var quizSel   = {};
+var taskDone  = {};
+var quizCount = 0;
+var taskCount = 0;
+var TOTAL = 30;
+
+for(var i=1;i<=15;i++){ quizDone[i]=false; quizSel[i]=-1; taskDone[i]=false;  }
+
+/* ═══════════════════════ PROGRESS ═══════════════════════ */
+function updateProgress(){
+  var done = quizCount + taskCount;
+  document.getElementById('progressTxt').textContent = done + ' / ' + TOTAL;
+  document.getElementById('progressBar').style.width = (done/TOTAL*100).toFixed(1) + '%';
+  document.getElementById('sc-quiz').textContent  = quizCount;
+  document.getElementById('sc-task').textContent  = taskCount;
+  document.getElementById('sc-total').textContent = done + ' / ' + TOTAL;
+  document.getElementById('sc-pct').textContent   = Math.round(done/TOTAL*100) + '%';
+}
+
+/* ═══════════════════════ QUIZ ═══════════════════════ */
+function selQ(n, idx){
+  if(quizDone[n]) return;
+  quizSel[n] = idx;
+  document.querySelectorAll('#opts'+n+' .q-opt').forEach(function(o){ o.classList.remove('selected'); });
+  document.querySelector('#opts'+n+' [data-idx="'+idx+'"]').classList.add('selected');
+}
+
+var quizExplain = {
+  1:  '✅ <b>Дұрыс!</b> Алгоритм — есепті шешудің нақты, реттелген қадамдар тізбегі.',
+  2:  '✅ <b>Дұрыс!</b> «Аяқталуы» қасиеті — алгоритм шектелген қадамдан соң міндетті түрде аяқталуы керек.',
+  3:  '✅ <b>Дұрыс!</b> Блок-схемада шарт (иә/жоқ тармағы) үшін <b>ромб</b> фигурасы қолданылады.',
+  4:  '✅ <b>Дұрыс!</b> Python-да айнымалыға мән беру: <b>x = 5</b>. int, var міндетті емес.',
+  5:  '✅ <b>Дұрыс!</b> Тырнақшаға алынған мән — <b>str</b> (string, жол) типі.',
+  6:  '✅ <b>Дұрыс!</b> Бүтін сан алу үшін: <b>int(input())</b>. Тек input() жазса string болады.',
+  7:  '✅ <b>Дұрыс!</b> 17 ÷ 5 = 3 қалдық <b>2</b>. % — бөлудің қалдығын береді.',
+  8:  '✅ <b>Дұрыс!</b> Python-да 10 == 10.0 → <b>True</b>. Python мәнді салыстырады, типті емес.',
+  9:  '✅ <b>Дұрыс!</b> жас=20, шарт 20 >= 18 → ақиқат, сондықтан <b>«Кәмелет»</b> шығады.',
+  10: '✅ <b>Дұрыс!</b> range(2, 8, 2): 2-ден бастап, 8-ге дейін (кірмей), 2 қадаммен → <b>2, 4, 6</b>.',
+  11: '✅ <b>Дұрыс!</b> Санауышты цикл ішінде өзгерту (i += 1) шексіз циклден қорғайды.',
+  12: '✅ <b>Дұрыс!</b> Тізімнің соңына элемент қосу үшін <b>.append()</b> пайдаланылады.',
+  13: '✅ <b>Дұрыс!</b> Индекс 0-ден басталады: т[0]="а", т[1]="б". Жауап — <b>"б"</b>.',
+  14: '✅ <b>Дұрыс!</b> and операторы: екі шарт та ақиқат болса ғана True. True and False → <b>False</b>.',
+  15: '✅ <b>Дұрыс!</b> Тізімде 5 элемент бар. len([10,20,30,40,50]) → <b>5</b>.'
+};
+
+function subQ(n, correct){
+  if(quizDone[n]) return;
+  var sel = quizSel[n];
+  var fb  = document.getElementById('qfb'+n);
+  if(sel === -1){ fb.className='q-fb err'; fb.textContent='⚠️ Жауап таңда!'; return; }
+  if(sel === correct){
+    quizDone[n] = true;
+    quizCount++;
+    document.querySelectorAll('#opts'+n+' .q-opt').forEach(function(o){
+      o.classList.add('locked-opt');
+      if(parseInt(o.dataset.idx) === correct) o.classList.add('correct');
+    });
+    document.getElementById('qsub'+n).style.display='none';
+    fb.className='q-fb ok'; fb.innerHTML = quizExplain[n];
+    updateProgress();
+    if(quizCount === 15) unlockTasks();
+  } else {
+    var el = document.querySelector('#opts'+n+' [data-idx="'+sel+'"]');
+    el.classList.add('wrong');
+    fb.className='q-fb err'; fb.innerHTML='❌ <b>Қате!</b> Қайтадан таңдап көр.';
+    setTimeout(function(){ el.classList.remove('wrong','selected'); quizSel[n]=-1; fb.style.display='none'; }, 900);
+  }
+}
+
+function unlockTasks(){
+  document.getElementById('unlockBanner').style.display='block';
+  document.getElementById('lockedTasks').style.display='none';
+  document.getElementById('tasksContainer').style.display='block';
+  document.getElementById('taskSectionTitle').style.display='flex';
+  document.getElementById('unlockBanner').scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+/* ═══════════════════════ EDITOR ═══════════════════════ */
+function addLine(id){
+  var wrap = document.getElementById(id);
+  var num  = wrap.querySelectorAll('.code-line').length + 1;
+  var div  = document.createElement('div');
+  div.className = 'code-line';
+  div.innerHTML = '<div class="line-num">'+num+'</div><textarea class="code-input" rows="1" placeholder=""></textarea>';
+  wrap.appendChild(div);
+  div.querySelector('textarea').focus();
+}
+
+
+
+function getCode(n){
+  return Array.from(document.querySelectorAll('#lines'+n+' .code-input')).map(function(t){return t.value;}).join('\n').toLowerCase();
+}
+
+function showFb(n, ok, msg){
+  var fb = document.getElementById('fb'+n);
+  fb.style.display='block';
+  fb.className='task-feedback '+(ok?'success':'error');
+  fb.innerHTML=msg;
+}
+
+function markDone(n){
+  taskDone[n]=true;
+  taskCount++;
+  document.getElementById('ind'+n).classList.add('done');
+  updateProgress();
+  if(taskCount===15) setTimeout(showFinalModal, 600);
+}
+
+/* ═══════════════════════ TASK CHECKS ═══════════════════════ */
+function chk(n){
+  if(taskDone[n]) return;
+  var c = getCode(n);
+  var out = document.getElementById('out'+n);
+
+  if(n===1){
+    if(!c.includes('print')){ out.className='output-box err'; out.textContent='❌ print() жоқ.'; return; }
+    if(!(c.includes('ат') || c.includes('аты') || c.includes('name'))){ out.className='output-box err'; out.textContent='❌ ат айнымалысы жоқ.'; return; }
+    if(!(c.includes('жас') || c.includes('age'))){ out.className='output-box err'; out.textContent='❌ жас айнымалысы жоқ.'; return; }
+    out.className='output-box'; out.textContent='✅ Нәтиже:\nМенің атым: Айдос, жасым: 14';
+    showFb(n,true,'🎉 <b>Дұрыс!</b> Айнымалылар жасалды және шығарылды!'); markDone(n);
+  }
+  else if(n===2){
+    if(!(c.includes('12') && c.includes('5'))){ out.className='output-box err'; out.textContent='❌ a=12, b=5 жоқ.'; return; }
+    if(!(c.includes('+') && c.includes('-') && c.includes('*') && c.includes('/')))  { out.className='output-box err'; out.textContent='❌ Барлық 4 амал (+, -, *, /) болуы керек.'; return; }
+    if(!c.includes('print')){ out.className='output-box err'; out.textContent='❌ print() жоқ.'; return; }
+    out.className='output-box'; out.textContent='✅ Нәтиже:\nҚосынды: 17\nАйырма: 7\nКөбейтінді: 60\nБөлінді: 2.4';
+    showFb(n,true,'🎉 <b>Дұрыс!</b> Барлық арифметикалық амалдар дұрыс!'); markDone(n);
+  }
+  else if(n===3){
+    if(!(c.includes('100'))){ out.className='output-box err'; out.textContent='❌ celsius = 100 жоқ.'; return; }
+    if(!(c.includes('9') && (c.includes('/5') || c.includes('/ 5')))){ out.className='output-box err'; out.textContent='❌ Формула: celsius * 9/5 + 32.'; return; }
+    if(!c.includes('print')){ out.className='output-box err'; out.textContent='❌ print() жоқ.'; return; }
+    out.className='output-box'; out.textContent='✅ Нәтиже:\nFahrenheit: 212.0';
+    showFb(n,true,'🎉 <b>Дұрыс!</b> Температура дұрыс есептелді: 100°C = 212°F!'); markDone(n);
+  }
+  else if(n===4){
+    if(!c.includes('7')){ out.className='output-box err'; out.textContent='❌ n = 7 жоқ.'; return; }
+    if(!(c.includes('% 2') || c.includes('%2'))){ out.className='output-box err'; out.textContent='❌ % 2 операторы жоқ.'; return; }
+    if(!c.includes('if')){ out.className='output-box err'; out.textContent='❌ if шарты жоқ.'; return; }
+    out.className='output-box'; out.textContent='✅ Нәтиже:\n7 — тақ сан';
+    showFb(n,true,'🎉 <b>Дұрыс!</b> 7 — тақ сан, шарт дұрыс тексерілді!'); markDone(n);
+  }
+  else if(n===5){
+    if(!(c.includes('орын') || c.includes('2'))){ out.className='output-box err'; out.textContent='❌ орын айнымалысы жоқ.'; return; }
+    if(!c.includes('elif')){ out.className='output-box err'; out.textContent='❌ elif қолдан (3 орынды тексеру керек).'; return; }
+    if(!(c.includes('алтын') || c.includes('күміс') || c.includes('қола'))){ out.className='output-box err'; out.textContent='❌ Медаль атаулары жоқ.'; return; }
+    out.className='output-box'; out.textContent='✅ Нәтиже:\n🥈 Күміс медаль';
+    showFb(n,true,'🎉 <b>Дұрыс!</b> elif тізбегі дұрыс жасалды!'); markDone(n);
+  }
+  else if(n===6){
+    if(!c.includes('for')){ out.className='output-box err'; out.textContent='❌ for циклі жоқ.'; return; }
+    if(!(c.includes('range') || c.includes('*'))){ out.className='output-box err'; out.textContent='❌ range() немесе * операторы жоқ.'; return; }
+    if(!c.includes('print')){ out.className='output-box err'; out.textContent='❌ print() жоқ.'; return; }
+    out.className='output-box'; out.textContent='✅ Нәтиже:\n*\n**\n***\n****\n*****';
+    showFb(n,true,'🎉 <b>Дұрыс!</b> for цикл арқылы жұлдызша пирамидасы дұрыс!'); markDone(n);
+  }
+  else if(n===7){
+    if(!c.includes('for')){ out.className='output-box err'; out.textContent='❌ for циклі жоқ.'; return; }
+    if(!(c.includes('range') && (c.includes('101') || c.includes('100')))){ out.className='output-box err'; out.textContent='❌ range(1, 101) немесе range(1, 100+1) жоқ.'; return; }
+    if(!(c.includes('+=') || c.includes('қосынды') || c.includes('sum'))){ out.className='output-box err'; out.textContent='❌ += арқылы қосынды жинамадың.'; return; }
+    out.className='output-box'; out.textContent='✅ Нәтиже:\nҚосынды: 5050';
+    showFb(n,true,'🎉 <b>Дұрыс!</b> 1+2+...+100 = 5050. Классикалық есеп!'); markDone(n);
+  }
+  else if(n===8){
+    if(!c.includes('while')){ out.className='output-box err'; out.textContent='❌ while циклі жоқ.'; return; }
+    if(!(c.includes('4321'))){ out.className='output-box err'; out.textContent='❌ "4321" PIN коды жоқ.'; return; }
+    if(!(c.includes('қате') || c.includes('kate') || c.includes('қайтала'))){ out.className='output-box err'; out.textContent='❌ Қате PIN хабарламасы жоқ.'; return; }
+    if(!(c.includes('рұқсат') || c.includes('руксат') || c.includes('кіру') || c.includes('кіруге'))){ out.className='output-box err'; out.textContent='❌ Кіруге рұқсат хабарламасы жоқ.'; return; }
+    out.className='output-box'; out.textContent='✅ Нәтиже:\nPIN жаз: 0000\nҚате PIN! Қайталаңыз.\nPIN жаз: 4321\n✅ Кіруге рұқсат!';
+    showFb(n,true,'🎉 <b>Дұрыс!</b> while циклімен PIN тексергіш жасалды!'); markDone(n);
+  }
+  else if(n===9){
+    if(!(c.includes('34') && c.includes('82') && c.includes('17'))){ out.className='output-box err'; out.textContent='❌ Берілген тізімді [34,17,82,...] пайдалан.'; return; }
+    if(!c.includes('for')){ out.className='output-box err'; out.textContent='❌ for циклі жоқ.'; return; }
+    if(!(c.includes('максимум') || c.includes('max') || c.includes('ең'))){ out.className='output-box err'; out.textContent='❌ Максимум айнымалысы немесе шарт жоқ.'; return; }
+    if(!c.includes('if')){ out.className='output-box err'; out.textContent='❌ if шарты жоқ (n > максимум тексеру керек).'; return; }
+    out.className='output-box'; out.textContent='✅ Нәтиже:\nМаксимум: 82';
+    showFb(n,true,'🎉 <b>Дұрыс!</b> Тізімдегі ең үлкен сан — 82!'); markDone(n);
+  }
+  else if(n===10){
+    if(!c.includes('while')){ out.className='output-box err'; out.textContent='❌ while циклі жоқ.'; return; }
+    if(!c.includes('10')){ out.className='output-box err'; out.textContent='❌ n = 10-нан бастау керек.'; return; }
+    if(!(c.includes('-= 1') || c.includes('-=1') || c.includes('n = n - 1'))){ out.className='output-box err'; out.textContent='❌ n -= 1 жоқ (азайту жоқ).'; return; }
+    if(!(c.includes('ұшу') || c.includes('ушу'))){ out.className='output-box err'; out.textContent='❌ "🚀 Ұшу!" хабарламасы жоқ.'; return; }
+    out.className='output-box'; out.textContent='✅ Нәтиже:\n10\n9\n8\n7\n6\n5\n4\n3\n2\n1\n🚀 Ұшу!';
+    showFb(n,true,'🎉 <b>Дұрыс!</b> Кері санақ while циклімен дұрыс!'); markDone(n);
+  }
+  else if(n===11){
+    if(!(c.includes('дәптер') && c.includes('қалам'))){ out.className='output-box err'; out.textContent='❌ Бастапқы тізім ["дәптер", "қалам"] жоқ.'; return; }
+    if(!(c.includes('append') && c.includes('сызғыш'))){ out.className='output-box err'; out.textContent='❌ append("сызғыш") жоқ.'; return; }
+    if(!(c.includes('append') && c.includes('өшіргіш'))){ out.className='output-box err'; out.textContent='❌ append("өшіргіш") жоқ.'; return; }
+    if(!c.includes('len')){ out.className='output-box err'; out.textContent='❌ len() арқылы ұзындықты шығар.'; return; }
+    out.className='output-box'; out.textContent="✅ Нәтиже:\n['дәптер', 'қалам', 'сызғыш', 'өшіргіш']\nҰзындығы: 4";
+    showFb(n,true,'🎉 <b>Дұрыс!</b> .append() екі рет дұрыс пайдаланылды!'); markDone(n);
+  }
+  else if(n===12){
+    if(!c.includes('for')){ out.className='output-box err'; out.textContent='❌ for циклі жоқ.'; return; }
+    if(!(c.includes('range') && (c.includes('1, 6') || c.includes('1,6') || c.includes('1, 6')))){ out.className='output-box err'; out.textContent='❌ range(1, 6) пайдалан.'; return; }
+    if(!(c.includes('3') && c.includes('*'))){ out.className='output-box err'; out.textContent='❌ 3-тің кестесі үшін 3 * i жаз.'; return; }
+    out.className='output-box'; out.textContent='✅ Нәтиже:\n3 x 1 = 3\n3 x 2 = 6\n3 x 3 = 9\n3 x 4 = 12\n3 x 5 = 15';
+    showFb(n,true,'🎉 <b>Дұрыс!</b> Көбейту кестесі дұрыс шықты!'); markDone(n);
+  }
+  else if(n===13){
+    if(!(c.includes('1') && c.includes('4') && c.includes('7') && c.includes('13'))){ out.className='output-box err'; out.textContent='❌ Берілген тізімді пайдалан: [1, 4, 7, 10, 13, 6, 9, 2].'; return; }
+    if(!c.includes('for')){ out.className='output-box err'; out.textContent='❌ for циклі жоқ.'; return; }
+    if(!(c.includes('% 2') || c.includes('%2'))){ out.className='output-box err'; out.textContent='❌ % 2 оператор жоқ.'; return; }
+    if(!c.includes('if')){ out.className='output-box err'; out.textContent='❌ if шарты жоқ.'; return; }
+    out.className='output-box'; out.textContent='✅ Нәтиже:\n1\n7\n13\n9';
+    showFb(n,true,'🎉 <b>Дұрыс!</b> Тізімнен тақ сандар дұрыс сүзілді!'); markDone(n);
+  }
+  else if(n===14){
+    if(!c.includes('input')){ out.className='output-box err'; out.textContent='❌ input() жоқ.'; return; }
+    if(!c.includes('if')){ out.className='output-box err'; out.textContent='❌ if шарты жоқ.'; return; }
+    if(!(c.includes('бот') || c.includes('"бот"') || c.includes("'бот'"))){ out.className='output-box err'; out.textContent='❌ "Бот" атын тексеру шарты жоқ.'; return; }
+    if(!c.includes('print')){ out.className='output-box err'; out.textContent='❌ print() жоқ.'; return; }
+    out.className='output-box'; out.textContent='✅ Нәтиже:\nАтыңды жаз: Алия\nСәлем, Алия!\n\nАтыңды жаз: Бот\nСен робот па?!';
+    showFb(n,true,'🎉 <b>Дұрыс!</b> input() + if/else дұрыс жасалды!'); markDone(n);
+  }
+  else if(n===15){
+    if(!(c.includes('алия') && c.includes('берік') && c.includes('гүлім'))){ out.className='output-box err'; out.textContent='❌ Берілген оқушылар тізімін пайдалан.'; return; }
+    if(!c.includes('for')){ out.className='output-box err'; out.textContent='❌ for циклі жоқ.'; return; }
+    if(!c.includes('enumerate')){ out.className='output-box err'; out.textContent='❌ enumerate() пайдалан.'; return; }
+    if(!c.includes('print')){ out.className='output-box err'; out.textContent='❌ print() жоқ.'; return; }
+    out.className='output-box'; out.textContent='✅ Нәтиже:\n1. Алия\n2. Берік\n3. Гүлім\n4. Дәурен\n5. Еркін';
+    showFb(n,true,'🎉 <b>Дұрыс!</b> enumerate() арқылы нөмірленген тізім дұрыс шықты!'); markDone(n);
+  }
+}
+
+/* ═══════════════════════ FINAL MODAL ═══════════════════════ */
+function showFinalModal(){
+  if(document.getElementById('finalModal')) return;
+  var m = document.createElement('div');
+  m.id='finalModal';
+  m.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.9);backdrop-filter:blur(16px);z-index:1000;display:flex;align-items:center;justify-content:center;animation:fadeIn 0.3s ease;';
+  m.innerHTML=
+    '<div style="background:linear-gradient(160deg,#1e1050,#2d1b6b);border:1px solid rgba(167,139,250,0.3);border-radius:28px;padding:48px 40px;text-align:center;max-width:500px;width:92%;animation:popIn 0.4s ease;">'
+    +'<div style="font-size:72px;margin-bottom:16px">🎓</div>'
+    +'<div style="font-size:30px;font-weight:800;margin-bottom:8px;background:linear-gradient(90deg,#a78bfa,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Курс аяқталды!</div>'
+    +'<div style="font-size:42px;font-weight:800;color:white;margin:12px 0;">30 / 30</div>'
+    +'<div style="font-size:15px;font-weight:700;color:#4ade80;margin-bottom:10px;">✅ 100% — Тамаша нәтиже!</div>'
+    +'<div style="font-size:13px;color:rgba(255,255,255,0.45);margin-bottom:32px;line-height:1.9;">Ерекше! Сен Python курсының барлық 15 сабағын сәтті аяқтадың.<br>15 тест + 15 есеп — барлығы дұрыс шығардың. Алдыңда үлкен жол!</div>'
+    +'<div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">'
+    +'<button onclick="document.getElementById(\'finalModal\').remove()" style="padding:14px 24px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.6);border-radius:12px;font-size:13px;font-family:Segoe UI,sans-serif;font-weight:700;cursor:pointer;">Жабу</button>'
+    +'<a href="main.html" style="text-decoration:none;"><button style="padding:14px 28px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border:none;color:white;border-radius:12px;font-size:14px;font-family:Segoe UI,sans-serif;font-weight:700;cursor:pointer;box-shadow:0 5px 20px rgba(99,102,241,0.4);">🏠 Басты бетке оралу</button></a>'
+    +'</div></div>';
+  document.body.appendChild(m);
+  if(typeof saveProgress==="function") saveProgress(15);
+}
+
+/* ═══════════════════════ WARN TOAST ═══════════════════════ */
+function showWarnToast(msg){
+  var el=document.getElementById('wT');
+  if(!el){el=document.createElement('div');el.id='wT';el.style.cssText='position:fixed;top:78px;right:22px;background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.35);color:#fcd34d;padding:12px 18px;border-radius:12px;font-size:14px;font-weight:600;z-index:500;backdrop-filter:blur(8px);transition:opacity 0.3s;';document.body.appendChild(el);}
+  el.textContent=msg;el.style.opacity='1';
+  setTimeout(function(){el.style.opacity='0';},2800);
+}
+
+var s=document.createElement('style');
+s.textContent='@keyframes popIn{from{opacity:0;transform:scale(0.85) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}} @keyframes fadeIn{from{opacity:0}to{opacity:1}}';
+document.head.appendChild(s);
+updateProgress();
+</script>
+<script src="sidebar.js"></script><script>window.addEventListener("load",function(){buildSidebar(15);});</script></body>
+</html>

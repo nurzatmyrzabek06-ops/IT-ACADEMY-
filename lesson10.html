@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8">
+<title>10-сабақ: Салыстыру операторлары</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+body{background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);color:white;min-height:100vh;display:flex;flex-direction:column;}
+
+/* ── HEADER ── */
+header{background:rgba(255,255,255,0.05);backdrop-filter:blur(12px);padding:18px 40px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.08);position:sticky;top:0;z-index:200;}
+.logo{font-size:22px;font-weight:800;background:linear-gradient(90deg,#a78bfa,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+nav a{margin-left:24px;text-decoration:none;color:rgba(255,255,255,0.55);font-weight:500;font-size:14px;transition:0.3s;}
+nav a:hover{color:white;}
+
+/* ── LAYOUT ── */
+.body-wrap{display:flex;flex:1;}
+
+/* ── SIDEBAR ── */
+.sidebar{width:300px;background:rgba(255,255,255,0.03);border-right:1px solid rgba(255,255,255,0.07);height:calc(100vh - 62px);position:sticky;top:62px;overflow-y:auto;padding:20px 12px;display:flex;flex-direction:column;justify-content:space-between;flex-shrink:0;}
+.sidebar-top h2{text-align:center;margin-bottom:18px;font-size:16px;font-weight:700;}
+.lesson{position:relative;display:flex;align-items:center;gap:11px;padding:11px 12px;margin:4px 0;border-radius:10px;cursor:pointer;transition:0.3s;font-size:13px;font-weight:500;color:rgba(255,255,255,0.65);}
+.lesson:hover{background:rgba(255,255,255,0.07);color:white;}
+.lesson.active{background:rgba(99,102,241,0.2);border:1px solid rgba(99,102,241,0.3);color:white;}
+.lesson.done{color:rgba(255,255,255,0.7);}
+.badge{width:24px;height:24px;border-radius:50%;background:rgba(99,102,241,0.4);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;color:white;}
+.lesson.active .badge{background:#6366f1;}
+.lesson.done .badge{background:#22c55e;}
+.lesson.locked{opacity:0.45;cursor:not-allowed;}
+.lesson.locked::after{content:"";position:absolute;inset:0;border-radius:10px;}
+.lock-icon{position:absolute;right:12px;font-size:12px;opacity:0.5;}
+.lesson.locked:hover{background:transparent;}
+.help{background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.2);color:rgba(255,255,255,0.55);padding:11px 14px;border-radius:12px;cursor:pointer;display:flex;align-items:center;gap:10px;margin:16px 4px 4px;font-size:13px;font-weight:600;transition:0.3s;}
+.help:hover{background:#6366f1;color:white;border-color:transparent;}
+.help-icon{width:26px;height:26px;border-radius:50%;background:#6366f1;color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0;}
+
+/* ── CONTENT ── */
+.content{flex:1;padding:32px 40px;overflow-y:auto;}
+
+/* ── PROGRESS ── */
+.progress-wrap{margin-bottom:28px;}
+.progress-label{display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:7px;}
+.progress-track{height:5px;background:rgba(255,255,255,0.08);border-radius:4px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,#6366f1,#a78bfa);border-radius:4px;width:66.67%;}
+
+/* ── VIDEO ── */
+.video-wrap{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;height:280px;display:flex;align-items:center;justify-content:center;margin-bottom:28px;position:relative;overflow:hidden;}
+.video-wrap::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 30% 50%,rgba(99,102,241,0.15),transparent 60%),radial-gradient(circle at 70% 50%,rgba(139,92,246,0.1),transparent 60%);}
+.video-inner{text-align:center;position:relative;z-index:1;}
+.video-inner .play{width:70px;height:70px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 14px;box-shadow:0 8px 24px rgba(99,102,241,0.4);cursor:pointer;transition:0.3s;}
+.video-inner .play:hover{transform:scale(1.1);}
+.video-inner p{font-size:14px;color:rgba(255,255,255,0.4);}
+
+/* ── TASK BLOCK (lesson5 style) ── */
+.task-block{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:26px;margin-bottom:22px;}
+.task-header{display:flex;align-items:center;gap:14px;margin-bottom:16px;}
+.task-indicator{width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,0.1);border:2px solid rgba(255,255,255,0.2);flex-shrink:0;transition:0.5s;}
+.task-indicator.done{background:#22c55e;border-color:#16a34a;box-shadow:0 0 14px rgba(34,197,94,0.6);}
+.task-title{font-size:16px;font-weight:700;color:white;}
+.task-desc{background:rgba(99,102,241,0.08);border-left:3px solid #6366f1;padding:14px 18px;border-radius:0 10px 10px 0;margin-bottom:18px;font-size:13px;color:rgba(255,255,255,0.65);line-height:1.8;}
+.task-desc b{color:#a78bfa;display:block;margin-bottom:6px;font-size:14px;}
+.task-desc code{color:#a78bfa;background:rgba(99,102,241,0.15);padding:1px 6px;border-radius:4px;font-family:'Courier New',monospace;}
+.task-feedback{display:none;margin-top:14px;padding:13px 16px;border-radius:10px;font-size:14px;font-weight:500;line-height:1.6;}
+.task-feedback.success{background:rgba(34,197,94,0.1);border-left:3px solid #22c55e;color:#86efac;}
+.task-feedback.error{background:rgba(239,68,68,0.1);border-left:3px solid #ef4444;color:#fca5a5;}
+.retry-btn-inline{margin-left:10px;padding:6px 16px;background:linear-gradient(135deg,#f59e0b,#d97706);border:none;color:white;border-radius:8px;font-size:13px;font-family:'Segoe UI',sans-serif;font-weight:700;cursor:pointer;}
+
+/* ── PYTHON EDITOR ── */
+.editor-wrap{background:#0a0a1a;border:1px solid rgba(255,255,255,0.1);border-radius:12px;overflow:hidden;margin-bottom:16px;}
+.editor-topbar{background:rgba(255,255,255,0.05);padding:10px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(255,255,255,0.06);}
+.editor-dot{width:11px;height:11px;border-radius:50%;}
+.editor-filename{color:rgba(255,255,255,0.35);font-size:12px;margin-left:6px;}
+.editor-lines{padding:0;}
+.code-line{display:flex;align-items:stretch;min-height:36px;}
+.line-num{width:40px;background:rgba(255,255,255,0.03);color:rgba(255,255,255,0.2);font-family:'Courier New',monospace;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;user-select:none;border-right:1px solid rgba(255,255,255,0.06);}
+.code-input{flex:1;background:transparent;border:none;outline:none;color:#e2e8f0;font-family:'Courier New',monospace;font-size:13px;padding:8px 12px;resize:none;line-height:1.5;}
+.code-input::placeholder{color:rgba(255,255,255,0.2);}
+.add-line-btn{width:100%;background:rgba(255,255,255,0.03);border:none;border-top:1px solid rgba(255,255,255,0.06);color:rgba(255,255,255,0.25);padding:6px;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;gap:6px;font-family:'Segoe UI',sans-serif;transition:0.2s;}
+.add-line-btn:hover{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.5);}
+.btn-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.run-btn{padding:12px 22px;background:linear-gradient(135deg,#059669,#10b981);border:none;color:white;border-radius:10px;cursor:pointer;font-size:14px;font-family:'Segoe UI',sans-serif;font-weight:700;transition:0.3s;box-shadow:0 4px 14px rgba(16,185,129,0.3);}
+.run-btn:hover{transform:translateY(-1px);box-shadow:0 7px 20px rgba(16,185,129,0.4);}
+.hint-btn{padding:10px 18px;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);color:#fcd34d;border-radius:10px;cursor:pointer;font-size:13px;font-family:'Segoe UI',sans-serif;font-weight:600;transition:0.2s;}
+.hint-btn:hover{background:rgba(245,158,11,0.2);}
+.hint-box{display:none;background:rgba(245,158,11,0.07);border:1px solid rgba(245,158,11,0.2);border-radius:10px;padding:14px 16px;margin-top:12px;font-size:13px;color:#fde68a;line-height:1.8;}
+.hint-box code{color:#a78bfa;background:rgba(99,102,241,0.15);padding:1px 6px;border-radius:4px;font-family:'Courier New',monospace;}
+.output-box{background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:12px 16px;font-family:'Courier New',monospace;font-size:13px;color:#4ade80;min-height:52px;margin-top:12px;white-space:pre-wrap;line-height:1.6;}
+.output-box.err{color:#f87171;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">IT Academy</div>
+  <nav>
+    <a href="main.html">Басты бет</a>
+    <a href="about.html">Біз туралы</a>
+    <a href="mycours.html">Менің курстарым</a>
+    <a href="contact.html">Байланыс</a>
+    <a href="profil.html">Профиль</a>
+  </nav>
+</header>
+
+<div class="body-wrap">
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sidebar-top">
+    <!-- sidebar.js толтырады -->
+  </div>
+  <div class="help" onclick="location.href='help.html'"><span class="help-icon">?</span> Көмек</div>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+  <div class="progress-wrap">
+    <div class="progress-label"><span>10-сабақ: Салыстыру операторлары</span><span>10 / 15</span></div>
+    <div class="progress-track"><div class="progress-fill"></div></div>
+  </div>
+
+  <div class="video-wrap" id="videoWrap" style="cursor:pointer;" onclick="playYoutube()">
+    <div class="video-inner" id="videoThumb">
+      <div class="play">▶</div>
+      <p>Видеоны көру үшін басыңыз</p>
+    </div>
+    <iframe
+      id="videoFrame"
+      style="display:none;position:absolute;inset:0;width:100%;height:100%;border:none;border-radius:16px;"
+      allowfullscreen
+      allow="autoplay; encrypted-media">
+    </iframe>
+  </div>
+  <script>
+  function playYoutube() {
+    var frame = document.getElementById('videoFrame');
+    var thumb = document.getElementById('videoThumb');
+    var wrap  = document.getElementById('videoWrap');
+    if (frame.style.display === 'none') {
+      frame.src = 'https://www.youtube.com/embed/rLjV0m2HB7E?autoplay=1';
+      frame.style.display = 'block';
+      thumb.style.display = 'none';
+      wrap.style.cursor = 'default';
+      wrap.onclick = null;
+    }
+  }
+  </script>
+
+  <!-- ═══════════════════════════════════════
+       ТАПСЫРМА 1
+  ═══════════════════════════════════════ -->
+  <div class="task-block">
+    <div class="task-header">
+      <div class="task-indicator" id="ind1"></div>
+      <div class="task-title">🔢 Тапсырма 1: Жасын тексер</div>
+    </div>
+    <div class="task-desc">
+      <b>📋 Тапсырма мазмұны:</b>
+      Пайдаланушыдан жасын сұра. Егер жасы <b>18-ден үлкен немесе тең</b> болса — <b>«Кәмелетке толған»</b> деп шығар, болмаса — <b>«Кәмелетке толмаған»</b> деп шығар.<br><br>
+      Қолдан: <code>age = int(input(...))</code> · <code>if age >= 18:</code> · <code>else:</code> · <code>print(...)</code>
+    </div>
+    <div class="editor-wrap">
+      <div class="editor-topbar">
+        <div class="editor-dot" style="background:#ef4444"></div>
+        <div class="editor-dot" style="background:#f59e0b"></div>
+        <div class="editor-dot" style="background:#22c55e"></div>
+        <span class="editor-filename">task1.py</span>
+      </div>
+      <div class="editor-lines" id="lines1">
+        <div class="code-line"><div class="line-num">1</div><textarea class="code-input" rows="1" placeholder="# кодыңды осы жерге жаз..."></textarea></div>
+      </div>
+      <button class="add-line-btn" onclick="addLine('lines1')">＋ Жол қос</button>
+    </div>
+    <div class="btn-row">
+      <button class="run-btn" onclick="check1()">▶ Іске қос және тексер</button>
+    </div>
+    <div class="hint-box" id="hint1">
+      <b>Шығарылу жолы:</b><br>
+      <code>age = int(input("Жасыңды жаз: "))</code><br>
+      <code>if age &gt;= 18:</code><br>
+      <code>&nbsp;&nbsp;&nbsp;&nbsp;print("Кәмелетке толған")</code><br>
+      <code>else:</code><br>
+      <code>&nbsp;&nbsp;&nbsp;&nbsp;print("Кәмелетке толмаған")</code>
+    </div>
+    <div class="output-box" id="out1">Нәтиже осы жерде шығады...</div>
+    <div class="task-feedback" id="fb1"></div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       ТАПСЫРМА 2
+  ═══════════════════════════════════════ -->
+  <div class="task-block">
+    <div class="task-header">
+      <div class="task-indicator" id="ind2"></div>
+      <div class="task-title">⚖️ Тапсырма 2: Екі санды салыстыр</div>
+    </div>
+    <div class="task-desc">
+      <b>📋 Тапсырма мазмұны:</b>
+      Пайдаланушыдан екі сан алып, оларды салыстыр.<br>
+      — Бірінші үлкен болса → <b>«Бірінші сан үлкен»</b><br>
+      — Екінші үлкен болса → <b>«Екінші сан үлкен»</b><br>
+      — Тең болса → <b>«Сандар тең»</b><br><br>
+      Қолдан: <code>a &gt; b</code> · <code>a &lt; b</code> · <code>a == b</code> · <code>elif</code>
+    </div>
+    <div class="editor-wrap">
+      <div class="editor-topbar">
+        <div class="editor-dot" style="background:#ef4444"></div>
+        <div class="editor-dot" style="background:#f59e0b"></div>
+        <div class="editor-dot" style="background:#22c55e"></div>
+        <span class="editor-filename">task2.py</span>
+      </div>
+      <div class="editor-lines" id="lines2">
+        <div class="code-line"><div class="line-num">1</div><textarea class="code-input" rows="1" placeholder="# кодыңды осы жерге жаз..."></textarea></div>
+      </div>
+      <button class="add-line-btn" onclick="addLine('lines2')">＋ Жол қос</button>
+    </div>
+    <div class="btn-row">
+      <button class="run-btn" onclick="check2()">▶ Іске қос және тексер</button>
+    </div>
+    <div class="hint-box" id="hint2">
+      <b>Шығарылу жолы:</b><br>
+      <code>a = int(input("Бірінші санды жаз: "))</code><br>
+      <code>b = int(input("Екінші санды жаз: "))</code><br>
+      <code>if a &gt; b:</code><br>
+      <code>&nbsp;&nbsp;&nbsp;&nbsp;print("Бірінші сан үлкен")</code><br>
+      <code>elif a &lt; b:</code><br>
+      <code>&nbsp;&nbsp;&nbsp;&nbsp;print("Екінші сан үлкен")</code><br>
+      <code>else:</code><br>
+      <code>&nbsp;&nbsp;&nbsp;&nbsp;print("Сандар тең")</code>
+    </div>
+    <div class="output-box" id="out2">Нәтиже осы жерде шығады...</div>
+    <div class="task-feedback" id="fb2"></div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       ТАПСЫРМА 3
+  ═══════════════════════════════════════ -->
+  <div class="task-block">
+    <div class="task-header">
+      <div class="task-indicator" id="ind3"></div>
+      <div class="task-title">🎟️ Тапсырма 3: Билет бағасы</div>
+    </div>
+    <div class="task-desc">
+      <b>📋 Тапсырма мазмұны:</b>
+      Пайдаланушының жасы мен студент екендігін сұра.<br>
+      — Жасы <b>7-ден кіші</b> болса → <b>«Тегін»</b><br>
+      — Жасы <b>7–17 аралығында НЕМЕСЕ студент болса</b> → <b>«Жеңілдік: 500 теңге»</b><br>
+      — Басқа жағдайда → <b>«Толық баға: 1000 теңге»</b><br><br>
+      Қолдан: <code>and</code> · <code>or</code> · <code>not</code> · <code>elif</code>
+    </div>
+    <div class="editor-wrap">
+      <div class="editor-topbar">
+        <div class="editor-dot" style="background:#ef4444"></div>
+        <div class="editor-dot" style="background:#f59e0b"></div>
+        <div class="editor-dot" style="background:#22c55e"></div>
+        <span class="editor-filename">task3.py</span>
+      </div>
+      <div class="editor-lines" id="lines3">
+        <div class="code-line"><div class="line-num">1</div><textarea class="code-input" rows="1" placeholder="# кодыңды осы жерге жаз..."></textarea></div>
+      </div>
+      <button class="add-line-btn" onclick="addLine('lines3')">＋ Жол қос</button>
+    </div>
+    <div class="btn-row">
+      <button class="run-btn" onclick="check3()">▶ Іске қос және тексер</button>
+    </div>
+    <div class="hint-box" id="hint3">
+      <b>Шығарылу жолы:</b><br>
+      <code>age = int(input("Жасыңды жаз: "))</code><br>
+      <code>student = input("Студент пе? (иә/жоқ): ")</code><br>
+      <code>is_student = student == "иә"</code><br>
+      <code>if age &lt; 7:</code><br>
+      <code>&nbsp;&nbsp;&nbsp;&nbsp;print("Тегін")</code><br>
+      <code>elif (age &gt;= 7 and age &lt;= 17) or is_student:</code><br>
+      <code>&nbsp;&nbsp;&nbsp;&nbsp;print("Жеңілдік: 500 теңге")</code><br>
+      <code>else:</code><br>
+      <code>&nbsp;&nbsp;&nbsp;&nbsp;print("Толық баға: 1000 теңге")</code>
+    </div>
+    <div class="output-box" id="out3">Нәтиже осы жерде шығады...</div>
+    <div class="task-feedback" id="fb3"></div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       ТАПСЫРМА 4
+  ═══════════════════════════════════════ -->
+  <div class="task-block">
+    <div class="task-header">
+      <div class="task-indicator" id="ind4"></div>
+      <div class="task-title">🔐 Тапсырма 4: Парольді тексер</div>
+    </div>
+    <div class="task-desc">
+      <b>📋 Тапсырма мазмұны:</b>
+      Бағдарламада пароль <b>"qwerty123"</b> деп белгіленсін.<br>
+      Пайдаланушыдан пароль сұра. Егер дұрыс болса → <b>«Қош келдің!»</b>, болмаса → <b>«Қате пароль»</b> деп шығар.<br><br>
+      Қолдан: <code>password = "qwerty123"</code> · <code>user_pass = input(...)</code> · <code>if user_pass == password:</code>
+    </div>
+    <div class="editor-wrap">
+      <div class="editor-topbar">
+        <div class="editor-dot" style="background:#ef4444"></div>
+        <div class="editor-dot" style="background:#f59e0b"></div>
+        <div class="editor-dot" style="background:#22c55e"></div>
+        <span class="editor-filename">task4.py</span>
+      </div>
+      <div class="editor-lines" id="lines4">
+        <div class="code-line"><div class="line-num">1</div><textarea class="code-input" rows="1" placeholder="# кодыңды осы жерге жаз..."></textarea></div>
+      </div>
+      <button class="add-line-btn" onclick="addLine('lines4')">＋ Жол қос</button>
+    </div>
+    <div class="btn-row">
+      <button class="run-btn" onclick="check4()">▶ Іске қос және тексер</button>
+    </div>
+    <div class="hint-box" id="hint4">
+      <b>Шығарылу жолы:</b><br>
+      <code>password = "qwerty123"</code><br>
+      <code>user_pass = input("Парольді жаз: ")</code><br>
+      <code>if user_pass == password:</code><br>
+      <code>&nbsp;&nbsp;&nbsp;&nbsp;print("Қош келдің!")</code><br>
+      <code>else:</code><br>
+      <code>&nbsp;&nbsp;&nbsp;&nbsp;print("Қате пароль")</code>
+    </div>
+    <div class="output-box" id="out4">Нәтиже осы жерде шығады...</div>
+    <div class="task-feedback" id="fb4"></div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       ТАПСЫРМА 5
+  ═══════════════════════════════════════ -->
+  <div class="task-block">
+    <div class="task-header">
+      <div class="task-indicator" id="ind5"></div>
+      <div class="task-title">📊 Тапсырма 5: Үш санның ішіндегі ең үлкені</div>
+    </div>
+    <div class="task-desc">
+      <b>📋 Тапсырма мазмұны:</b>
+      Пайдаланушыдан үш сан алып, ең үлкенін тап.<br>
+      — a ең үлкен болса → <b>«Ең үлкен сан: [a]»</b><br>
+      — b ең үлкен болса → <b>«Ең үлкен сан: [b]»</b><br>
+      — c ең үлкен болса → <b>«Ең үлкен сан: [c]»</b><br><br>
+      Қолдан: <code>a &gt;= b and a &gt;= c</code> · <code>elif</code> · <code>f"..."</code>
+    </div>
+    <div class="editor-wrap">
+      <div class="editor-topbar">
+        <div class="editor-dot" style="background:#ef4444"></div>
+        <div class="editor-dot" style="background:#f59e0b"></div>
+        <div class="editor-dot" style="background:#22c55e"></div>
+        <span class="editor-filename">task5.py</span>
+      </div>
+      <div class="editor-lines" id="lines5">
+        <div class="code-line"><div class="line-num">1</div><textarea class="code-input" rows="1" placeholder="# кодыңды осы жерге жаз..."></textarea></div>
+      </div>
+      <button class="add-line-btn" onclick="addLine('lines5')">＋ Жол қос</button>
+    </div>
+    <div class="btn-row">
+      <button class="run-btn" onclick="check5()">▶ Іске қос және тексер</button>
+    </div>
+    <div class="hint-box" id="hint5">
+      <b>Шығарылу жолы:</b><br>
+      <code>a = int(input("Бірінші сан: "))</code><br>
+      <code>b = int(input("Екінші сан: "))</code><br>
+      <code>c = int(input("Үшінші сан: "))</code><br>
+      <code>if a &gt;= b and a &gt;= c:</code><br>
+      <code>&nbsp;&nbsp;&nbsp;&nbsp;print(f"Ең үлкен сан: {a}")</code><br>
+      <code>elif b &gt;= a and b &gt;= c:</code><br>
+      <code>&nbsp;&nbsp;&nbsp;&nbsp;print(f"Ең үлкен сан: {b}")</code><br>
+      <code>else:</code><br>
+      <code>&nbsp;&nbsp;&nbsp;&nbsp;print(f"Ең үлкен сан: {c}")</code>
+    </div>
+    <div class="output-box" id="out5">Нәтиже осы жерде шығады...</div>
+    <div class="task-feedback" id="fb5"></div>
+  </div>
+
+</div><!-- /content -->
+</div><!-- /body-wrap -->
+
+<script>
+/* ══ STATE ══ */
+var done = {1:false, 2:false, 3:false, 4:false, 5:false};
+
+/* ══ EDITOR HELPERS ══ */
+var lineCounts = {lines1:1, lines2:1, lines3:1, lines4:1, lines5:1};
+
+function addLine(editorId){
+  lineCounts[editorId]++;
+  var n = lineCounts[editorId];
+  var div = document.createElement('div');
+  div.className = 'code-line';
+  div.innerHTML = '<div class="line-num">'+n+'</div><textarea class="code-input" rows="1"></textarea>';
+  document.getElementById(editorId).appendChild(div);
+  div.querySelector('textarea').focus();
+}
+
+document.addEventListener('input', function(e){
+  if(e.target.classList.contains('code-input')){
+    e.target.style.height = 'auto';
+    e.target.style.height = e.target.scrollHeight + 'px';
+  }
+});
+
+function getCode(editorId){
+  var inputs = document.querySelectorAll('#'+editorId+' .code-input');
+  return Array.from(inputs).map(function(i){ return i.value; }).join('\n').trim();
+}
+
+function norm(code){ return code.replace(/\s+/g,' ').toLowerCase().trim(); }
+
+/* ══ HINT TOGGLE ══ */
+function toggleHint(n){
+  var h = document.getElementById('hint'+n);
+  h.style.display = h.style.display === 'block' ? 'none' : 'block';
+}
+
+/* ══ SHOW RESULT ══ */
+function showFb(n, ok, msg){
+  var fb = document.getElementById('fb'+n);
+  fb.style.display = 'block';
+  fb.className = 'task-feedback ' + (ok ? 'success' : 'error');
+  fb.innerHTML = msg;
+}
+
+function markDone(n){
+  done[n] = true;
+  document.getElementById('ind'+n).classList.add('done');
+  checkAllDone();
+}
+
+/* ══════════════════════════════════════
+   ТАПСЫРМА 1 — жасын тексер
+   Критерий: input + int, >= 18, if/else, print кәмелет
+══════════════════════════════════════ */
+function check1(){
+  if(done[1]) return;
+  var code = norm(getCode('lines1'));
+  var out  = document.getElementById('out1');
+
+  if(!code.includes('input')){
+    out.className='output-box err';
+    out.textContent='❌ Қате: input() жоқ. Пайдаланушыдан жасын сұра.';
+    return;
+  }
+  if(!code.includes('int(')){
+    out.className='output-box err';
+    out.textContent='❌ Қате: int(input()) керек, себебі input() әрқашан str қайтарады.';
+    return;
+  }
+  if(!(code.includes('>= 18') || code.includes('>=18') || code.includes('> 17') || code.includes('>17'))){
+    out.className='output-box err';
+    out.textContent='❌ Қате: age >= 18 шарты жоқ. Салыстыру операторын қолдан.';
+    return;
+  }
+  if(!code.includes('if') || !code.includes('else')){
+    out.className='output-box err';
+    out.textContent='❌ Қате: if...else блогы жоқ.';
+    return;
+  }
+  if(!(code.includes('кәмелет') || code.includes('толған') || code.includes('толмаған'))){
+    out.className='output-box err';
+    out.textContent='❌ Қате: print() нәтижесінде «Кәмелетке толған» / «Кәмелетке толмаған» деген мәтін жоқ.';
+    return;
+  }
+
+  out.className='output-box';
+  out.textContent='✅ Бағдарлама дұрыс!\n\nМысал нәтиже:\n> Жасыңды жаз: 20\n> Кәмелетке толған\n\n> Жасыңды жаз: 15\n> Кәмелетке толмаған';
+  showFb(1, true, '🎉 <b>Керемет!</b> >= операторын дұрыс қолдандың!');
+  markDone(1);
+}
+
+/* ══════════════════════════════════════
+   ТАПСЫРМА 2 — екі санды салыстыр
+   Критерий: 2x input+int, >, <, ==, if/elif/else, print
+══════════════════════════════════════ */
+function check2(){
+  if(done[2]) return;
+  var code = norm(getCode('lines2'));
+  var out  = document.getElementById('out2');
+
+  var inputCount = (code.match(/input\s*\(/g)||[]).length;
+  if(inputCount < 2){
+    out.className='output-box err';
+    out.textContent='❌ Қате: екі input() болуы керек — a және b үшін.';
+    return;
+  }
+  if((code.match(/int\s*\(/g)||[]).length < 2){
+    out.className='output-box err';
+    out.textContent='❌ Қате: екі санды да int() арқылы түрлендір.';
+    return;
+  }
+  if(!code.includes('elif')){
+    out.className='output-box err';
+    out.textContent='❌ Қате: elif жоқ. Үш жағдай: >, < және == үшін if/elif/else қолдан.';
+    return;
+  }
+  var hasCompare = (code.includes('>') || code.includes('<')) && code.includes('==');
+  if(!hasCompare){
+    out.className='output-box err';
+    out.textContent='❌ Қате: >, < және == операторларының барлығы болуы керек.';
+    return;
+  }
+  if(!(code.includes('үлкен') && code.includes('тең'))){
+    out.className='output-box err';
+    out.textContent='❌ Қате: print() ішінде «үлкен» және «тең» мәтіндері болуы керек.';
+    return;
+  }
+
+  out.className='output-box';
+  out.textContent='✅ Бағдарлама дұрыс!\n\nМысал нәтиже:\n> Бірінші санды жаз: 10\n> Екінші санды жаз: 7\n> Бірінші сан үлкен\n\n> Бірінші санды жаз: 5\n> Екінші санды жаз: 5\n> Сандар тең';
+  showFb(2, true, '🎉 <b>Жарайсың!</b> Салыстыру операторларын дұрыс қолдандың!');
+  markDone(2);
+}
+
+/* ══════════════════════════════════════
+   ТАПСЫРМА 3 — билет бағасы
+   Критерий: 2x input, or, and, elif, тегін/жеңілдік/толық
+══════════════════════════════════════ */
+function check3(){
+  if(done[3]) return;
+  var code = norm(getCode('lines3'));
+  var out  = document.getElementById('out3');
+
+  if((code.match(/input\s*\(/g)||[]).length < 2){
+    out.className='output-box err';
+    out.textContent='❌ Қате: екі input() болуы керек — жас және студент үшін.';
+    return;
+  }
+  if(!code.includes('or') && !code.includes(' or ')){
+    out.className='output-box err';
+    out.textContent='❌ Қате: or операторы жоқ. «(7–17 аралығы) немесе студент» шарты үшін or қолдан.';
+    return;
+  }
+  if(!code.includes('and')){
+    out.className='output-box err';
+    out.textContent='❌ Қате: and операторы жоқ. Жас аралығын тексеру үшін and қолдан.';
+    return;
+  }
+  if(!code.includes('elif')){
+    out.className='output-box err';
+    out.textContent='❌ Қате: elif жоқ. Үш жағдай үшін if/elif/else қолдан.';
+    return;
+  }
+  if(!(code.includes('тегін') && code.includes('жеңілдік') && (code.includes('толық') || code.includes('1000')))){
+    out.className='output-box err';
+    out.textContent='❌ Қате: print() нәтижелерінде «Тегін», «Жеңілдік» және «Толық баға» болуы керек.';
+    return;
+  }
+
+  out.className='output-box';
+  out.textContent='✅ Бағдарлама дұрыс!\n\nМысал нәтиже:\n> Жасыңды жаз: 5\n> Тегін\n\n> Жасыңды жаз: 16\n> Студент пе? (иә/жоқ): жоқ\n> Жеңілдік: 500 теңге\n\n> Жасыңды жаз: 30\n> Студент пе? (иә/жоқ): жоқ\n> Толық баға: 1000 теңге';
+  showFb(3, true, '🎉 <b>Керемет!</b> and және or логикалық операторлары дұрыс қолданылды!');
+  markDone(3);
+}
+
+/* ══════════════════════════════════════
+   ТАПСЫРМА 4 — парольді тексер
+   Критерий: password="qwerty123", input, ==, if/else, қош/қате
+══════════════════════════════════════ */
+function check4(){
+  if(done[4]) return;
+  var code = norm(getCode('lines4'));
+  var out  = document.getElementById('out4');
+
+  if(!code.includes('qwerty123')){
+    out.className='output-box err';
+    out.textContent='❌ Қате: password = "qwerty123" деп анықтауды ұмытпа.';
+    return;
+  }
+  if(!code.includes('input')){
+    out.className='output-box err';
+    out.textContent='❌ Қате: input() арқылы пайдаланушыдан пароль сұра.';
+    return;
+  }
+  if(!code.includes('==')){
+    out.className='output-box err';
+    out.textContent='❌ Қате: == операторы жоқ. Парольдерді салыстыру үшін == қолдан.';
+    return;
+  }
+  if(!code.includes('if') || !code.includes('else')){
+    out.className='output-box err';
+    out.textContent='❌ Қате: if...else блогы жоқ.';
+    return;
+  }
+  if(!(code.includes('қош') || code.includes('welcome') || code.includes('дұрыс'))){
+    out.className='output-box err';
+    out.textContent='❌ Қате: print() ішінде «Қош келдің!» мәтіні жоқ.';
+    return;
+  }
+  if(!(code.includes('қате') || code.includes('wrong') || code.includes('дұрыс емес'))){
+    out.className='output-box err';
+    out.textContent='❌ Қате: print() ішінде «Қате пароль» мәтіні жоқ.';
+    return;
+  }
+
+  out.className='output-box';
+  out.textContent='✅ Бағдарлама дұрыс!\n\nМысал нәтиже:\n> Парольді жаз: qwerty123\n> Қош келдің!\n\n> Парольді жаз: abc123\n> Қате пароль';
+  showFb(4, true, '🎉 <b>Тамаша!</b> == операторы арқылы жолдарды дұрыс салыстырдың!');
+  markDone(4);
+}
+
+/* ══════════════════════════════════════
+   ТАПСЫРМА 5 — үш санның ең үлкені
+   Критерий: 3x input+int, and, >= x2, if/elif/else, print «ең үлкен»
+══════════════════════════════════════ */
+function check5(){
+  if(done[5]) return;
+  var code = norm(getCode('lines5'));
+  var out  = document.getElementById('out5');
+
+  if((code.match(/input\s*\(/g)||[]).length < 3){
+    out.className='output-box err';
+    out.textContent='❌ Қате: үш input() болуы керек — a, b, c үшін.';
+    return;
+  }
+  if((code.match(/int\s*\(/g)||[]).length < 3){
+    out.className='output-box err';
+    out.textContent='❌ Қате: үш санды да int() арқылы түрлендір.';
+    return;
+  }
+  if(!code.includes('and')){
+    out.className='output-box err';
+    out.textContent='❌ Қате: and операторы жоқ. Мысалы: a >= b and a >= c шарты керек.';
+    return;
+  }
+  if(!code.includes('elif')){
+    out.className='output-box err';
+    out.textContent='❌ Қате: elif жоқ. Үш жағдай үшін if/elif/else қолдан.';
+    return;
+  }
+  if(!(code.includes('үлкен') || code.includes('max') || code.includes('ең'))){
+    out.className='output-box err';
+    out.textContent='❌ Қате: print() ішінде «Ең үлкен сан:» деген мәтін болуы керек.';
+    return;
+  }
+
+  out.className='output-box';
+  out.textContent='✅ Бағдарлама дұрыс!\n\nМысал нәтиже:\n> Бірінші сан: 12\n> Екінші сан: 45\n> Үшінші сан: 33\n> Ең үлкен сан: 45\n\n> Бірінші сан: 100\n> Екінші сан: 50\n> Үшінші сан: 75\n> Ең үлкен сан: 100';
+  showFb(5, true, '🎉 <b>Профессионал!</b> Күрделі шарттарды дұрыс жаздың!');
+  markDone(5);
+}
+
+/* ══ CHECK ALL DONE ══ */
+function checkAllDone(){
+  var count = Object.values(done).filter(function(v){ return v; }).length;
+  if(count === 5) setTimeout(showModal, 600);
+}
+
+/* ══ RESULT MODAL ══ */
+function showModal(){
+  if(document.getElementById('resModal')) return;
+  var m = document.createElement('div');
+  m.id = 'resModal';
+  m.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(12px);z-index:1000;display:flex;align-items:center;justify-content:center;';
+  m.innerHTML = '<div style="background:linear-gradient(160deg,#1e1050,#2d1b6b);border:1px solid rgba(167,139,250,0.25);border-radius:24px;padding:40px 36px;text-align:center;max-width:440px;width:90%;animation:popIn 0.3s ease;">'
+    +'<div style="font-size:64px;margin-bottom:14px">🏆</div>'
+    +'<div style="font-size:28px;font-weight:800;margin-bottom:6px">5 / 5</div>'
+    +'<div style="font-size:15px;font-weight:700;color:#4ade80;margin-bottom:10px">✅ Сабақты өттіңіз!</div>'
+    +'<div style="font-size:13px;color:rgba(255,255,255,0.45);margin-bottom:28px;line-height:1.7">Тамаша! Барлық 5 есеп дұрыс шешілді. Салыстыру және логикалық операторларды жетік меңгердің!</div>'
+    +'<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">'
+    +'<button onclick="document.getElementById(\'resModal\').remove()" style="padding:13px 22px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.6);border-radius:12px;font-size:13px;font-family:Segoe UI,sans-serif;font-weight:700;cursor:pointer;">Жабу</button>'
+    +'<a href="lesson11.html" style="text-decoration:none;"><button style="padding:13px 26px;background:linear-gradient(135deg,#059669,#10b981);border:none;color:white;border-radius:12px;font-size:14px;font-family:Segoe UI,sans-serif;font-weight:700;cursor:pointer;box-shadow:0 5px 18px rgba(16,185,129,0.4)">Келесі сабақ: Шартты оператор →</button></a>'
+    +'</div></div>';
+  document.body.appendChild(m);
+  if(typeof saveProgress==="function") saveProgress(11);
+}
+
+/* ══ LOCKED TOAST ══ */
+function showWarnToast(msg){
+  var el=document.getElementById('wT');
+  if(!el){ el=document.createElement('div'); el.id='wT';
+    el.style.cssText='position:fixed;top:78px;right:22px;background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.35);color:#fcd34d;padding:12px 18px;border-radius:12px;font-size:14px;font-weight:600;z-index:500;backdrop-filter:blur(8px);transition:opacity 0.3s;';
+    document.body.appendChild(el); }
+  el.textContent=msg; el.style.opacity='1';
+  setTimeout(function(){ el.style.opacity='0'; },2800);
+}
+window.addEventListener('load',function(){
+  document.querySelectorAll('.lesson.locked').forEach(function(l){
+    l.addEventListener('click',function(){
+      showWarnToast('🔒 Алдыңғы сабақты аяқтамай бұл сабақты ашу мүмкін емес!');
+    });
+  });
+});
+
+var s=document.createElement('style');
+s.textContent='@keyframes popIn{from{opacity:0;transform:scale(0.85) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}';
+document.head.appendChild(s);
+</script>
+<script src="sidebar.js"></script><script>window.addEventListener("load",function(){buildSidebar(10);});</script></body>
+</html>

@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Көмек — IT Academy</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+body{background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);color:white;min-height:100vh;display:flex;flex-direction:column;}
+
+header{background:rgba(255,255,255,0.05);backdrop-filter:blur(12px);padding:18px 40px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.08);position:sticky;top:0;z-index:200;}
+.logo{font-size:22px;font-weight:800;background:linear-gradient(90deg,#a78bfa,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;cursor:pointer;}
+nav{display:flex;align-items:center;}
+nav a{margin-left:22px;text-decoration:none;color:rgba(255,255,255,0.55);font-weight:500;font-size:14px;transition:0.3s;}
+nav a:hover{color:white;}
+nav a.active{color:#a78bfa;font-weight:700;}
+
+/* MAIN LAYOUT */
+.page-wrap{display:flex;gap:24px;padding:28px 32px;flex:1;max-width:1200px;margin:0 auto;width:100%;}
+
+/* SIDEBAR */
+.sidebar{width:240px;flex-shrink:0;position:sticky;top:84px;height:fit-content;}
+.sb-card{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:18px;margin-bottom:14px;}
+.sb-title{font-size:11px;font-weight:700;color:#a78bfa;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;}
+.sb-link{display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:9px;cursor:pointer;font-size:13px;font-weight:500;color:rgba(255,255,255,0.6);transition:0.2s;text-decoration:none;}
+.sb-link:hover{background:rgba(99,102,241,0.15);color:white;}
+.sb-link.active{background:rgba(99,102,241,0.2);border:1px solid rgba(99,102,241,0.3);color:white;}
+.sb-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+
+.contact-card{background:linear-gradient(135deg,rgba(99,102,241,0.15),rgba(139,92,246,0.1));border:1px solid rgba(99,102,241,0.25);border-radius:16px;padding:18px;text-align:center;}
+.contact-icon{font-size:32px;margin-bottom:10px;}
+.contact-title{font-size:14px;font-weight:700;color:white;margin-bottom:6px;}
+.contact-sub{font-size:12px;color:rgba(255,255,255,0.4);line-height:1.7;margin-bottom:14px;}
+.contact-btn{display:block;padding:10px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border:none;color:white;border-radius:10px;font-size:13px;font-family:'Segoe UI',sans-serif;font-weight:700;cursor:pointer;text-decoration:none;transition:0.3s;}
+.contact-btn:hover{box-shadow:0 5px 14px rgba(99,102,241,0.4);}
+
+/* CONTENT */
+.content{flex:1;min-width:0;}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,rgba(99,102,241,0.15),rgba(139,92,246,0.08));border:1px solid rgba(99,102,241,0.22);border-radius:20px;padding:28px 32px;margin-bottom:26px;display:flex;align-items:center;gap:22px;}
+.hero-icon{font-size:56px;flex-shrink:0;}
+.hero-text h1{font-size:22px;font-weight:800;color:white;margin-bottom:7px;}
+.hero-text p{font-size:14px;color:rgba(255,255,255,0.5);line-height:1.8;}
+.hero-stats{display:flex;gap:12px;margin-top:14px;flex-wrap:wrap;}
+.h-pill{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;color:rgba(255,255,255,0.6);}
+
+/* SEARCH */
+.search-wrap{position:relative;margin-bottom:26px;}
+.search-input{width:100%;background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.1);border-radius:12px;padding:13px 18px 13px 46px;color:white;font-size:14px;font-family:'Segoe UI',sans-serif;outline:none;transition:0.3s;}
+.search-input::placeholder{color:rgba(255,255,255,0.28);}
+.search-input:focus{border-color:rgba(99,102,241,0.5);background:rgba(99,102,241,0.08);}
+.search-icon{position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:16px;opacity:0.4;}
+
+/* SECTION */
+.faq-section{margin-bottom:28px;}
+.section-label{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.section-label .icon{font-size:18px;}
+.section-label h2{font-size:16px;font-weight:800;color:white;}
+.section-label .count{font-size:11px;font-weight:700;color:#a78bfa;background:rgba(99,102,241,0.13);border:1px solid rgba(99,102,241,0.25);padding:3px 10px;border-radius:20px;}
+
+/* FAQ ITEM */
+.faq-item{background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.07);border-radius:14px;margin-bottom:10px;overflow:hidden;transition:border-color 0.2s;}
+.faq-item:hover{border-color:rgba(99,102,241,0.3);}
+.faq-item.open{border-color:rgba(99,102,241,0.4);background:rgba(99,102,241,0.06);}
+.faq-q{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;cursor:pointer;user-select:none;gap:14px;}
+.faq-q-text{font-size:14px;font-weight:600;color:rgba(255,255,255,0.85);line-height:1.5;flex:1;}
+.faq-item.open .faq-q-text{color:white;}
+.faq-arrow{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;color:rgba(255,255,255,0.4);transition:transform 0.3s, background 0.2s;}
+.faq-item.open .faq-arrow{transform:rotate(180deg);background:rgba(99,102,241,0.25);border-color:rgba(99,102,241,0.4);color:#a78bfa;}
+.faq-a{display:none;padding:0 20px 18px;font-size:13px;color:rgba(255,255,255,0.6);line-height:2.0;border-top:1px solid rgba(255,255,255,0.06);}
+.faq-a.show{display:block;}
+.faq-a code{color:#c4b5fd;background:rgba(99,102,241,0.15);padding:1px 7px;border-radius:4px;font-family:'Courier New',monospace;font-size:12px;}
+.faq-a b{color:#a78bfa;}
+.faq-a .a-tag{display:inline-block;background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.25);color:#4ade80;font-size:11px;font-weight:700;padding:2px 9px;border-radius:20px;margin-bottom:8px;}
+
+/* CONTACT SECTION */
+.contact-section{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:28px;}
+.c-card{background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.08);border-radius:16px;padding:22px;text-align:center;transition:0.3s;cursor:pointer;}
+.c-card:hover{background:rgba(99,102,241,0.1);border-color:rgba(99,102,241,0.3);transform:translateY(-3px);}
+.c-icon{font-size:30px;margin-bottom:10px;}
+.c-title{font-size:14px;font-weight:700;color:white;margin-bottom:5px;}
+.c-sub{font-size:12px;color:rgba(255,255,255,0.4);line-height:1.6;margin-bottom:12px;}
+.c-btn{display:inline-block;padding:8px 18px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border:none;color:white;border-radius:9px;font-size:12px;font-family:'Segoe UI',sans-serif;font-weight:700;cursor:pointer;text-decoration:none;transition:0.3s;}
+.c-btn:hover{box-shadow:0 4px 12px rgba(99,102,241,0.4);}
+.c-btn.green{background:linear-gradient(135deg,#059669,#10b981);}
+.c-btn.green:hover{box-shadow:0 4px 12px rgba(16,185,129,0.4);}
+.c-btn.orange{background:linear-gradient(135deg,#d97706,#f59e0b);}
+
+/* NO RESULT */
+.no-result{display:none;text-align:center;padding:40px;color:rgba(255,255,255,0.3);}
+.no-result .nr-icon{font-size:40px;margin-bottom:12px;}
+.no-result p{font-size:14px;}
+
+footer{text-align:center;padding:14px;font-size:12px;color:rgba(255,255,255,0.17);border-top:1px solid rgba(255,255,255,0.04);}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo" onclick="location.href='Басты бет.html'">IT Academy</div>
+  <nav>
+    <a href="main.html">Басты бет</a>
+    <a href="about.html">Біз туралы</a>
+    <a href="mycours.html">Менің курстарым</a>
+    <a href="contact.html">Байланыс</a>
+    <a href="help.html" class="active">Көмек</a>
+  </nav>
+</header>
+
+<div class="page-wrap">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sb-card">
+      <div class="sb-title">Бөлімдер</div>
+      <a class="sb-link active" onclick="scrollTo('acc')"><div class="sb-dot" style="background:#a78bfa"></div>Аккаунт</a>
+      <a class="sb-link" onclick="scrollTo('nav')"><div class="sb-dot" style="background:#60a5fa"></div>Навигация</a>
+      <a class="sb-link" onclick="scrollTo('tasks')"><div class="sb-dot" style="background:#4ade80"></div>Тапсырмалар</a>
+      <a class="sb-link" onclick="scrollTo('editor')"><div class="sb-dot" style="background:#fcd34d"></div>Редактор</a>
+      <a class="sb-link" onclick="scrollTo('progress')"><div class="sb-dot" style="background:#f87171"></div>Прогресс</a>
+      <a class="sb-link" onclick="scrollTo('lesson15')"><div class="sb-dot" style="background:#c084fc"></div>15-сабақ</a>
+      <a class="sb-link" onclick="scrollTo('partner')"><div class="sb-dot" style="background:#34d399"></div>Серіктестік</a>
+      <a class="sb-link" onclick="scrollTo('contact')"><div class="sb-dot" style="background:#fb923c"></div>Байланыс</a>
+    </div>
+
+    <div class="contact-card">
+      <div class="contact-icon">💬</div>
+      <div class="contact-title">Жауап таппадыңыз ба?</div>
+      <div class="contact-sub">Бізге тікелей хабарлаңыз, жауапты тез береміз!</div>
+      <a href="mailto:support@itacademy.kz" class="contact-btn">Хабарласу →</a>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- HERO -->
+    <div class="hero">
+      <div class="hero-icon">🙋</div>
+      <div class="hero-text">
+        <h1>Жиі қойылатын сұрақтар</h1>
+        <p>Сайт пен курс бойынша ең жиі туындайтын сұрақтарға жауаптар. Таппасаңыз — бізге жазыңыз!</p>
+        <div class="hero-stats">
+          <div class="h-pill">📋 29 сұрақ</div>
+          <div class="h-pill">⚡ Жылдам жауап</div>
+          <div class="h-pill">🕐 24/7 қолдау</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEARCH -->
+    <div class="search-wrap">
+      <div class="search-icon">🔍</div>
+      <input class="search-input" id="searchInput" type="text" placeholder="Сұрақ іздеу... мысалы: пароль, сабақ, редактор" oninput="filterFAQ()">
+    </div>
+
+    <div id="noResult" class="no-result">
+      <div class="nr-icon">😕</div>
+      <p>«<span id="noTerm"></span>» бойынша нәтиже табылмады.<br>Басқа сөзбен іздеп көріңіз.</p>
+    </div>
+
+    <!-- ═══════════════════════════
+         АККАУНТ
+    ═══════════════════════════ -->
+    <div class="faq-section" id="sec-acc">
+      <div class="section-label">
+        <span class="icon">👤</span>
+        <h2>Аккаунт</h2>
+        <span class="count">5 сұрақ</span>
+      </div>
+
+      <div class="faq-item" data-tags="аккаунт тіркелу ашу регистрация">
+        <div class="faq-q" onclick="toggle(this)">
+          <div class="faq-q-text">Аккаунт қалай ашамын?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-a">
+          <div class="a-tag">✅ Оңай</div>
+          Аккаунт ашу үшін:<br>
+          1. Жоғарғы оң жақтағы <b>«Кіру / Тіркелу»</b> батырмасын басыңыз<br>
+          2. «Тіркелу» бөліміне өтіп, атыңыз, email және паролді енгізіңіз<br>
+          3. <b>«Тіркелу»</b> батырмасын басыңыз — аккаунтыңыз дайын!<br><br>
+          Тіркелу <b>тегін</b> және барлық курстарға қолжетімділік береді.
+        </div>
+      </div>
+
+      <div class="faq-item" data-tags="пароль ұмыт жаңарт өзгерт сыр">
+        <div class="faq-q" onclick="toggle(this)">
+          <div class="faq-q-text">Парольді ұмытып қалдым, қалай жаңартамын?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-a">
+          <div class="a-tag">✅ Оңай</div>
+          Кіру бетіндегі <b>«Парольді ұмыттым»</b> сілтемесін басыңыз. Email-іңізге сілтеме жіберіледі. Сілтемені басып, жаңа пароль орнатыңыз.<br><br>
+          Егер email жоқ болса — <b>support@itacademy.kz</b> мекенжайына жазыңыз.
+        </div>
+      </div>
+
+      <div class="faq-item" data-tags="есім email өзгерт жаңарт профиль">
+        <div class="faq-q" onclick="toggle(this)">
+          <div class="faq-q-text">Есімімді немесе email-ді өзгертуге бола ма?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-a">
+          <div class="a-tag">✅ Иә</div>
+          Иә, өзгертуге болады. Профиль бетіне кіріп (<b>Профиль → Параметрлер</b>), есіміңізді немесе email-ді жаңартыңыз да, <b>«Сақтау»</b> батырмасын басыңыз.
+        </div>
+      </div>
+
+      <div class="faq-item" data-tags="аккаунт жою өшіру delete">
+        <div class="faq-q" onclick="toggle(this)">
+          <div class="faq-q-text">Аккаунтымды қалай жоямын?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-a">
+          <div class="a-tag">⚠️ Назар аударыңыз</div>
+          Аккаунтты жою үшін <b>support@itacademy.kz</b> мекенжайына жазыңыз. Аккаунт жойылса, барлық прогресіңіз де жойылады — бұл қайтарылмайды.
+        </div>
+      </div>
+
+      <div class="faq-item" data-tags="телефон компьютер планшет бірнеше құрылғы кіру">
+        <div class="faq-q" onclick="toggle(this)">
+          <div class="faq-q-text">Бірнеше құрылғыдан (телефон, компьютер) кіруге бола ма?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-a">
+          <div class="a-tag">✅ Иә</div>
+          Иә, бір аккаунтпен кез келген құрылғыдан кіруге болады. Прогресіңіз автоматты түрде синхронданады.
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════
+         НАВИГАЦИЯ
+    ═══════════════════════════ -->
+    <div class="faq-section" id="sec-nav">
+      <div class="section-label">
+        <span class="icon">🧭</span>
+        <h2>Навигация</h2>
+        <span class="count">5 сұрақ</span>
+      </div>
+
+      <div class="faq-item" data-tags="басты бет ору кайту">
+        <div class="faq-q" onclick="toggle(this)">
+          <div class="faq-q-text">Басты бетке қалай ораламын?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-a">
+          <div class="a-tag">✅ Оңай</div>
+          Жоғарғы сол жақтағы <b>«IT Academy»</b> логотипін немесе навигациядағы <b>«Басты бет»</b> сілтемесін басыңыз.
+        </div>
+      </div>
+
+      <div class="faq-item" data-tags="келесі сабақ өту алға жылжу">
+        <div class="faq-q" onclick="toggle(this)">
+          <div class="faq-q-text">Келесі сабаққа қалай өтемін?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-a">
+          <div class="a-tag">✅ Оңай</div>
+          Ағымдағы сабақтың барлық тапсырмалары мен тест сұрақтарын аяқтаңыз. Соңында пайда болатын <b>«Келесі сабақ →»</b> батырмасын басыңыз.<br><br>
+          Немесе сол жақтағы сабақтар тізімінен (sidebar) тікелей өтуге болады.
+        </div>
+      </div>
+
+      <div class="faq-item" data-tags="алдыңғы сабақ қайта оралу артқа">
+        <div class="faq-q" onclick="toggle(this)">
+          <div class="faq-q-text">Өткен сабаққа қайта оралуға бола ма?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-a">
+          <div class="a-tag">✅ Иә</div>
+          Иә, кез келген уақытта. Сол жақтағы сабақтар тізімінде <b>✓</b> белгісімен аяқталған сабақтар көрінеді — оларды кез келген уақытта басып қайта оқуға болады.
+        </div>
+      </div>
+
+      <div class="faq-item" data-tags="жабық қулып сабақ lock ашу">
+        <div class="faq-q" onclick="toggle(this)">
+          <div class="faq-q-text">Сабақтар неліктен жабық (🔒)?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-a">
+          <div class="a-tag">ℹ️ Ақпарат</div>
+          Сабақтар <b>кезекпен</b> ашылады. Алдыңғы сабақты толық аяқтамай келесісіне өту мүмкін емес. Бұл — білімді дұрыс ретпен игеру үшін жасалған.
+        </div>
+      </div>
+
+      <div class="faq-item" data-tags="қай сабақ бармын прогресс нешінші">
+        <div class="faq-q" onclick="toggle(this)">
+          <div class="faq-q-text">Қай сабақта екенімді қалай білемін?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-a">
+          <div class="a-tag">✅ Оңай</div>
+          Сол жақтағы сабақтар тізімінде <b>белсенді сабақ</b> (күлгін түспен) бөлектелген. Сондай-ақ сабақ ішіндегі жоғарғы <b>прогресс жолағы</b> (мысалы «11 / 15») қай сабақта екеніңізді көрсетеді.
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════
+         ТАПСЫРМАЛАР МЕН ТЕСТ
+    ═══════════════════════════ -->
+    <div class="faq-section" id="sec-tasks">
+      <div class="section-label">
+        <span class="icon">📝</span>
+        <h2>Тапсырмалар мен тест</h2>
+        <span class="count">4 сұрақ</span>
+      </div>
+
+      <div class="faq-item" data-tags="тексеру іске қос батырма check run">
+        <div class="faq-q" onclick="toggle(this)">
+          <div class="faq-q-text">Кодты қалай тексеремін?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-a">
+          <div class="a-tag">✅ Оңай</div>
+          Кодыңызды редакторға жазып болған соң <b>«▶ Іске қос және тексер»</b> жасыл батырмасын басыңыз. Нәтиже бірден төменде шығады.<br><br>
+          ✅ Жасыл болса — дұрыс. ❌ Қызыл болса — қате хабарламасын оқып, кодыңызды түзетіңіз.
+        </div>
+      </div>
+
+      <div class="faq-item" data-tags="қате жауап дұрыс емес не істеу">
+        <div class="faq-q" onclick="toggle(this)">
+          <div class="faq-q-text">Жауап қате шықса не істеймін?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-a">
+          <div class="a-tag">ℹ️ Кеңес</div>
+          Қате хабарламасын мұқият оқыңыз — онда нақты қай бөлік дұрыс емес екені жазылады.<br><br>
+          1. Хабарламаны оқыңыз<br>
+          2. Кодыңызды қайта тексеріңіз<br>
+          3. Әлі де шешпесеңіз — <b>«💡 Кеңес»</b> батырмасын басыңыз (15-сабақтан басқасында бар)
+        </div>
+      </div>
+
+      <div class="faq-item" data-tags="тест қате жауап қайта тапсыру retry">
+        <div class="faq-q" onclick="toggle(this)">
+          <div class="faq-q-text">Тест сұрағына қате жауап бердім, қайта тапсыруға бола ма?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-a">
+          <div class="a-tag">✅ Иә</div>
+          Иә! Қате жауап берсеңіз, сол жауап <b>қызылмен</b> белгіленіп, автоматты жойылады — қайтадан таңдауға мүмкіндік беріледі. Дұрыс жауап тапқанша қайталай беруге болады.
+        </div>
+      </div>
+
+      <div class="faq-item" data-tags="барлық тапсырма аяқтасам не болады modal жеңіс">
+        <div class="faq-q" onclick="toggle(this)">
+          <div class="faq-q-text">Барлық тапсырманы орындасам не болады?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-a">
+          <div class="a-tag">🏆 Жеңіс!</div>
+          Барлық тапсырма мен тест сұрақтарын аяқтасаңыз — <b>🏆 Сабақты өттіңіз!</b> деген жеңіс терезесі шығады. Онда нәтижеңіз және келесі сабаққа өту батырмасы болады.
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════
+         РЕДАКТОР
+    ═══════════════════════════ -->
+    <div class="faq-section" id="sec-editor">
+      <div class="section-label">
+        <span class="icon">💻</span>
+        <h2>Редактор (код жазу)</h2>
+        <span class="count">3 сұрақ</span>
+      </div>
+
+      <div class="faq-item" data-tags="жол қос жетіспейді редактор editor line">
+        <div class="faq-q" onclick="toggle(this)">
+          <div class="faq-q-text">Жол жетіспесе қалай қосамын?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-a">
+          <div class="a-tag">✅ Оңай</div>
+          Редактордың төменгі жағындағы <b>«＋ Жол қос»</b> батырмасын басыңыз. Жаңа жол автоматты қосылады. Қажетінше қайталай беруге болады.
+        </div>
+      </div>
+
+      <div class="faq-item" data-tags="өшіру тазалау қайтадан бастау clear reset">
+        <div class="faq-q" onclick="toggle(this)">
+          <div class="faq-q-text">Кодымды өшіріп, қайтадан бастауға бола ма?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-a">
+          <div class="a-tag">✅ Иә</div>
+          Иә. Редактордағы әр жолды қолмен өшіруге болады — жолдарды таңдап <b>Delete</b> немесе <b>Backspace</b> пернесін басыңыз. Немесе барлық мазмұнды таңдап (<code>Ctrl+A</code>) жойыңыз.
+        </div>
+      </div>
+
+      <div class="faq-item" data-tags="іске қоспайды жұмыс жасамайды баспайды неге">
+        <div class="faq-q" onclick="toggle(this)">
+          <div class="faq-q-text">Неге кодым тексерілмейді / іске қоспайды?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-a">
+          <div class="a-tag">⚠️ Тексеріңіз</div>
+          Бірнеше себеп болуы мүмкін:<br><br>
+          1. <b>Редактор бос</b> — кодыңызды жазып, содан кейін батырманы басыңыз<br>
+          2. <b>Тапсырма бұрын орындалған</b> — жасыл белгі болса, тапсырма есептелген<br>
+          3. <b>Браузер мәселесі</b> — бетті жаңартып (<code>F5</code>) қайталап көріңіз<br>
+          4. Проблема шешілмесе — <b>support@itacademy.kz</b> мекенжайына жазыңыз
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════
+         ПРОГРЕСС
+    ═══════════════════════════ -->
+    <div class="faq-section" id="sec-progress">
+      <div class="section-label">
+        <span class="icon">📊</span>
+        <h2>Прогресс</h2>
+        <span class="count">2 сұрақ</span>
+      </div>
+
+      <div class="faq-item" data-tags="прогресс жолағы пайыз не көрсетеді">
+        <div class="faq-q" onclick="toggle(this)">
+          <div class="faq-q-text">Прогресс жолағы нені көрсетеді?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-a">
+          <div class="a-tag">ℹ️ Ақпарат</div>
+          Сабақ ішіндегі прогресс жолағы (жоғарғы жолақ) — <b>курстың жалпы барысын</b> көрсетеді. Мысалы «11 / 15» дегені — 15 сабақтың 11-інде тұрсыз.<br><br>
+          15-сабақта жолақ жеке тапсырмалардың орындалу санын (0/30) көрсетеді.
+        </div>
+      </div>
+
+      <div class="faq-item" data-tags="ұпай сақтала ма жоғалады ма прогресс">
+        <div class="faq-q" onclick="toggle(this)">
+          <div class="faq-q-text">Ұпайларым мен прогресім сақтала ма?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-a">
+          <div class="a-tag">✅ Иә</div>
+          Прогресіңіз браузеріңізде сақталады. Алайда басқа браузер немесе құрылғыдан кірсеңіз прогресіңіз жоқ болуы мүмкін. Тіркелу арқылы прогресіңіз аккаунтыңызда сақталады.
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════
+         15-САБАҚ
+    ═══════════════════════════ -->
+    <div class="faq-section" id="sec-lesson15">
+      <div class="section-label">
+        <span class="icon">🏁</span>
+        <h2>Қорытынды сабақ (15-сабақ)</h2>
+        <span class="count">2 сұрақ</span>
+      </div>
+
+      <div class="faq-item" data-tags="есептер ашылмайды жабық тест 15 сабақ">
+        <div class="faq-q" onclick="toggle(this)">
+          <div class="faq-q-text">Неліктен есептер бірден ашылмайды?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-a">
+          <div class="a-tag">ℹ️ Жүйе</div>
+          15-сабақта алдымен <b>15 тест сұрағының барлығын</b> жауаптауыңыз керек. Содан кейін ғана практикалық 15 есеп автоматты ашылады.<br><br>
+          Бұл — бастаушылар білімін алдымен теориялық тексеріп, содан бар код жазу үшін жасалған.
+        </div>
+      </div>
+
+      <div class="faq-item" data-tags="кеңес жоқ 15 hint батырма">
+        <div class="faq-q" onclick="toggle(this)">
+          <div class="faq-q-text">15-сабақта кеңес батырмасы неге жоқ?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-a">
+          <div class="a-tag">ℹ️ Себебі</div>
+          15-сабақ — <b>қорытынды бақылау</b>. Мұнда сіз 14 сабақта үйренген барлығыңызды өз бетіңізбен көрсетесіз.<br><br>
+          Алдыңғы 1–14 сабақтарда «💡 Кеңес» батырмасы бар — оларды қайта оқып, шешімін табуға болады.
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════
+         СЕРІКТЕСТІК
+    ═══════════════════════════ -->
+    <div class="faq-section" id="sec-partner">
+      <div class="section-label">
+        <span class="icon">🤝</span>
+        <h2>Серіктестік және ынтымақтастық</h2>
+        <span class="count">3 сұрақ</span>
+      </div>
+
+      <div class="faq-item" data-tags="өз курс қосу жасау ұсыну instructor">
+        <div class="faq-q" onclick="toggle(this)">
+          <div class="faq-q-text">Өз курсымды платформаға қосқым келеді, қалай жасаймын?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-a">
+          <div class="a-tag">🚀 Мүмкін!</div>
+          Бізбен серіктес болуды қалайсыз ба? Тамаша! Мынаны жіберіңіз:<br><br>
+          1. <b>Курс тақырыбы</b> және мазмұны туралы қысқаша ақпарат<br>
+          2. <b>Тәжірибеңіз</b> немесе портфолиоңыз<br>
+          3. Байланыс ақпаратыңыз<br><br>
+          📧 <b>partner@itacademy.kz</b> мекенжайына жіберіңіз. 3 жұмыс күні ішінде жауап береміз!
+        </div>
+      </div>
+
+      <div class="faq-item" data-tags="мектеп университет топтық корпоративтік">
+        <div class="faq-q" onclick="toggle(this)">
+          <div class="faq-q-text">Мектеп немесе ұйым үшін топтық қолжетімділік бар ма?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-a">
+          <div class="a-tag">✅ Бар</div>
+          Иә! Мектептер, университеттер және компаниялар үшін <b>топтық (корпоративтік) тарифтер</b> қарастырылған. Оқушылардың прогресін қадағалауға арналған арнайы мұғалім панелі де бар.<br><br>
+          Толық ақпарат үшін: 📧 <b>edu@itacademy.kz</b>
+        </div>
+      </div>
+
+      <div class="faq-item" data-tags="жарнама рекламе серіктес sponsor">
+        <div class="faq-q" onclick="toggle(this)">
+          <div class="faq-q-text">Платформада жарнама немесе демеушілік мүмкін бе?</div>
+          <div class="faq-arrow">▼</div>
+        </div>
+        <div class="faq-a">
+          <div class="a-tag">ℹ️ Ақпарат</div>
+          Ынтымақтастық және демеушілік мүмкіндіктері бар. Бізбен байланысу үшін:<br><br>
+          📧 <b>marketing@itacademy.kz</b> мекенжайына жазыңыз.
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════
+         БАЙЛАНЫС КАРТОЧКАЛАРЫ
+    ═══════════════════════════ -->
+    <div class="faq-section" id="sec-contact">
+      <div class="section-label">
+        <span class="icon">📬</span>
+        <h2>Бізбен байланыс</h2>
+        <span class="count">3 арна</span>
+      </div>
+
+      <div class="contact-section">
+        <div class="c-card">
+          <div class="c-icon">📧</div>
+          <div class="c-title">Email арқылы</div>
+          <div class="c-sub">Жалпы сұрақтар мен техникалық мәселелер үшін</div>
+          <a href="mailto:nurzatmyrzabek06@gmail.com" class="c-btn">support@itacademy.kz</a>
+        </div>
+        <div class="c-card">
+          <div class="c-icon">💬</div>
+          <div class="c-title">Telegram арқылы</div>
+          <div class="c-sub">Тез жауап алу үшін Telegram-да жазыңыз</div>
+          <a href="https://t.me/macos_m1" target="_blank" class="c-btn green">@itacademy_kz</a>
+        </div>
+        <div class="c-card">
+          <div class="c-icon">🤝</div>
+          <div class="c-title">Серіктестік</div>
+          <div class="c-sub">Курс қосу немесе ынтымақтастық үшін</div>
+          <a href="mailto:nurzatmyrzabek06@gmail.com" class="c-btn orange">partner@itacademy.kz</a>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /page-wrap -->
+
+<footer>© 2026 IT Academy. Барлық құқықтар қорғалған.</footer>
+
+<script>
+/* TOGGLE FAQ */
+function toggle(qEl){
+  var item = qEl.parentElement;
+  var ans  = item.querySelector('.faq-a');
+  var isOpen = item.classList.contains('open');
+
+  // Close all others in same section
+  var section = item.closest('.faq-section');
+  if(section){
+    section.querySelectorAll('.faq-item.open').forEach(function(o){
+      if(o !== item){
+        o.classList.remove('open');
+        o.querySelector('.faq-a').classList.remove('show');
+      }
+    });
+  }
+
+  if(isOpen){
+    item.classList.remove('open');
+    ans.classList.remove('show');
+  } else {
+    item.classList.add('open');
+    ans.classList.add('show');
+  }
+}
+
+/* SEARCH */
+function filterFAQ(){
+  var term = document.getElementById('searchInput').value.toLowerCase().trim();
+  var allItems = document.querySelectorAll('.faq-item');
+  var allSections = document.querySelectorAll('.faq-section');
+  var found = 0;
+
+  allItems.forEach(function(item){
+    var q    = item.querySelector('.faq-q-text').textContent.toLowerCase();
+    var a    = item.querySelector('.faq-a').textContent.toLowerCase();
+    var tags = (item.dataset.tags || '').toLowerCase();
+    var match = !term || q.includes(term) || a.includes(term) || tags.includes(term);
+    item.style.display = match ? 'block' : 'none';
+    if(match) found++;
+  });
+
+  // Show/hide section titles
+  allSections.forEach(function(sec){
+    var visible = Array.from(sec.querySelectorAll('.faq-item')).some(function(i){
+      return i.style.display !== 'none';
+    });
+    sec.style.display = visible ? 'block' : 'none';
+  });
+
+  // No result
+  var nr = document.getElementById('noResult');
+  document.getElementById('noTerm').textContent = term;
+  nr.style.display = (term && found === 0) ? 'block' : 'none';
+}
+
+/* SMOOTH SCROLL FOR SIDEBAR */
+function scrollTo(id){
+  var map = {
+    acc:'sec-acc', nav:'sec-nav', tasks:'sec-tasks',
+    editor:'sec-editor', progress:'sec-progress',
+    lesson15:'sec-lesson15', partner:'sec-partner', contact:'sec-contact'
+  };
+  var el = document.getElementById(map[id]);
+  if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+
+  // Update active sidebar link
+  document.querySelectorAll('.sb-link').forEach(function(l){ l.classList.remove('active'); });
+  event.currentTarget.classList.add('active');
+}
+</script>
+</body>
+</html>

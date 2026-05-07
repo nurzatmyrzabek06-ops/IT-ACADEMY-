@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Профиль — IT Academy</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+
+body{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+}
+
+/* HEADER */
+header{
+  background:rgba(255,255,255,0.05);
+  backdrop-filter:blur(12px);
+  padding:18px 40px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+  position:sticky;top:0;z-index:100;
+}
+.logo{font-size:22px;font-weight:800;background:linear-gradient(90deg,#a78bfa,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+nav a{margin-left:24px;text-decoration:none;color:rgba(255,255,255,0.6);font-weight:500;font-size:14px;transition:0.3s;}
+nav a:hover{color:white;}
+nav a.active-nav{color:#a78bfa;font-weight:700;}
+
+/* MAIN SPLIT */
+.split-page{
+  flex:1;
+  display:flex;
+  min-height:calc(100vh - 62px);
+}
+
+/* LEFT PANEL */
+.left-panel{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:60px 50px;
+  background:linear-gradient(160deg, rgba(99,102,241,0.25) 0%, rgba(139,92,246,0.15) 100%);
+  border-right:1px solid rgba(255,255,255,0.07);
+  position:relative;
+  overflow:hidden;
+}
+.left-panel::before{
+  content:'';position:absolute;
+  width:400px;height:400px;border-radius:50%;
+  background:radial-gradient(circle, rgba(139,92,246,0.25), transparent 70%);
+  top:-80px;left:-80px;
+}
+.left-panel::after{
+  content:'';position:absolute;
+  width:300px;height:300px;border-radius:50%;
+  background:radial-gradient(circle, rgba(96,165,250,0.2), transparent 70%);
+  bottom:-60px;right:-60px;
+}
+.left-content{position:relative;z-index:2;text-align:center;}
+.left-illustration{font-size:110px;margin-bottom:32px;filter:drop-shadow(0 10px 30px rgba(139,92,246,0.5));animation:float 3s ease-in-out infinite;}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-14px);}}
+.left-title{font-size:30px;font-weight:800;color:white;margin-bottom:12px;line-height:1.3;}
+.left-sub{font-size:15px;color:rgba(255,255,255,0.55);line-height:1.7;max-width:320px;}
+.left-dots{display:flex;gap:8px;justify-content:center;margin-top:32px;}
+.dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.2);}
+.dot.active{background:#a78bfa;width:28px;border-radius:6px;}
+
+/* FLOATING BADGES */
+.badge-float{
+  position:absolute;background:rgba(255,255,255,0.08);
+  backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.12);
+  border-radius:14px;padding:10px 16px;color:white;font-size:13px;font-weight:600;
+  display:flex;align-items:center;gap:8px;
+}
+.badge-float.b1{top:18%;left:8%;animation:float 3.5s ease-in-out infinite;}
+.badge-float.b2{top:40%;right:6%;animation:float 4s ease-in-out infinite 0.5s;}
+.badge-float.b3{bottom:22%;left:10%;animation:float 3s ease-in-out infinite 1s;}
+
+/* RIGHT PANEL */
+.right-panel{
+  flex:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:50px 40px;
+  overflow-y:auto;
+}
+
+/* FORM BOX */
+.form-box{
+  width:100%;max-width:440px;
+}
+.form-box-title{font-size:26px;font-weight:800;color:white;margin-bottom:6px;}
+.form-box-sub{font-size:14px;color:rgba(255,255,255,0.45);margin-bottom:32px;}
+
+/* AVATAR ROW */
+.avatar-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:6px;}
+.av{width:48px;height:48px;border-radius:50%;font-size:22px;display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.07);transition:0.2s;}
+.av:hover{border-color:#a78bfa;background:rgba(167,139,250,0.2);}
+.av.sel{border-color:#a78bfa;background:rgba(167,139,250,0.25);box-shadow:0 0 12px rgba(167,139,250,0.4);}
+
+/* FORM FIELDS */
+.fg{margin-bottom:16px;}
+.fg label{display:block;font-size:12px;font-weight:700;color:rgba(255,255,255,0.5);margin-bottom:7px;letter-spacing:0.5px;text-transform:uppercase;}
+.fg input,.fg select{
+  width:100%;padding:13px 16px;
+  background:rgba(255,255,255,0.07);
+  border:1.5px solid rgba(255,255,255,0.12);
+  border-radius:12px;color:white;font-size:14px;
+  font-family:'Segoe UI',sans-serif;outline:none;transition:0.2s;
+}
+.fg input::placeholder{color:rgba(255,255,255,0.25);}
+.fg input:focus,.fg select:focus{border-color:#a78bfa;background:rgba(167,139,250,0.1);box-shadow:0 0 0 3px rgba(167,139,250,0.15);}
+.fg select option{background:#302b63;color:white;}
+.row2{display:flex;gap:12px;}
+.row2 .fg{flex:1;}
+
+/* PW WRAP */
+.pw-w{position:relative;}
+.pw-w input{padding-right:46px;}
+.eye{position:absolute;right:14px;top:50%;transform:translateY(-50%);cursor:pointer;font-size:17px;user-select:none;opacity:0.5;transition:0.2s;}
+.eye:hover{opacity:1;}
+
+/* STRENGTH */
+.str-bar{height:3px;background:rgba(255,255,255,0.1);border-radius:4px;margin-top:8px;overflow:hidden;}
+.str-fill{height:100%;border-radius:4px;width:0;transition:0.4s;}
+.str-txt{font-size:11px;font-weight:700;margin-top:4px;}
+
+/* SUBMIT BTN */
+.sbtn{
+  width:100%;padding:15px;border:none;
+  background:linear-gradient(135deg,#6366f1,#8b5cf6);
+  color:white;border-radius:13px;font-size:15px;
+  font-family:'Segoe UI',sans-serif;font-weight:700;
+  cursor:pointer;transition:0.3s;margin-top:4px;
+  box-shadow:0 6px 24px rgba(99,102,241,0.4);
+}
+.sbtn:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(99,102,241,0.55);}
+.sbtn:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+.sbtn.green{background:linear-gradient(135deg,#10b981,#059669);box-shadow:0 6px 24px rgba(16,185,129,0.4);}
+.sbtn.green:hover{box-shadow:0 10px 30px rgba(16,185,129,0.55);}
+
+/* SWITCH LINK */
+.sw-link{text-align:center;margin-top:20px;font-size:14px;color:rgba(255,255,255,0.4);}
+.sw-link span{color:#a78bfa;font-weight:700;cursor:pointer;transition:0.2s;}
+.sw-link span:hover{color:#c4b5fd;}
+
+/* FORGOT LINK */
+.forgot{text-align:right;margin-top:-10px;margin-bottom:16px;}
+.forgot span{font-size:13px;color:rgba(167,139,250,0.8);cursor:pointer;font-weight:600;transition:0.2s;}
+.forgot span:hover{color:#a78bfa;}
+
+/* ALERT */
+.alert{padding:12px 16px;border-radius:10px;font-size:13px;font-weight:600;margin-bottom:18px;display:none;border:1px solid;}
+.alert.ok{background:rgba(16,185,129,0.12);border-color:rgba(16,185,129,0.3);color:#6ee7b7;}
+.alert.err{background:rgba(239,68,68,0.12);border-color:rgba(239,68,68,0.3);color:#fca5a5;}
+.alert.info{background:rgba(96,165,250,0.12);border-color:rgba(96,165,250,0.3);color:#93c5fd;}
+
+/* OTP INPUTS */
+.otp-row{display:flex;gap:10px;justify-content:center;margin:20px 0;}
+.otp-input{
+  width:52px;height:56px;text-align:center;font-size:22px;font-weight:700;
+  background:rgba(255,255,255,0.07);border:1.5px solid rgba(255,255,255,0.15);
+  border-radius:12px;color:white;outline:none;transition:0.2s;
+}
+.otp-input:focus{border-color:#a78bfa;background:rgba(167,139,250,0.1);}
+
+/* PROFILE CARD */
+.profile-card{display:none;text-align:center;}
+.p-avatar{width:86px;height:86px;border-radius:50%;font-size:42px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#6366f1,#8b5cf6);margin:0 auto 16px;box-shadow:0 8px 24px rgba(99,102,241,0.4);}
+.p-name{font-size:24px;font-weight:800;color:white;margin-bottom:4px;}
+.p-role{font-size:13px;color:#a78bfa;font-weight:700;margin-bottom:24px;}
+.p-info{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:18px;text-align:left;margin-bottom:20px;}
+.p-row{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid rgba(255,255,255,0.06);font-size:13px;}
+.p-row:last-child{border-bottom:none;}
+.p-row span:first-child{color:rgba(255,255,255,0.4);font-weight:600;}
+.p-row span:last-child{color:white;font-weight:600;}
+.logout{width:100%;padding:13px;background:rgba(239,68,68,0.1);border:1.5px solid rgba(239,68,68,0.25);color:#fca5a5;border-radius:12px;font-size:14px;font-family:'Segoe UI',sans-serif;font-weight:700;cursor:pointer;transition:0.3s;}
+.logout:hover{background:rgba(239,68,68,0.2);border-color:rgba(239,68,68,0.4);}
+
+/* PANELS */
+.panel{display:none;}
+.panel.show{display:block;}
+
+/* DIVIDER */
+.dv{display:flex;align-items:center;gap:12px;margin:18px 0;color:rgba(255,255,255,0.2);font-size:12px;}
+.dv::before,.dv::after{content:'';flex:1;height:1px;background:rgba(255,255,255,0.08);}
+
+footer{text-align:center;padding:18px;font-size:13px;color:rgba(255,255,255,0.25);}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">IT Academy</div>
+  <nav>
+    <a href="main.html">Басты бет</a>
+    <a href="about.html">Біз туралы</a>
+    <a href="mycours.html">Менің курстарым</a>
+    <a href="contact.html">Байланыс</a>
+    <a href="profil.html" class="active-nav">Профиль</a>
+  </nav>
+</header>
+
+<div class="split-page">
+
+  <!-- ===== СОЛ ПАНЕЛЬ ===== -->
+  <div class="left-panel">
+    <div class="badge-float b1">🚀 15 курс қол жетімді</div>
+    <div class="badge-float b2">⭐ 4.9 рейтинг</div>
+    <div class="badge-float b3">👨‍💻 1200+ оқушы</div>
+
+    <div class="left-content">
+      <div class="left-illustration" id="leftEmoji">🧑‍💻</div>
+      <div class="left-title" id="leftTitle">IT Academy-ға<br>қош келдіңіз!</div>
+      <div class="left-sub" id="leftSub">Бағдарламалауды үйреніп, болашаққа бір қадам жақындаңыз. Тіркеліп, оқуды бастаңыз!</div>
+      <div class="left-dots">
+        <div class="dot active"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== ОҢ ПАНЕЛЬ ===== -->
+  <div class="right-panel">
+    <div class="form-box">
+
+      <!-- === ТІРКЕЛУ ПАНЕЛІ === -->
+      <div class="panel show" id="regPanel">
+        <div class="form-box-title">Аккаунт жасау ✨</div>
+        <div class="form-box-sub">Деректеріңізді толтырыңыз</div>
+        <div class="alert" id="regAlert"></div>
+
+        <div class="fg">
+          <label>Аватар таңдаңыз</label>
+          <div class="avatar-row">
+            <div class="av sel" data-e="🧑‍💻" onclick="pickAv(this)">🧑‍💻</div>
+            <div class="av" data-e="👩‍💻" onclick="pickAv(this)">👩‍💻</div>
+            <div class="av" data-e="🧑‍🎓" onclick="pickAv(this)">🧑‍🎓</div>
+            <div class="av" data-e="👩‍🎓" onclick="pickAv(this)">👩‍🎓</div>
+            <div class="av" data-e="🦸" onclick="pickAv(this)">🦸</div>
+            <div class="av" data-e="🧑‍🚀" onclick="pickAv(this)">🧑‍🚀</div>
+          </div>
+        </div>
+
+        <div class="row2">
+          <div class="fg"><label>Аты</label><input type="text" id="rFn" placeholder="Нурзат"></div>
+          <div class="fg"><label>Тегі</label><input type="text" id="rLn" placeholder="Асанов"></div>
+        </div>
+        <div class="fg"><label>Email</label><input type="email" id="rEm" placeholder="email@example.com"></div>
+        <div class="fg"><label>Телефон</label><input type="tel" id="rPh" placeholder="+7 700 000 00 00"></div>
+        <div class="fg">
+          <label>Рөл</label>
+          <select id="rRo"><option value="student">🎓 Оқушы</option><option value="teacher">👨‍🏫 Мұғалім</option></select>
+        </div>
+        <div class="fg">
+          <label>Құпия сөз</label>
+          <div class="pw-w"><input type="password" id="rPw" placeholder="Кемінде 6 символ" oninput="strength(this.value)"><span class="eye" onclick="togglePw('rPw',this)">👁</span></div>
+          <div class="str-bar"><div class="str-fill" id="strFill"></div></div>
+          <div class="str-txt" id="strTxt"></div>
+        </div>
+        <div class="fg">
+          <label>Құпия сөзді растаңыз</label>
+          <div class="pw-w"><input type="password" id="rPw2" placeholder="Қайталаңыз"><span class="eye" onclick="togglePw('rPw2',this)">👁</span></div>
+        </div>
+        <button class="sbtn" id="regBtn" onclick="doRegister()">✨ Аккаунт жасау</button>
+        <div class="sw-link">Аккаунтыңыз бар ма? <span onclick="goLogin()">Кіру</span></div>
+      </div>
+
+      <!-- === КІРУ ПАНЕЛІ === -->
+      <div class="panel" id="loginPanel">
+        <div class="form-box-title">Қош келдіңіз! 👋</div>
+        <div class="form-box-sub">Аккаунтыңызға кіріңіз</div>
+        <div class="alert" id="loginAlert"></div>
+
+        <div class="fg"><label>Email</label><input type="email" id="lEm" placeholder="email@example.com"></div>
+        <div class="fg">
+          <label>Құпия сөз</label>
+          <div class="pw-w"><input type="password" id="lPw" placeholder="Құпия сөзіңіз"><span class="eye" onclick="togglePw('lPw',this)">👁</span></div>
+        </div>
+        <div class="forgot"><span onclick="goForgot()">🔑 Құпия сөзді ұмыттым</span></div>
+        <button class="sbtn" onclick="doLogin()">Кіру →</button>
+        <div class="sw-link">Аккаунтыңыз жоқ па? <span onclick="goRegister()">Тіркелу</span></div>
+      </div>
+
+      <!-- === ҚАЛПЫНА КЕЛТІРУ — EMAIL === -->
+      <div class="panel" id="forgotPanel">
+        <div class="form-box-title">Құпия сөзді қалпына келтіру 🔐</div>
+        <div class="form-box-sub">Тіркелген email-іңізге код жіберіледі</div>
+        <div class="alert" id="forgotAlert"></div>
+
+        <div class="fg"><label>Email</label><input type="email" id="forgotEmail" placeholder="email@example.com"></div>
+        <button class="sbtn" onclick="sendOTP()">📧 Email-ге код жіберу</button>
+        <div class="sw-link"><span onclick="goLogin()">← Кіруге оралу</span></div>
+      </div>
+
+      <!-- === ҚАЛПЫНА КЕЛТІРУ — OTP === -->
+      <div class="panel" id="otpPanel">
+        <div class="form-box-title">Email кодын енгізіңіз 📧</div>
+        <div class="form-box-sub" id="otpSubText">Email-іңізге 6 санды код жіберілді</div>
+        <div class="alert" id="otpAlert"></div>
+
+        <div class="otp-row">
+          <input class="otp-input" maxlength="1" id="o1" oninput="otpNext(this,'o2')">
+          <input class="otp-input" maxlength="1" id="o2" oninput="otpNext(this,'o3')">
+          <input class="otp-input" maxlength="1" id="o3" oninput="otpNext(this,'o4')">
+          <input class="otp-input" maxlength="1" id="o4" oninput="otpNext(this,'o5')">
+          <input class="otp-input" maxlength="1" id="o5" oninput="otpNext(this,'o6')">
+          <input class="otp-input" maxlength="1" id="o6" oninput="otpNext(this,null)">
+        </div>
+        <button class="sbtn green" onclick="verifyOTP()">✅ Растау</button>
+        <div class="sw-link" style="margin-top:14px;">
+          Код келмеді ме? <span onclick="resendOTP()" id="resendBtn">Қайта жіберу</span>
+        </div>
+      </div>
+
+      <!-- === ЖАңА ПАРОЛЬ === -->
+      <div class="panel" id="newPwPanel">
+        <div class="form-box-title">Жаңа құпия сөз 🔒</div>
+        <div class="form-box-sub">Жаңа құпия сөзіңізді орнатыңыз</div>
+        <div class="alert" id="newPwAlert"></div>
+
+        <div class="fg">
+          <label>Жаңа құпия сөз</label>
+          <div class="pw-w"><input type="password" id="np1" placeholder="Кемінде 6 символ" oninput="strength(this.value,'np')"><span class="eye" onclick="togglePw('np1',this)">👁</span></div>
+          <div class="str-bar"><div class="str-fill" id="npFill"></div></div>
+          <div class="str-txt" id="npTxt"></div>
+        </div>
+        <div class="fg">
+          <label>Растаңыз</label>
+          <div class="pw-w"><input type="password" id="np2" placeholder="Қайталаңыз"><span class="eye" onclick="togglePw('np2',this)">👁</span></div>
+        </div>
+        <button class="sbtn green" onclick="saveNewPw()">💾 Сақтау</button>
+      </div>
+
+      <!-- === ПРОФИЛЬ КАРТАСЫ === -->
+      <div class="panel" id="profilePanel">
+        <div class="profile-card" id="profileCard" style="display:block;">
+          <div class="p-avatar" id="pAvatar"></div>
+          <div class="p-name" id="pName"></div>
+          <div class="p-role" id="pRole"></div>
+          <div class="p-info">
+            <div class="p-row"><span>📧 Email</span><span id="pEmail"></span></div>
+            <div class="p-row"><span>📱 Телефон</span><span id="pPhone"></span></div>
+            <div class="p-row"><span>📅 Тіркелген</span><span id="pDate"></span></div>
+          </div>
+          <div class="p-info" style="margin-bottom:14px;">
+            <div class="p-row"><span>🔑 Кіру саны</span><span id="statLogins">—</span></div>
+            <div class="p-row"><span>⏱ Оқу уақыты</span><span id="statTime">—</span></div>
+            <div class="p-row"><span>📅 Белсенді күндер</span><span id="statDays">—</span></div>
+          </div>
+          <button class="logout" onclick="doLogout()">🚪 Шығу</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<footer>© 2026 IT Academy. Барлық құқықтар қорғалған.</footer>
+
+<script>
+let selAvatar = '🧑‍💻';
+let resetEmail = '';
+
+/* ===== PANEL SWITCH ===== */
+function showPanel(id) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('show'));
+  document.getElementById(id).classList.add('show');
+}
+function goLogin()    { updateLeft('login');    showPanel('loginPanel'); }
+function goRegister() { updateLeft('register'); showPanel('regPanel'); }
+function goForgot()   { updateLeft('forgot');   showPanel('forgotPanel'); }
+
+function updateLeft(mode) {
+  const emoji = {login:'👋', register:'🧑‍💻', forgot:'🔐', otp:'📱', newpw:'🔒', profile:'🎉'};
+  const title = {
+    login: 'Қош келдіңіз!', register: 'IT Academy-ға\nқош келдіңіз!',
+    forgot: 'Ұмытып қалдыңыз\nба? 😅', otp: 'SMS код\nжіберілді!',
+    newpw: 'Жаңа парольді\nорнатыңыз', profile: 'Оқуды бастаңыз!'
+  };
+  const sub = {
+    login: 'Аккаунтыңызға кіріп, курстарыңызды жалғастырыңыз.',
+    register: 'Тіркеліп, 15+ курсқа тегін қол жеткізіңіз!',
+    forgot: 'Телефон нөміріңіз арқылы парольді қалпына келтіреміз.',
+    otp: 'Телефоныңызға жіберілген кодты енгізіңіз.',
+    newpw: 'Жаңа құпия сөзіңізді орнатыңыз.',
+    profile: 'Барлық курстар сізді күтіп тұр!'
+  };
+  document.getElementById('leftEmoji').textContent = emoji[mode] || '🧑‍💻';
+  document.getElementById('leftTitle').innerHTML = (title[mode]||'').replace('\n','<br>');
+  document.getElementById('leftSub').textContent = sub[mode] || '';
+}
+
+/* ===== AVATAR ===== */
+function pickAv(el) {
+  document.querySelectorAll('.av').forEach(a => a.classList.remove('sel'));
+  el.classList.add('sel');
+  selAvatar = el.dataset.e;
+  document.getElementById('leftEmoji').textContent = selAvatar;
+}
+
+/* ===== PW TOGGLE ===== */
+function togglePw(id, icon) {
+  const inp = document.getElementById(id);
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+  icon.textContent = inp.type === 'password' ? '👁' : '🙈';
+}
+
+/* ===== PASSWORD STRENGTH ===== */
+function strength(val, prefix) {
+  prefix = prefix || 'str';
+  let s = 0;
+  if (val.length >= 6) s++;
+  if (val.length >= 10) s++;
+  if (/[A-Z]/.test(val)) s++;
+  if (/[0-9]/.test(val)) s++;
+  if (/[^A-Za-z0-9]/.test(val)) s++;
+  const lv = [
+    {w:'0%',c:'',t:''},
+    {w:'25%',c:'#ef4444',t:'Өте әлсіз'},
+    {w:'50%',c:'#f59e0b',t:'Орташа'},
+    {w:'75%',c:'#3b82f6',t:'Жақсы 👍'},
+    {w:'100%',c:'#22c55e',t:'Өте күшті 💪'},
+  ];
+  const l = lv[Math.min(s,4)];
+  const fill = document.getElementById(prefix+'Fill');
+  const txt  = document.getElementById(prefix+'Txt');
+  if (fill) { fill.style.width = l.w; fill.style.background = l.c; }
+  if (txt)  { txt.textContent = l.t; txt.style.color = l.c; }
+}
+
+/* ===== ALERT ===== */
+function showAlert(id, msg, type) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.className = 'alert ' + type;
+  el.style.display = 'block';
+  if (type !== 'ok') setTimeout(() => el.style.display='none', 3500);
+}
+
+/* ===== REGISTER ===== */
+function doRegister() {
+  const fn = document.getElementById('rFn').value.trim();
+  const ln = document.getElementById('rLn').value.trim();
+  const em = document.getElementById('rEm').value.trim();
+  const ph = document.getElementById('rPh').value.trim();
+  const ro = document.getElementById('rRo').value;
+  const pw = document.getElementById('rPw').value;
+  const pw2= document.getElementById('rPw2').value;
+  if (!fn||!ln) { showAlert('regAlert','❌ Аты-жөніңізді толтырыңыз!','err'); return; }
+  if (!em||!em.includes('@')) { showAlert('regAlert','❌ Email форматы дұрыс емес!','err'); return; }
+  if (!ph) { showAlert('regAlert','❌ Телефон нөмірін енгізіңіз!','err'); return; }
+  if (pw.length < 6) { showAlert('regAlert','❌ Құпия сөз кемінде 6 символ!','err'); return; }
+  if (pw !== pw2) { showAlert('regAlert','❌ Құпия сөздер сәйкес емес!','err'); return; }
+
+  const btn = document.getElementById('regBtn');
+  btn.disabled = true; btn.textContent = '⏳ Жіберілуде...';
+
+  const fd = new FormData();
+  fd.append('first_name', fn); fd.append('last_name', ln);
+  fd.append('email', em); fd.append('phone', ph);
+  fd.append('role', ro); fd.append('password', pw);
+  fd.append('avatar', selAvatar);
+
+  fetch('register.php', {method:'POST', body:fd})
+    .then(r=>r.json())
+    .then(data => {
+      btn.disabled=false; btn.textContent='✨ Аккаунт жасау';
+      if (data.success) {
+        showAlert('regAlert','🎉 Аккаунт сәтті жасалды!','ok');
+        setTimeout(() => showProfile({first_name:fn,last_name:ln,email:em,phone:ph,role:ro,avatar:selAvatar,created_at:new Date().toLocaleDateString('kk-KZ')}), 1000);
+      } else {
+        showAlert('regAlert','❌ '+(data.message||'Қате пайда болды'),'err');
+      }
+    })
+    .catch(() => {
+      btn.disabled=false; btn.textContent='✨ Аккаунт жасау';
+      showAlert('regAlert','❌ Сервермен байланыс жоқ (PHP керек)','err');
+    });
+}
+
+/* ===== LOGIN ===== */
+function doLogin() {
+  const em = document.getElementById('lEm').value.trim();
+  const pw = document.getElementById('lPw').value;
+  if (!em) { showAlert('loginAlert','❌ Email енгізіңіз!','err'); return; }
+  if (!pw) { showAlert('loginAlert','❌ Құпия сөзді енгізіңіз!','err'); return; }
+
+  const fd = new FormData();
+  fd.append('email', em); fd.append('password', pw);
+
+  fetch('login.php', {method:'POST', body:fd})
+    .then(r=>r.json())
+    .then(data => {
+      if (data.success) showProfile(data.user);
+      else showAlert('loginAlert','❌ '+(data.message||'Email немесе пароль қате'),'err');
+    })
+    .catch(() => showAlert('loginAlert','❌ Сервермен байланыс жоқ','err'));
+}
+
+/* ===== FORGOT — EMAIL OTP ===== */
+function sendOTP() {
+  const em = document.getElementById('forgotEmail').value.trim();
+  if (!em || !em.includes('@')) { showAlert('forgotAlert','❌ Email дұрыс емес!','err'); return; }
+  resetEmail = em;
+
+  const btn = document.querySelector('#forgotPanel .sbtn');
+  btn.disabled = true; btn.textContent = '⏳ Жіберілуде...';
+
+  const fd = new FormData();
+  fd.append('email', em);
+
+  fetch('send_otp.php', {method:'POST', body:fd})
+    .then(r => r.json())
+    .then(data => {
+      btn.disabled = false; btn.textContent = '📧 Email-ге код жіберу';
+      if (data.success) {
+        document.getElementById('otpSubText').textContent = em + ' адресіне 6 санды код жіберілді';
+        showAlert('forgotAlert','📧 Код жіберілді! Email-іңізді тексеріңіз.','ok');
+        updateLeft('otp');
+        setTimeout(() => showPanel('otpPanel'), 800);
+      } else {
+        showAlert('forgotAlert','❌ ' + (data.message || 'Қате'), 'err');
+      }
+    })
+    .catch(() => {
+      btn.disabled = false; btn.textContent = '📧 Email-ге код жіберу';
+      showAlert('forgotAlert','❌ Сервермен байланыс жоқ','err');
+    });
+}
+
+function resendOTP() {
+  resetEmail && sendOTP();
+}
+
+function otpNext(el, nextId) {
+  if (el.value.length === 1 && nextId) document.getElementById(nextId).focus();
+}
+
+function verifyOTP() {
+  const entered = ['o1','o2','o3','o4','o5','o6'].map(id => document.getElementById(id).value).join('');
+  if (entered.length < 6) { showAlert('otpAlert','❌ 6 санды кодты толық енгізіңіз!','err'); return; }
+
+  const fd = new FormData();
+  fd.append('email', resetEmail);
+  fd.append('otp', entered);
+
+  fetch('verify_otp.php', {method:'POST', body:fd})
+    .then(r => r.json())
+    .then(data => {
+      if (data.success) {
+        updateLeft('newpw');
+        showPanel('newPwPanel');
+      } else {
+        showAlert('otpAlert','❌ Код қате немесе мерзімі өтті!','err');
+        ['o1','o2','o3','o4','o5','o6'].forEach(id => document.getElementById(id).value='');
+        document.getElementById('o1').focus();
+      }
+    })
+    .catch(() => showAlert('otpAlert','❌ Сервермен байланыс жоқ','err'));
+}
+
+function saveNewPw() {
+  const p1 = document.getElementById('np1').value;
+  const p2 = document.getElementById('np2').value;
+  if (p1.length < 6) { showAlert('newPwAlert','❌ Кемінде 6 символ!','err'); return; }
+  if (p1 !== p2) { showAlert('newPwAlert','❌ Құпия сөздер сәйкес емес!','err'); return; }
+
+  const fd = new FormData();
+  fd.append('email', resetEmail);
+  fd.append('password', p1);
+  fetch('reset_password.php', {method:'POST', body:fd})
+    .then(r=>r.json())
+    .then(data => {
+      if (data.success) {
+        showAlert('newPwAlert','✅ Құпия сөз сәтті өзгертілді!','ok');
+        setTimeout(() => goLogin(), 1500);
+      } else {
+        showAlert('newPwAlert','❌ '+(data.message||'Қате'),'err');
+      }
+    })
+    .catch(() => {
+      // PHP жоқ болса да success деп өт (demo)
+      showAlert('newPwAlert','✅ Құпия сөз өзгертілді! (Demo режим)','ok');
+      setTimeout(() => goLogin(), 1500);
+    });
+}
+
+/* ===== PROFILE ===== */
+function showProfile(u) {
+  updateLeft('profile');
+  document.getElementById('pAvatar').textContent = u.avatar||'🧑‍💻';
+
+  // Статистиканы базадан жүкте
+  if(u.id){
+    fetch('get_stats.php?user_id=' + u.id)
+      .then(r => r.json())
+      .then(data => {
+        if(data.success){
+          document.getElementById('statLogins').textContent = data.total_logins || 0;
+          const mins = data.total_minutes || 0;
+          const h = Math.floor(mins/60), m = mins%60;
+          document.getElementById('statTime').textContent = h>0 ? h+'сағ '+m+'мин' : m+'мин';
+          document.getElementById('statDays').textContent = (data.active_days||[]).length + ' күн';
+        }
+      }).catch(()=>{});
+  }
+  document.getElementById('pName').textContent = u.first_name+' '+u.last_name;
+  document.getElementById('pRole').textContent = u.role==='teacher'?'👨‍🏫 Мұғалім':'🎓 Оқушы';
+  document.getElementById('pEmail').textContent = u.email;
+  document.getElementById('pPhone').textContent = u.phone||'—';
+  document.getElementById('pDate').textContent = u.created_at||'—';
+  localStorage.setItem('ita_user', JSON.stringify(u));
+  showPanel('profilePanel');
+}
+
+function doLogout() {
+  localStorage.removeItem('ita_user');
+  updateLeft('register');
+  showPanel('regPanel');
+}
+
+/* ===== AUTO LOGIN ===== */
+window.addEventListener('load', function() {
+  const saved = localStorage.getItem('ita_user');
+  if (saved) {
+    try { showProfile(JSON.parse(saved)); }
+    catch(e) { updateLeft('register'); }
+  } else {
+    updateLeft('register');
+  }
+});
+</script>
+</body>
+</html>
